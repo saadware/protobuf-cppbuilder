@@ -73,19 +73,19 @@ class LIBPROTOBUF_EXPORT Printer {
   // substituted are identified by their names surrounded by delimiter
   // characters (as given to the constructor).  The variable bindings are
   // defined by the given map.
-  void Print(const map<string, string>& variables, const char* text);
+  void Print(const std::map<std::string, std::string>& variables, const char* text);
 
   // Like the first Print(), except the substitutions are given as parameters.
   void Print(const char* text);
   // Like the first Print(), except the substitutions are given as parameters.
-  void Print(const char* text, const char* variable, const string& value);
+  void Print(const char* text, const char* variable, const std::string& value);
   // Like the first Print(), except the substitutions are given as parameters.
-  void Print(const char* text, const char* variable1, const string& value1,
-                               const char* variable2, const string& value2);
+  void Print(const char* text, const char* variable1, const std::string& value1,
+                               const char* variable2, const std::string& value2);
   // Like the first Print(), except the substitutions are given as parameters.
-  void Print(const char* text, const char* variable1, const string& value1,
-                               const char* variable2, const string& value2,
-                               const char* variable3, const string& value3);
+  void Print(const char* text, const char* variable1, const std::string& value1,
+                               const char* variable2, const std::string& value2,
+                               const char* variable3, const std::string& value3);
   // TODO(kenton):  Overloaded versions with more variables?  Three seems
   //   to be enough.
 
@@ -100,7 +100,7 @@ class LIBPROTOBUF_EXPORT Printer {
 
   // Write a string to the output buffer.
   // This method does not look for newlines to add indentation.
-  void PrintRaw(const string& data);
+  void PrintRaw(const std::string& data);
 
   // Write a zero-delimited string to output buffer.
   // This method does not look for newlines to add indentation.
@@ -122,7 +122,7 @@ class LIBPROTOBUF_EXPORT Printer {
   char* buffer_;
   int buffer_size_;
 
-  string indent_;
+  std::string indent_;
   bool at_start_of_line_;
   bool failed_;
 

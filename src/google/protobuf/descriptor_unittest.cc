@@ -57,40 +57,40 @@ namespace protobuf {
 namespace descriptor_unittest {
 
 // Some helpers to make assembling descriptors faster.
-DescriptorProto* AddMessage(FileDescriptorProto* file, const string& name) {
+DescriptorProto* AddMessage(FileDescriptorProto* file, const std::string& name) {
   DescriptorProto* result = file->add_message_type();
   result->set_name(name);
   return result;
 }
 
-DescriptorProto* AddNestedMessage(DescriptorProto* parent, const string& name) {
+DescriptorProto* AddNestedMessage(DescriptorProto* parent, const std::string& name) {
   DescriptorProto* result = parent->add_nested_type();
   result->set_name(name);
   return result;
 }
 
-EnumDescriptorProto* AddEnum(FileDescriptorProto* file, const string& name) {
+EnumDescriptorProto* AddEnum(FileDescriptorProto* file, const std::string& name) {
   EnumDescriptorProto* result = file->add_enum_type();
   result->set_name(name);
   return result;
 }
 
 EnumDescriptorProto* AddNestedEnum(DescriptorProto* parent,
-                                   const string& name) {
+                                   const std::string& name) {
   EnumDescriptorProto* result = parent->add_enum_type();
   result->set_name(name);
   return result;
 }
 
 ServiceDescriptorProto* AddService(FileDescriptorProto* file,
-                                   const string& name) {
+                                   const std::string& name) {
   ServiceDescriptorProto* result = file->add_service();
   result->set_name(name);
   return result;
 }
 
 FieldDescriptorProto* AddField(DescriptorProto* parent,
-                               const string& name, int number,
+                               const std::string& name, int number,
                                FieldDescriptorProto::Label label,
                                FieldDescriptorProto::Type type) {
   FieldDescriptorProto* result = parent->add_field();
@@ -102,8 +102,8 @@ FieldDescriptorProto* AddField(DescriptorProto* parent,
 }
 
 FieldDescriptorProto* AddExtension(FileDescriptorProto* file,
-                                   const string& extendee,
-                                   const string& name, int number,
+                                   const std::string& extendee,
+                                   const std::string& name, int number,
                                    FieldDescriptorProto::Label label,
                                    FieldDescriptorProto::Type type) {
   FieldDescriptorProto* result = file->add_extension();
@@ -116,8 +116,8 @@ FieldDescriptorProto* AddExtension(FileDescriptorProto* file,
 }
 
 FieldDescriptorProto* AddNestedExtension(DescriptorProto* parent,
-                                         const string& extendee,
-                                         const string& name, int number,
+                                         const std::string& extendee,
+                                         const std::string& name, int number,
                                          FieldDescriptorProto::Label label,
                                          FieldDescriptorProto::Type type) {
   FieldDescriptorProto* result = parent->add_extension();
@@ -138,7 +138,7 @@ DescriptorProto::ExtensionRange* AddExtensionRange(DescriptorProto* parent,
 }
 
 EnumValueDescriptorProto* AddEnumValue(EnumDescriptorProto* enum_proto,
-                                       const string& name, int number) {
+                                       const std::string& name, int number) {
   EnumValueDescriptorProto* result = enum_proto->add_value();
   result->set_name(name);
   result->set_number(number);
@@ -146,9 +146,9 @@ EnumValueDescriptorProto* AddEnumValue(EnumDescriptorProto* enum_proto,
 }
 
 MethodDescriptorProto* AddMethod(ServiceDescriptorProto* service,
-                                 const string& name,
-                                 const string& input_type,
-                                 const string& output_type) {
+                                 const std::string& name,
+                                 const std::string& input_type,
+                                 const std::string& output_type) {
   MethodDescriptorProto* result = service->add_method();
   result->set_name(name);
   result->set_input_type(input_type);
@@ -158,7 +158,7 @@ MethodDescriptorProto* AddMethod(ServiceDescriptorProto* service,
 
 // Empty enums technically aren't allowed.  We need to insert a dummy value
 // into them.
-void AddEmptyEnum(FileDescriptorProto* file, const string& name) {
+void AddEmptyEnum(FileDescriptorProto* file, const std::string& name) {
   AddEnumValue(AddEnum(file, name), name + "_DUMMY", 1);
 }
 
@@ -1505,7 +1505,7 @@ TEST_F(ExtensionDescriptorTest, FindExtensionByName) {
 }
 
 TEST_F(ExtensionDescriptorTest, FindAllExtensions) {
-  vector<const FieldDescriptor*> extensions;
+  std::vector<const FieldDescriptor*> extensions;
   pool_.FindAllExtensions(foo_, &extensions);
   ASSERT_EQ(4, extensions.size());
   EXPECT_EQ(10, extensions[0]->number());
@@ -1942,7 +1942,7 @@ TEST_F(AllowUnknownDependenciesTest, CustomOption) {
 
   // Verify that no extension options were set, but they were left as
   // uninterpreted_options.
-  vector<const FieldDescriptor*> fields;
+  std::vector<const FieldDescriptor*> fields;
   file->options().GetReflection()->ListFields(file->options(), &fields);
   ASSERT_EQ(2, fields.size());
   EXPECT_TRUE(file->options().has_optimize_for());
@@ -2026,7 +2026,7 @@ TEST(CustomOptions, OptionTypes) {
   EXPECT_EQ("Hello, \"World\"",
             options->GetExtension(protobuf_unittest::string_opt));
 
-  EXPECT_EQ(string("Hello\0World", 11),
+  EXPECT_EQ(std::string("Hello\0World", 11),
             options->GetExtension(protobuf_unittest::bytes_opt));
 
   EXPECT_EQ(protobuf_unittest::DummyMessageContainingEnum::TEST_OPTION_ENUM_TYPE2,
@@ -2264,12 +2264,12 @@ class MockErrorCollector : public DescriptorPool::ErrorCollector {
   MockErrorCollector() {}
   ~MockErrorCollector() {}
 
-  string text_;
+  std::string text_;
 
   // implements ErrorCollector ---------------------------------------
-  void AddError(const string& filename,
-                const string& element_name, const Message* descriptor,
-                ErrorLocation location, const string& message) {
+  void AddError(const std::string& filename,
+                const std::string& element_name, const Message* descriptor,
+                ErrorLocation location, const std::string& message) {
     const char* location_name = NULL;
     switch (location) {
       case NAME         : location_name = "NAME"         ; break;
@@ -2294,7 +2294,7 @@ class ValidationErrorTest : public testing::Test {
  protected:
   // Parse file_text as a FileDescriptorProto in text format and add it
   // to the DescriptorPool.  Expect no errors.
-  void BuildFile(const string& file_text) {
+  void BuildFile(const std::string& file_text) {
     FileDescriptorProto file_proto;
     ASSERT_TRUE(TextFormat::ParseFromString(file_text, &file_proto));
     ASSERT_TRUE(pool_.BuildFile(file_proto) != NULL);
@@ -2303,8 +2303,8 @@ class ValidationErrorTest : public testing::Test {
   // Parse file_text as a FileDescriptorProto in text format and add it
   // to the DescriptorPool.  Expect errors to be produced which match the
   // given error text.
-  void BuildFileWithErrors(const string& file_text,
-                           const string& expected_errors) {
+  void BuildFileWithErrors(const std::string& file_text,
+                           const std::string& expected_errors) {
     FileDescriptorProto file_proto;
     ASSERT_TRUE(TextFormat::ParseFromString(file_text, &file_proto));
 
@@ -3467,7 +3467,7 @@ TEST_F(ValidationErrorTest, StringOptionValueIsNotString) {
 // Helper function for tests that check for aggregate value parsing
 // errors.  The "value" argument is embedded inside the
 // "uninterpreted_option" portion of the result.
-static string EmbedAggregateValue(const char* value) {
+static std::string EmbedAggregateValue(const char* value) {
   return strings::Substitute(
       "name: \"foo.proto\" "
       "dependency: \"google/protobuf/descriptor.proto\" "
@@ -3627,7 +3627,7 @@ TEST_F(ValidationErrorTest, ErrorsReportedToLogError) {
     "message_type { name: \"Foo\" } ",
     &file_proto));
 
-  vector<string> errors;
+  std::vector<std::string> errors;
 
   {
     ScopedMemoryLog log;
@@ -3679,7 +3679,7 @@ class DatabaseBackedPoolTest : public testing::Test {
     ~ErrorDescriptorDatabase() {}
 
     // implements DescriptorDatabase ---------------------------------
-    bool FindFileByName(const string& filename,
+    bool FindFileByName(const std::string& filename,
                         FileDescriptorProto* output) {
       // error.proto and error2.proto cyclically import each other.
       if (filename == "error.proto") {
@@ -3696,11 +3696,11 @@ class DatabaseBackedPoolTest : public testing::Test {
         return false;
       }
     }
-    bool FindFileContainingSymbol(const string& symbol_name,
+    bool FindFileContainingSymbol(const std::string& symbol_name,
                                   FileDescriptorProto* output) {
       return false;
     }
-    bool FindFileContainingExtension(const string& containing_type,
+    bool FindFileContainingExtension(const std::string& containing_type,
                                      int field_number,
                                      FileDescriptorProto* output) {
       return false;
@@ -3726,17 +3726,17 @@ class DatabaseBackedPoolTest : public testing::Test {
     }
 
     // implements DescriptorDatabase ---------------------------------
-    bool FindFileByName(const string& filename,
+    bool FindFileByName(const std::string& filename,
                         FileDescriptorProto* output) {
       ++call_count_;
       return wrapped_db_->FindFileByName(filename, output);
     }
-    bool FindFileContainingSymbol(const string& symbol_name,
+    bool FindFileContainingSymbol(const std::string& symbol_name,
                                   FileDescriptorProto* output) {
       ++call_count_;
       return wrapped_db_->FindFileContainingSymbol(symbol_name, output);
     }
-    bool FindFileContainingExtension(const string& containing_type,
+    bool FindFileContainingExtension(const std::string& containing_type,
                                      int field_number,
                                      FileDescriptorProto* output) {
       ++call_count_;
@@ -3757,15 +3757,15 @@ class DatabaseBackedPoolTest : public testing::Test {
     DescriptorDatabase* wrapped_db_;
 
     // implements DescriptorDatabase ---------------------------------
-    bool FindFileByName(const string& filename,
+    bool FindFileByName(const std::string& filename,
                         FileDescriptorProto* output) {
       return wrapped_db_->FindFileByName(filename, output);
     }
-    bool FindFileContainingSymbol(const string& symbol_name,
+    bool FindFileContainingSymbol(const std::string& symbol_name,
                                   FileDescriptorProto* output) {
       return FindFileByName("foo.proto", output);
     }
-    bool FindFileContainingExtension(const string& containing_type,
+    bool FindFileContainingExtension(const std::string& containing_type,
                                      int field_number,
                                      FileDescriptorProto* output) {
       return FindFileByName("foo.proto", output);
@@ -3869,7 +3869,7 @@ TEST_F(DatabaseBackedPoolTest, FindAllExtensions) {
   for (int i = 0; i < 2; ++i) {
     // Repeat the lookup twice, to check that we get consistent
     // results despite the fallback database lookup mutating the pool.
-    vector<const FieldDescriptor*> extensions;
+    std::vector<const FieldDescriptor*> extensions;
     pool.FindAllExtensions(foo, &extensions);
     ASSERT_EQ(1, extensions.size());
     EXPECT_EQ(5, extensions[0]->number());
@@ -3880,7 +3880,7 @@ TEST_F(DatabaseBackedPoolTest, ErrorWithoutErrorCollector) {
   ErrorDescriptorDatabase error_database;
   DescriptorPool pool(&error_database);
 
-  vector<string> errors;
+  std::vector<std::string> errors;
 
   {
     ScopedMemoryLog log;

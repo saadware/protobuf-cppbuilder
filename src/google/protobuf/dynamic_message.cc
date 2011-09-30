@@ -109,7 +109,7 @@ int FieldSpaceUsed(const FieldDescriptor* field) {
         switch (field->options().ctype()) {
           default:  // TODO(kenton):  Support other string reps.
           case FieldOptions::STRING:
-            return sizeof(RepeatedPtrField<string>);
+            return sizeof(RepeatedPtrField<std::string>);
         }
         break;
     }
@@ -129,7 +129,7 @@ int FieldSpaceUsed(const FieldDescriptor* field) {
         switch (field->options().ctype()) {
           default:  // TODO(kenton):  Support other string reps.
           case FieldOptions::STRING:
-            return sizeof(string*);
+            return sizeof(std::string*);
         }
         break;
     }
@@ -275,16 +275,16 @@ DynamicMessage::DynamicMessage(const TypeInfo* type_info)
           case FieldOptions::STRING:
             if (!field->is_repeated()) {
               if (is_prototype()) {
-                new(field_ptr) const string*(&field->default_value_string());
+                new(field_ptr) const std::string*(&field->default_value_string());
               } else {
-                string* default_value =
-                  *reinterpret_cast<string* const*>(
+                std::string* default_value =
+                  *reinterpret_cast<std::string* const*>(
                     type_info_->prototype->OffsetToPointer(
                       type_info_->offsets[i]));
-                new(field_ptr) string*(default_value);
+                new(field_ptr) std::string*(default_value);
               }
             } else {
-              new(field_ptr) RepeatedPtrField<string>();
+              new(field_ptr) RepeatedPtrField<std::string>();
             }
             break;
         }
@@ -345,8 +345,8 @@ DynamicMessage::~DynamicMessage() {
           switch (field->options().ctype()) {
             default:  // TODO(kenton):  Support other string reps.
             case FieldOptions::STRING:
-              reinterpret_cast<RepeatedPtrField<string>*>(field_ptr)
-                  ->~RepeatedPtrField<string>();
+              reinterpret_cast<RepeatedPtrField<std::string>*>(field_ptr)
+                  ->~RepeatedPtrField<std::string>();
               break;
           }
           break;
@@ -361,7 +361,7 @@ DynamicMessage::~DynamicMessage() {
       switch (field->options().ctype()) {
         default:  // TODO(kenton):  Support other string reps.
         case FieldOptions::STRING: {
-          string* ptr = *reinterpret_cast<string**>(field_ptr);
+          std::string* ptr = *reinterpret_cast<std::string**>(field_ptr);
           if (ptr != &field->default_value_string()) {
             delete ptr;
           }
@@ -514,7 +514,7 @@ const Message* DynamicMessageFactory::GetPrototypeNoLock(
   for (int i = 0; i < type->field_count(); i++) {
     // Make sure field is aligned to avoid bus errors.
     int field_size = FieldSpaceUsed(type->field(i));
-    size = AlignTo(size, min(kSafeAlignment, field_size));
+    size = AlignTo(size, std::min(kSafeAlignment, field_size));
     offsets[i] = size;
     size += field_size;
   }

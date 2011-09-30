@@ -145,7 +145,7 @@ class LIBPROTOBUF_EXPORT GeneratedMessageReflection : public Reflection {
   void SwapElements(Message* message, const FieldDescriptor* field,
             int index1, int index2) const;
   void ListFields(const Message& message,
-                  vector<const FieldDescriptor*>* output) const;
+                  std::vector<const FieldDescriptor*>* output) const;
 
   int32  GetInt32 (const Message& message,
                    const FieldDescriptor* field) const;
@@ -161,11 +161,11 @@ class LIBPROTOBUF_EXPORT GeneratedMessageReflection : public Reflection {
                    const FieldDescriptor* field) const;
   bool   GetBool  (const Message& message,
                    const FieldDescriptor* field) const;
-  string GetString(const Message& message,
+  std::string GetString(const Message& message,
                    const FieldDescriptor* field) const;
-  const string& GetStringReference(const Message& message,
+  const std::string& GetStringReference(const Message& message,
                                    const FieldDescriptor* field,
-                                   string* scratch) const;
+                                   std::string* scratch) const;
   const EnumValueDescriptor* GetEnum(const Message& message,
                                      const FieldDescriptor* field) const;
   const Message& GetMessage(const Message& message,
@@ -188,7 +188,7 @@ class LIBPROTOBUF_EXPORT GeneratedMessageReflection : public Reflection {
                  const FieldDescriptor* field, bool   value) const;
   void SetString(Message* message,
                  const FieldDescriptor* field,
-                 const string& value) const;
+                 const std::string& value) const;
   void SetEnum  (Message* message, const FieldDescriptor* field,
                  const EnumValueDescriptor* value) const;
   Message* MutableMessage(Message* message, const FieldDescriptor* field,
@@ -208,11 +208,11 @@ class LIBPROTOBUF_EXPORT GeneratedMessageReflection : public Reflection {
                            const FieldDescriptor* field, int index) const;
   bool   GetRepeatedBool  (const Message& message,
                            const FieldDescriptor* field, int index) const;
-  string GetRepeatedString(const Message& message,
+  std::string GetRepeatedString(const Message& message,
                            const FieldDescriptor* field, int index) const;
-  const string& GetRepeatedStringReference(const Message& message,
+  const std::string& GetRepeatedStringReference(const Message& message,
                                            const FieldDescriptor* field,
-                                           int index, string* scratch) const;
+                                           int index, std::string* scratch) const;
   const EnumValueDescriptor* GetRepeatedEnum(const Message& message,
                                              const FieldDescriptor* field,
                                              int index) const;
@@ -237,7 +237,7 @@ class LIBPROTOBUF_EXPORT GeneratedMessageReflection : public Reflection {
                          const FieldDescriptor* field, int index, bool   value) const;
   void SetRepeatedString(Message* message,
                          const FieldDescriptor* field, int index,
-                         const string& value) const;
+                         const std::string& value) const;
   void SetRepeatedEnum(Message* message, const FieldDescriptor* field,
                        int index, const EnumValueDescriptor* value) const;
   // Get a mutable pointer to a field with a message type.
@@ -260,14 +260,14 @@ class LIBPROTOBUF_EXPORT GeneratedMessageReflection : public Reflection {
   void AddBool  (Message* message,
                  const FieldDescriptor* field, bool   value) const;
   void AddString(Message* message,
-                 const FieldDescriptor* field, const string& value) const;
+                 const FieldDescriptor* field, const std::string& value) const;
   void AddEnum(Message* message,
                const FieldDescriptor* field,
                const EnumValueDescriptor* value) const;
   Message* AddMessage(Message* message, const FieldDescriptor* field,
                       MessageFactory* factory = NULL) const;
 
-  const FieldDescriptor* FindKnownExtensionByName(const string& name) const;
+  const FieldDescriptor* FindKnownExtensionByName(const std::string& name) const;
   const FieldDescriptor* FindKnownExtensionByNumber(int number) const;
 
  private:
@@ -399,12 +399,12 @@ inline To dynamic_cast_if_available(From from) {
 // enum name of the given type, returning true and filling in value on success,
 // or returning false and leaving value unchanged on failure.
 LIBPROTOBUF_EXPORT bool ParseNamedEnum(const EnumDescriptor* descriptor,
-                    const string& name,
+                    const std::string& name,
                     int* value);
 
 template<typename EnumType>
 bool ParseNamedEnum(const EnumDescriptor* descriptor,
-                    const string& name,
+                    const std::string& name,
                     EnumType* value) {
   int tmp;
   if (!ParseNamedEnum(descriptor, name, &tmp)) return false;
@@ -415,7 +415,7 @@ bool ParseNamedEnum(const EnumDescriptor* descriptor,
 // Just a wrapper around printing the name of a value. The main point of this
 // function is not to be inlined, so that you can do this without including
 // descriptor.h.
-LIBPROTOBUF_EXPORT const string& NameOfEnum(const EnumDescriptor* descriptor, int value);
+LIBPROTOBUF_EXPORT const std::string& NameOfEnum(const EnumDescriptor* descriptor, int value);
 
 }  // namespace internal
 }  // namespace protobuf

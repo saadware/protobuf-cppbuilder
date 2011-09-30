@@ -182,7 +182,7 @@ void ServiceGenerator::GenerateCallMethod(io::Printer* printer) {
 
   for (int i = 0; i < descriptor_->method_count(); i++) {
     const MethodDescriptor* method = descriptor_->method(i);
-    map<string, string> vars;
+    std::map<std::string, std::string> vars;
     vars["index"] = SimpleItoa(i);
     vars["method"] = UnderscoresToCamelCase(method);
     vars["input"] = ClassName(method->input_type());
@@ -227,7 +227,7 @@ void ServiceGenerator::GenerateCallBlockingMethod(io::Printer* printer) {
 
   for (int i = 0; i < descriptor_->method_count(); i++) {
     const MethodDescriptor* method = descriptor_->method(i);
-    map<string, string> vars;
+    std::map<std::string, std::string> vars;
     vars["index"] = SimpleItoa(i);
     vars["method"] = UnderscoresToCamelCase(method);
     vars["input"] = ClassName(method->input_type());
@@ -272,7 +272,7 @@ void ServiceGenerator::GenerateGetPrototype(RequestOrResponse which,
 
   for (int i = 0; i < descriptor_->method_count(); i++) {
     const MethodDescriptor* method = descriptor_->method(i);
-    map<string, string> vars;
+    std::map<std::string, std::string> vars;
     vars["index"] = SimpleItoa(i);
     vars["type"] = ClassName(
       (which == REQUEST) ? method->input_type() : method->output_type());
@@ -324,7 +324,7 @@ void ServiceGenerator::GenerateStub(io::Printer* printer) {
     printer->Print(" {\n");
     printer->Indent();
 
-    map<string, string> vars;
+    std::map<std::string, std::string> vars;
     vars["index"] = SimpleItoa(i);
     vars["output"] = ClassName(method->output_type());
     printer->Print(vars,
@@ -388,7 +388,7 @@ void ServiceGenerator::GenerateBlockingStub(io::Printer* printer) {
     printer->Print(" {\n");
     printer->Indent();
 
-    map<string, string> vars;
+    std::map<std::string, std::string> vars;
     vars["index"] = SimpleItoa(i);
     vars["output"] = ClassName(method->output_type());
     printer->Print(vars,
@@ -411,7 +411,7 @@ void ServiceGenerator::GenerateBlockingStub(io::Printer* printer) {
 void ServiceGenerator::GenerateMethodSignature(io::Printer* printer,
                                                const MethodDescriptor* method,
                                                IsAbstract is_abstract) {
-  map<string, string> vars;
+  std::map<std::string, std::string> vars;
   vars["name"] = UnderscoresToCamelCase(method);
   vars["input"] = ClassName(method->input_type());
   vars["output"] = ClassName(method->output_type());
@@ -426,7 +426,7 @@ void ServiceGenerator::GenerateMethodSignature(io::Printer* printer,
 void ServiceGenerator::GenerateBlockingMethodSignature(
     io::Printer* printer,
     const MethodDescriptor* method) {
-  map<string, string> vars;
+  std::map<std::string, std::string> vars;
   vars["method"] = UnderscoresToCamelCase(method);
   vars["input"] = ClassName(method->input_type());
   vars["output"] = ClassName(method->output_type());

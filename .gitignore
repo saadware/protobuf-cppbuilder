@@ -1,0 +1,13 @@
+# all generated files
+*.user
+*.local
+*.obj
+*.ncb
+*.lib
+*.suo
+*.pdb
+*.log
+*.htm
+*.idb
+*.lastbuildstate
+*.swp

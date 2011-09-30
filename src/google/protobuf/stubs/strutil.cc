@@ -84,7 +84,7 @@ inline bool isprint(char c) {
 //    Replaces any occurrence of the character 'remove' (or the characters
 //    in 'remove') with the character 'replacewith'.
 // ----------------------------------------------------------------------
-void StripString(string* s, const char* remove, char replacewith) {
+void StripString(std::string* s, const char* remove, char replacewith) {
   const char * str_start = s->c_str();
   const char * str = str_start;
   for (str = strpbrk(str, remove);
@@ -101,19 +101,19 @@ void StripString(string* s, const char* remove, char replacewith) {
 //    it only replaces the first instance of "old."
 // ----------------------------------------------------------------------
 
-void StringReplace(const string& s, const string& oldsub,
-                   const string& newsub, bool replace_all,
-                   string* res) {
+void StringReplace(const std::string& s, const std::string& oldsub,
+                   const std::string& newsub, bool replace_all,
+                   std::string* res) {
   if (oldsub.empty()) {
     res->append(s);  // if empty, append the given string.
     return;
   }
 
-  string::size_type start_pos = 0;
-  string::size_type pos;
+  std::string::size_type start_pos = 0;
+  std::string::size_type pos;
   do {
     pos = s.find(oldsub, start_pos);
-    if (pos == string::npos) {
+    if (pos == std::string::npos) {
       break;
     }
     res->append(s, start_pos, pos - start_pos);
@@ -132,9 +132,9 @@ void StringReplace(const string& s, const string& oldsub,
 //    happened or not.
 // ----------------------------------------------------------------------
 
-string StringReplace(const string& s, const string& oldsub,
-                     const string& newsub, bool replace_all) {
-  string ret;
+std::string StringReplace(const std::string& s, const std::string& oldsub,
+                     const std::string& newsub, bool replace_all) {
+  std::string ret;
   StringReplace(s, oldsub, newsub, replace_all, &ret);
   return ret;
 }
@@ -149,7 +149,7 @@ string StringReplace(const string& s, const string& oldsub,
 // ----------------------------------------------------------------------
 template <typename ITR>
 static inline
-void SplitStringToIteratorUsing(const string& full,
+void SplitStringToIteratorUsing(const std::string& full,
                                 const char* delim,
                                 ITR& result) {
   // Optimize the common case where delim is a single character.
@@ -163,17 +163,17 @@ void SplitStringToIteratorUsing(const string& full,
       } else {
         const char* start = p;
         while (++p != end && *p != c);
-        *result++ = string(start, p - start);
+        *result++ = std::string(start, p - start);
       }
     }
     return;
   }
 
-  string::size_type begin_index, end_index;
+  std::string::size_type begin_index, end_index;
   begin_index = full.find_first_not_of(delim);
-  while (begin_index != string::npos) {
+  while (begin_index != std::string::npos) {
     end_index = full.find_first_of(delim, begin_index);
-    if (end_index == string::npos) {
+    if (end_index == std::string::npos) {
       *result++ = full.substr(begin_index);
       return;
     }
@@ -182,10 +182,10 @@ void SplitStringToIteratorUsing(const string& full,
   }
 }
 
-void SplitStringUsing(const string& full,
+void SplitStringUsing(const std::string& full,
                       const char* delim,
-                      vector<string>* result) {
-  back_insert_iterator< vector<string> > it(*result);
+                      std::vector<std::string>* result) {
+  std::back_insert_iterator< std::vector<std::string> > it(*result);
   SplitStringToIteratorUsing(full, delim, it);
 }
 
@@ -199,7 +199,7 @@ template <class ITERATOR>
 static void JoinStringsIterator(const ITERATOR& start,
                                 const ITERATOR& end,
                                 const char* delim,
-                                string* result) {
+                                std::string* result) {
   GOOGLE_CHECK(result != NULL);
   result->clear();
   int delim_length = strlen(delim);
@@ -223,9 +223,9 @@ static void JoinStringsIterator(const ITERATOR& start,
   }
 }
 
-void JoinStrings(const vector<string>& components,
+void JoinStrings(const std::vector<std::string>& components,
                  const char* delim,
-                 string * result) {
+                 std::string * result) {
   JoinStringsIterator(components.begin(), components.end(), delim, result);
 }
 
@@ -263,7 +263,7 @@ int UnescapeCEscapeSequences(const char* source, char* dest) {
 }
 
 int UnescapeCEscapeSequences(const char* source, char* dest,
-                             vector<string> *errors) {
+                             std::vector<std::string> *errors) {
   GOOGLE_DCHECK(errors == NULL) << "Error reporting not implemented.";
 
   char* d = dest;
@@ -319,7 +319,7 @@ int UnescapeCEscapeSequences(const char* source, char* dest,
             ch = (ch << 4) + hex_digit_to_int(*++p);
           if (ch > 0xFF)
             LOG_STRING(ERROR, errors) << "Value of " <<
-              "\\" << string(hex_start, p+1-hex_start) << " exceeds 8 bits";
+              "\\" << std::string(hex_start, p+1-hex_start) << " exceeds 8 bits";
           *d++ = ch;
           break;
         }
@@ -394,12 +394,12 @@ int UnescapeCEscapeSequences(const char* source, char* dest,
 //    In the first and second calls, the length of dest is returned. In the
 //    the third call, the new string is returned.
 // ----------------------------------------------------------------------
-int UnescapeCEscapeString(const string& src, string* dest) {
+int UnescapeCEscapeString(const std::string& src, std::string* dest) {
   return UnescapeCEscapeString(src, dest, NULL);
 }
 
-int UnescapeCEscapeString(const string& src, string* dest,
-                          vector<string> *errors) {
+int UnescapeCEscapeString(const std::string& src, std::string* dest,
+                          std::vector<std::string> *errors) {
   scoped_array<char> unescaped(new char[src.size() + 1]);
   int len = UnescapeCEscapeSequences(src.c_str(), unescaped.get(), errors);
   GOOGLE_CHECK(dest);
@@ -407,10 +407,10 @@ int UnescapeCEscapeString(const string& src, string* dest,
   return len;
 }
 
-string UnescapeCEscapeString(const string& src) {
+std::string UnescapeCEscapeString(const std::string& src) {
   scoped_array<char> unescaped(new char[src.size() + 1]);
   int len = UnescapeCEscapeSequences(src.c_str(), unescaped.get(), NULL);
-  return string(unescaped.get(), len);
+  return std::string(unescaped.get(), len);
 }
 
 // ----------------------------------------------------------------------
@@ -484,33 +484,33 @@ int CEscapeString(const char* src, int src_len, char* dest, int dest_len) {
 //
 //    Currently only \n, \r, \t, ", ', \ and !isprint() chars are escaped.
 // ----------------------------------------------------------------------
-string CEscape(const string& src) {
+std::string CEscape(const std::string& src) {
   const int dest_length = src.size() * 4 + 1; // Maximum possible expansion
   scoped_array<char> dest(new char[dest_length]);
   const int len = CEscapeInternal(src.data(), src.size(),
                                   dest.get(), dest_length, false, false);
   GOOGLE_DCHECK_GE(len, 0);
-  return string(dest.get(), len);
+  return std::string(dest.get(), len);
 }
 
 namespace strings {
 
-string Utf8SafeCEscape(const string& src) {
+std::string Utf8SafeCEscape(const std::string& src) {
   const int dest_length = src.size() * 4 + 1; // Maximum possible expansion
   scoped_array<char> dest(new char[dest_length]);
   const int len = CEscapeInternal(src.data(), src.size(),
                                   dest.get(), dest_length, false, true);
   GOOGLE_DCHECK_GE(len, 0);
-  return string(dest.get(), len);
+  return std::string(dest.get(), len);
 }
 
-string CHexEscape(const string& src) {
+std::string CHexEscape(const std::string& src) {
   const int dest_length = src.size() * 4 + 1; // Maximum possible expansion
   scoped_array<char> dest(new char[dest_length]);
   const int len = CEscapeInternal(src.data(), src.size(),
                                   dest.get(), dest_length, true, false);
   GOOGLE_DCHECK_GE(len, 0);
-  return string(dest.get(), len);
+  return std::string(dest.get(), len);
 }
 
 }  // namespace strings
@@ -886,44 +886,44 @@ char* FastInt64ToBufferLeft(int64 i, char* buffer) {
 //    Return value: string
 // ----------------------------------------------------------------------
 
-string SimpleItoa(int i) {
+std::string SimpleItoa(int i) {
   char buffer[kFastToBufferSize];
   return (sizeof(i) == 4) ?
     FastInt32ToBuffer(i, buffer) :
     FastInt64ToBuffer(i, buffer);
 }
 
-string SimpleItoa(unsigned int i) {
+std::string SimpleItoa(unsigned int i) {
   char buffer[kFastToBufferSize];
-  return string(buffer, (sizeof(i) == 4) ?
+  return std::string(buffer, (sizeof(i) == 4) ?
     FastUInt32ToBufferLeft(i, buffer) :
     FastUInt64ToBufferLeft(i, buffer));
 }
 
-string SimpleItoa(long i) {
+std::string SimpleItoa(long i) {
   char buffer[kFastToBufferSize];
   return (sizeof(i) == 4) ?
     FastInt32ToBuffer(i, buffer) :
     FastInt64ToBuffer(i, buffer);
 }
 
-string SimpleItoa(unsigned long i) {
+std::string SimpleItoa(unsigned long i) {
   char buffer[kFastToBufferSize];
-  return string(buffer, (sizeof(i) == 4) ?
+  return std::string(buffer, (sizeof(i) == 4) ?
     FastUInt32ToBufferLeft(i, buffer) :
     FastUInt64ToBufferLeft(i, buffer));
 }
 
-string SimpleItoa(long long i) {
+std::string SimpleItoa(long long i) {
   char buffer[kFastToBufferSize];
   return (sizeof(i) == 4) ?
     FastInt32ToBuffer(i, buffer) :
     FastInt64ToBuffer(i, buffer);
 }
 
-string SimpleItoa(unsigned long long i) {
+std::string SimpleItoa(unsigned long long i) {
   char buffer[kFastToBufferSize];
-  return string(buffer, (sizeof(i) == 4) ?
+  return std::string(buffer, (sizeof(i) == 4) ?
     FastUInt32ToBufferLeft(i, buffer) :
     FastUInt64ToBufferLeft(i, buffer));
 }
@@ -969,12 +969,12 @@ string SimpleItoa(unsigned long long i) {
 //    implementation.
 // ----------------------------------------------------------------------
 
-string SimpleDtoa(double value) {
+std::string SimpleDtoa(double value) {
   char buffer[kDoubleToBufferSize];
   return DoubleToBuffer(value, buffer);
 }
 
-string SimpleFtoa(float value) {
+std::string SimpleFtoa(float value) {
   char buffer[kFloatToBufferSize];
   return FloatToBuffer(value, buffer);
 }
@@ -1019,10 +1019,10 @@ char* DoubleToBuffer(double value, char* buffer) {
   // this assert.
   GOOGLE_COMPILE_ASSERT(DBL_DIG < 20, DBL_DIG_is_too_big);
 
-  if (value == numeric_limits<double>::infinity()) {
+  if (value == std::numeric_limits<double>::infinity()) {
     strcpy(buffer, "inf");
     return buffer;
-  } else if (value == -numeric_limits<double>::infinity()) {
+  } else if (value == -std::numeric_limits<double>::infinity()) {
     strcpy(buffer, "-inf");
     return buffer;
   } else if (IsNaN(value)) {
@@ -1074,10 +1074,10 @@ char* FloatToBuffer(float value, char* buffer) {
   // this assert.
   GOOGLE_COMPILE_ASSERT(FLT_DIG < 10, FLT_DIG_is_too_big);
 
-  if (value == numeric_limits<double>::infinity()) {
+  if (value == std::numeric_limits<double>::infinity()) {
     strcpy(buffer, "inf");
     return buffer;
-  } else if (value == -numeric_limits<double>::infinity()) {
+  } else if (value == -std::numeric_limits<double>::infinity()) {
     strcpy(buffer, "-inf");
     return buffer;
   } else if (IsNaN(value)) {
@@ -1113,7 +1113,7 @@ char* FloatToBuffer(float value, char* buffer) {
 // Returns a string identical to *input except that the character pointed to
 // by radix_pos (which should be '.') is replaced with the locale-specific
 // radix character.
-string LocalizeRadix(const char* input, const char* radix_pos) {
+std::string LocalizeRadix(const char* input, const char* radix_pos) {
   // Determine the locale-specific radix character by calling sprintf() to
   // print the number 1.5, then stripping off the digits.  As far as I can
   // tell, this is the only portable, thread-safe way to get the C library
@@ -1126,7 +1126,7 @@ string LocalizeRadix(const char* input, const char* radix_pos) {
   GOOGLE_CHECK_LE(size, 6);
 
   // Now replace the '.' in the input with it.
-  string result;
+  std::string result;
   result.reserve(strlen(input) + size - 3);
   result.append(input, radix_pos);
   result.append(temp + 1, size - 2);
@@ -1149,7 +1149,7 @@ double NoLocaleStrtod(const char* text, char** original_endptr) {
   // Parsing halted on a '.'.  Perhaps we're in a different locale?  Let's
   // try to replace the '.' with a locale-specific radix character and
   // try again.
-  string localized = LocalizeRadix(text, temp_endptr);
+  std::string localized = LocalizeRadix(text, temp_endptr);
   const char* localized_cstr = localized.c_str();
   char* localized_endptr;
   result = strtod(localized_cstr, &localized_endptr);

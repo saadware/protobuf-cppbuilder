@@ -239,7 +239,7 @@ void WireFormat::SerializeUnknownMessageSetItems(
     // The only unknown fields that are allowed to exist in a MessageSet are
     // messages, which are length-delimited.
     if (field.type() == UnknownField::TYPE_LENGTH_DELIMITED) {
-      const string& data = field.length_delimited();
+      const std::string& data = field.length_delimited();
 
       // Start group.
       output->WriteVarint32(WireFormatLite::kMessageSetItemStartTag);
@@ -268,7 +268,7 @@ uint8* WireFormat::SerializeUnknownMessageSetItemsToArray(
     // The only unknown fields that are allowed to exist in a MessageSet are
     // messages, which are length-delimited.
     if (field.type() == UnknownField::TYPE_LENGTH_DELIMITED) {
-      const string& data = field.length_delimited();
+      const std::string& data = field.length_delimited();
 
       // Start group.
       target = io::CodedOutputStream::WriteTagToArray(
@@ -566,7 +566,7 @@ bool WireFormat::ParseAndMergeField(
 
       // Handle strings separately so that we can optimize the ctype=CORD case.
       case FieldDescriptor::TYPE_STRING: {
-        string value;
+        std::string value;
         if (!WireFormatLite::ReadString(input, &value)) return false;
         VerifyUTF8String(value.data(), value.length(), PARSE);
         if (field->is_repeated()) {
@@ -578,7 +578,7 @@ bool WireFormat::ParseAndMergeField(
       }
 
       case FieldDescriptor::TYPE_BYTES: {
-        string value;
+        std::string value;
         if (!WireFormatLite::ReadBytes(input, &value)) return false;
         if (field->is_repeated()) {
           message_reflection->AddString(message, field, value);
@@ -646,7 +646,7 @@ bool WireFormat::ParseAndMergeMessageSetItem(
   // as no MessageSet encoder I know of writes the message before the type ID.
   // But, it's technically valid so we should allow it.
   // TODO(kenton):  Use a Cord instead?  Do I care?
-  string message_data;
+  std::string message_data;
 
   while (true) {
     uint32 tag = input->ReadTag();
@@ -679,7 +679,7 @@ bool WireFormat::ParseAndMergeMessageSetItem(
       case WireFormatLite::kMessageSetMessageTag: {
         if (fake_tag == 0) {
           // We haven't seen a type_id yet.  Append this data to message_data.
-          string temp;
+          std::string temp;
           uint32 length;
           if (!input->ReadVarint32(&length)) return false;
           if (!input->ReadString(&temp, length)) return false;
@@ -714,7 +714,7 @@ void WireFormat::SerializeWithCachedSizes(
   const Reflection* message_reflection = message.GetReflection();
   int expected_endpoint = output->ByteCount() + size;
 
-  vector<const FieldDescriptor*> fields;
+  std::vector<const FieldDescriptor*> fields;
   message_reflection->ListFields(message, &fields);
   for (int i = 0; i < fields.size(); i++) {
     SerializeFieldWithCachedSizes(fields[i], message, output);
@@ -829,8 +829,8 @@ void WireFormat::SerializeFieldWithCachedSizes(
       // Handle strings separately so that we can get string references
       // instead of copying.
       case FieldDescriptor::TYPE_STRING: {
-        string scratch;
-        const string& value = field->is_repeated() ?
+        std::string scratch;
+        const std::string& value = field->is_repeated() ?
           message_reflection->GetRepeatedStringReference(
             message, field, j, &scratch) :
           message_reflection->GetStringReference(message, field, &scratch);
@@ -840,8 +840,8 @@ void WireFormat::SerializeFieldWithCachedSizes(
       }
 
       case FieldDescriptor::TYPE_BYTES: {
-        string scratch;
-        const string& value = field->is_repeated() ?
+        std::string scratch;
+        const std::string& value = field->is_repeated() ?
           message_reflection->GetRepeatedStringReference(
             message, field, j, &scratch) :
           message_reflection->GetStringReference(message, field, &scratch);
@@ -884,7 +884,7 @@ int WireFormat::ByteSize(const Message& message) {
 
   int our_size = 0;
 
-  vector<const FieldDescriptor*> fields;
+  std::vector<const FieldDescriptor*> fields;
   message_reflection->ListFields(message, &fields);
   for (int i = 0; i < fields.size(); i++) {
     our_size += FieldByteSize(fields[i], message);
@@ -1009,8 +1009,8 @@ int WireFormat::FieldDataOnlyByteSize(
     case FieldDescriptor::TYPE_STRING:
     case FieldDescriptor::TYPE_BYTES: {
       for (int j = 0; j < count; j++) {
-        string scratch;
-        const string& value = field->is_repeated() ?
+        std::string scratch;
+        const std::string& value = field->is_repeated() ?
           message_reflection->GetRepeatedStringReference(
             message, field, j, &scratch) :
           message_reflection->GetStringReference(message, field, &scratch);

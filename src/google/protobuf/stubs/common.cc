@@ -81,7 +81,7 @@ void VerifyVersion(int headerVersion,
   }
 }
 
-string VersionString(int version) {
+std::string VersionString(int version) {
   int major = version / 1000000;
   int minor = (version / 1000) % 1000;
   int micro = version % 1000;
@@ -105,7 +105,7 @@ string VersionString(int version) {
 namespace internal {
 
 void DefaultLogHandler(LogLevel level, const char* filename, int line,
-                       const string& message) {
+                       const std::string& message) {
   static const char* level_names[] = { "INFO", "WARNING", "ERROR", "FATAL" };
 
   // We use fprintf() instead of cerr because we want this to work at static
@@ -116,7 +116,7 @@ void DefaultLogHandler(LogLevel level, const char* filename, int line,
 }
 
 void NullLogHandler(LogLevel level, const char* filename, int line,
-                    const string& message) {
+                    const std::string& message) {
   // Nothing.
 }
 
@@ -138,7 +138,7 @@ void InitLogSilencerCountOnce() {
   GoogleOnceInit(&log_silencer_count_init_, &InitLogSilencerCount);
 }
 
-LogMessage& LogMessage::operator<<(const string& value) {
+LogMessage& LogMessage::operator<<(const std::string& value) {
   message_ += value;
   return *this;
 }
@@ -252,6 +252,7 @@ struct Mutex::Internal {
 #endif
 };
 
+namespace internal {
 Mutex::Mutex()
   : mInternal(new Internal) {
   InitializeCriticalSection(&mInternal->mutex);
@@ -281,6 +282,7 @@ void Mutex::AssertHeld() {
   GOOGLE_DCHECK_EQ(mInternal->thread_id, GetCurrentThreadId());
 #endif
 }
+} // namespace internal
 
 #elif defined(HAVE_PTHREAD)
 
@@ -325,12 +327,12 @@ void Mutex::AssertHeld() {
 namespace internal {
 
 typedef void OnShutdownFunc();
-vector<void (*)()>* shutdown_functions = NULL;
+std::vector<void (*)()>* shutdown_functions = NULL;
 Mutex* shutdown_functions_mutex = NULL;
 GOOGLE_PROTOBUF_DECLARE_ONCE(shutdown_functions_init);
 
 void InitShutdownFunctions() {
-  shutdown_functions = new vector<void (*)()>;
+  shutdown_functions = new std::vector<void (*)()>;
   shutdown_functions_mutex = new Mutex;
 }
 

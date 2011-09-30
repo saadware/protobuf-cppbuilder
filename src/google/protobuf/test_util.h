@@ -35,7 +35,6 @@
 #ifndef GOOGLE_PROTOBUF_TEST_UTIL_H__
 #define GOOGLE_PROTOBUF_TEST_UTIL_H__
 
-#include <stack>
 #include <string>
 #include <google/protobuf/message.h>
 #include <google/protobuf/unittest.pb.h>
@@ -97,7 +96,7 @@ class TestUtil {
   // Check that the passed-in serialization is the canonical serialization we
   // expect for a TestFieldOrderings message filled in by
   // SetAllFieldsAndExtensions().
-  static void ExpectAllFieldsAndExtensionsInOrder(const string& serialized);
+  static void ExpectAllFieldsAndExtensionsInOrder(const std::string& serialized);
 
   // Check that all repeated fields have had their last elements removed.
   static void ExpectLastRepeatedsRemoved(
@@ -135,7 +134,7 @@ class TestUtil {
     void SwapRepeatedsViaReflection(Message* message);
 
    private:
-    const FieldDescriptor* F(const string& name);
+    const FieldDescriptor* F(const std::string& name);
 
     const Descriptor* base_descriptor_;
 

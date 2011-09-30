@@ -46,12 +46,12 @@ namespace cpp {
 namespace {
 
 void SetStringVariables(const FieldDescriptor* descriptor,
-                        map<string, string>* variables) {
-  SetCommonFieldVariables(descriptor, variables);
-  (*variables)["default"] = DefaultValue(descriptor);
+                        std::map<std::string, std::string>* variables) {
+  cpp::SetCommonFieldVariables(descriptor, variables);
+  (*variables)["default"] = cpp::DefaultValue(descriptor);
   (*variables)["default_variable"] = descriptor->default_value_string().empty()
-      ? "::google::protobuf::internal::kEmptyString"
-      : "_default_" + FieldName(descriptor) + "_";
+      ? std::string( "::google::protobuf::internal::kEmptyString" )
+      : std::string( "_default_" + cpp::FieldName(descriptor) + "_" );
   (*variables)["pointer_type"] =
       descriptor->type() == FieldDescriptor::TYPE_BYTES ? "void" : "char";
 }

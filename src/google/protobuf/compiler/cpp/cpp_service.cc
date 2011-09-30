@@ -43,7 +43,7 @@ namespace compiler {
 namespace cpp {
 
 ServiceGenerator::ServiceGenerator(const ServiceDescriptor* descriptor,
-                                   const string& dllexport_decl)
+                                   const std::string& dllexport_decl)
   : descriptor_(descriptor) {
   vars_["classname"] = descriptor_->name();
   vars_["full_name"] = descriptor_->full_name();
@@ -143,7 +143,7 @@ void ServiceGenerator::GenerateMethodSignatures(
     VirtualOrNon virtual_or_non, io::Printer* printer) {
   for (int i = 0; i < descriptor_->method_count(); i++) {
     const MethodDescriptor* method = descriptor_->method(i);
-    map<string, string> sub_vars;
+    std::map<std::string, std::string> sub_vars;
     sub_vars["name"] = method->name();
     sub_vars["input_type"] = ClassName(method->input_type(), true);
     sub_vars["output_type"] = ClassName(method->output_type(), true);
@@ -161,7 +161,7 @@ void ServiceGenerator::GenerateMethodSignatures(
 
 void ServiceGenerator::GenerateDescriptorInitializer(
     io::Printer* printer, int index) {
-  map<string, string> vars;
+  std::map<std::string, std::string> vars;
   vars["classname"] = descriptor_->name();
   vars["index"] = SimpleItoa(index);
 
@@ -212,7 +212,7 @@ void ServiceGenerator::GenerateImplementation(io::Printer* printer) {
 void ServiceGenerator::GenerateNotImplementedMethods(io::Printer* printer) {
   for (int i = 0; i < descriptor_->method_count(); i++) {
     const MethodDescriptor* method = descriptor_->method(i);
-    map<string, string> sub_vars;
+    std::map<std::string, std::string> sub_vars;
     sub_vars["classname"] = descriptor_->name();
     sub_vars["name"] = method->name();
     sub_vars["index"] = SimpleItoa(i);
@@ -243,7 +243,7 @@ void ServiceGenerator::GenerateCallMethod(io::Printer* printer) {
 
   for (int i = 0; i < descriptor_->method_count(); i++) {
     const MethodDescriptor* method = descriptor_->method(i);
-    map<string, string> sub_vars;
+    std::map<std::string, std::string> sub_vars;
     sub_vars["name"] = method->name();
     sub_vars["index"] = SimpleItoa(i);
     sub_vars["input_type"] = ClassName(method->input_type(), true);
@@ -289,7 +289,7 @@ void ServiceGenerator::GenerateGetPrototype(RequestOrResponse which,
     const Descriptor* type =
       (which == REQUEST) ? method->input_type() : method->output_type();
 
-    map<string, string> sub_vars;
+    std::map<std::string, std::string> sub_vars;
     sub_vars["index"] = SimpleItoa(i);
     sub_vars["type"] = ClassName(type, true);
 
@@ -310,7 +310,7 @@ void ServiceGenerator::GenerateGetPrototype(RequestOrResponse which,
 void ServiceGenerator::GenerateStubMethods(io::Printer* printer) {
   for (int i = 0; i < descriptor_->method_count(); i++) {
     const MethodDescriptor* method = descriptor_->method(i);
-    map<string, string> sub_vars;
+    std::map<std::string, std::string> sub_vars;
     sub_vars["classname"] = descriptor_->name();
     sub_vars["name"] = method->name();
     sub_vars["index"] = SimpleItoa(i);

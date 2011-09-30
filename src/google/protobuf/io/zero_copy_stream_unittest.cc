@@ -98,10 +98,10 @@ class IoTest : public testing::Test {
   // Helper to read a fixed-length array of data from an input stream.
   int ReadFromInput(ZeroCopyInputStream* input, void* data, int size);
   // Write a string to the output stream.
-  void WriteString(ZeroCopyOutputStream* output, const string& str);
+  void WriteString(ZeroCopyOutputStream* output, const std::string& str);
   // Read a number of bytes equal to the size of the given string and checks
   // that it matches the string.
-  void ReadString(ZeroCopyInputStream* input, const string& str);
+  void ReadString(ZeroCopyInputStream* input, const std::string& str);
   // Writes some text to the output stream in a particular order.  Returns
   // the number of bytes written, incase the caller needs that to set up an
   // input stream.
@@ -117,8 +117,8 @@ class IoTest : public testing::Test {
   void ReadStuffLarge(ZeroCopyInputStream* input);
 
 #if HAVE_ZLIB
-  string Compress(const string& data, const GzipOutputStream::Options& options);
-  string Uncompress(const string& data);
+  std::string Compress(const std::string& data, const GzipOutputStream::Options& options);
+  std::string Uncompress(const std::string& data);
 #endif
 
   static const int kBlockSizes[];
@@ -191,11 +191,11 @@ int IoTest::ReadFromInput(ZeroCopyInputStream* input, void* data, int size) {
   }
 }
 
-void IoTest::WriteString(ZeroCopyOutputStream* output, const string& str) {
+void IoTest::WriteString(ZeroCopyOutputStream* output, const std::string& str) {
   EXPECT_TRUE(WriteToOutput(output, str.c_str(), str.size()));
 }
 
-void IoTest::ReadString(ZeroCopyInputStream* input, const string& str) {
+void IoTest::ReadString(ZeroCopyInputStream* input, const std::string& str) {
   scoped_array<char> buffer(new char[str.size() + 1]);
   buffer[str.size()] = '\0';
   EXPECT_EQ(ReadFromInput(input, buffer.get(), str.size()), str.size());
@@ -238,8 +238,8 @@ int IoTest::WriteStuffLarge(ZeroCopyOutputStream* output) {
   WriteString(output, "Hello world!\n");
   WriteString(output, "Some te");
   WriteString(output, "xt.  Blah blah.");
-  WriteString(output, string(100000, 'x'));  // A very long string
-  WriteString(output, string(100000, 'y'));  // A very long string
+  WriteString(output, std::string(100000, 'x'));  // A very long string
+  WriteString(output, std::string(100000, 'y'));  // A very long string
   WriteString(output, "01234567890123456789");
 
   EXPECT_EQ(output->ByteCount(), 200055);
@@ -255,7 +255,7 @@ void IoTest::ReadStuffLarge(ZeroCopyInputStream* input) {
   EXPECT_TRUE(input->Skip(5));
   ReadString(input, "blah.");
   EXPECT_TRUE(input->Skip(100000 - 10));
-  ReadString(input, string(10, 'x') + string(100000 - 20000, 'y'));
+  ReadString(input, std::string(10, 'x') + std::string(100000 - 20000, 'y'));
   EXPECT_TRUE(input->Skip(20000 - 10));
   ReadString(input, "yyyyyyyyyy01234567890123456789");
 
@@ -437,9 +437,9 @@ TEST_F(IoTest, ZlibIoInputAutodetect) {
   delete [] buffer;
 }
 
-string IoTest::Compress(const string& data,
+std::string IoTest::Compress(const std::string& data,
                         const GzipOutputStream::Options& options) {
-  string result;
+  std::string result;
   {
     StringOutputStream output(&result);
     GzipOutputStream gzout(&output, options);
@@ -448,8 +448,8 @@ string IoTest::Compress(const string& data,
   return result;
 }
 
-string IoTest::Uncompress(const string& data) {
-  string result;
+std::string IoTest::Uncompress(const std::string& data) {
+  std::string result;
   {
     ArrayInputStream input(data.data(), data.size());
     GzipInputStream gzin(&input);
@@ -465,21 +465,21 @@ string IoTest::Uncompress(const string& data) {
 TEST_F(IoTest, CompressionOptions) {
   // Some ad-hoc testing of compression options.
 
-  string golden;
+  std::string golden;
   File::ReadFileToStringOrDie(
     TestSourceDir() + "/google/protobuf/testdata/golden_message",
     &golden);
 
   GzipOutputStream::Options options;
-  string gzip_compressed = Compress(golden, options);
+  std::string gzip_compressed = Compress(golden, options);
 
   options.compression_level = 0;
-  string not_compressed = Compress(golden, options);
+  std::string not_compressed = Compress(golden, options);
 
   // Try zlib compression for fun.
   options = GzipOutputStream::Options();
   options.format = GzipOutputStream::ZLIB;
-  string zlib_compressed = Compress(golden, options);
+  std::string zlib_compressed = Compress(golden, options);
 
   // Uncompressed should be bigger than the original since it should have some
   // sort of header.
@@ -567,7 +567,7 @@ TEST_F(IoTest, TwoSessionWriteGzip) {
 // explicit block sizes.  So, we'll only run one test and we'll use
 // ArrayInput to read back the results.
 TEST_F(IoTest, StringIo) {
-  string str;
+  std::string str;
   {
     StringOutputStream output(&str);
     WriteStuff(&output);
@@ -581,7 +581,7 @@ TEST_F(IoTest, StringIo) {
 
 // To test files, we create a temporary file, write, read, truncate, repeat.
 TEST_F(IoTest, FileIo) {
-  string filename = TestTempDir() + "/zero_copy_stream_test_file";
+  std::string filename = TestTempDir() + "/zero_copy_stream_test_file";
 
   for (int i = 0; i < kBlockSizeCount; i++) {
     for (int j = 0; j < kBlockSizeCount; j++) {
@@ -612,7 +612,7 @@ TEST_F(IoTest, FileIo) {
 
 #if HAVE_ZLIB
 TEST_F(IoTest, GzipFileIo) {
-  string filename = TestTempDir() + "/zero_copy_stream_test_file";
+  std::string filename = TestTempDir() + "/zero_copy_stream_test_file";
 
   for (int i = 0; i < kBlockSizeCount; i++) {
     for (int j = 0; j < kBlockSizeCount; j++) {
@@ -745,7 +745,7 @@ TEST_F(IoTest, IostreamIo) {
   for (int i = 0; i < kBlockSizeCount; i++) {
     for (int j = 0; j < kBlockSizeCount; j++) {
       {
-        stringstream stream;
+		  std::stringstream stream;
 
         {
           OstreamOutputStream output(&stream, kBlockSizes[i]);
@@ -761,7 +761,7 @@ TEST_F(IoTest, IostreamIo) {
       }
 
       {
-        stringstream stream;
+        std::stringstream stream;
 
         {
           OstreamOutputStream output(&stream, kBlockSizes[i]);

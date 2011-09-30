@@ -132,7 +132,7 @@ class LIBPROTOBUF_EXPORT StringOutputStream : public ZeroCopyOutputStream {
   // Hint:  If you call target->reserve(n) before creating the stream,
   //   the first call to Next() will return at least n bytes of buffer
   //   space.
-  explicit StringOutputStream(string* target);
+  explicit StringOutputStream(std::string* target);
   ~StringOutputStream();
 
   // implements ZeroCopyOutputStream ---------------------------------
@@ -143,7 +143,7 @@ class LIBPROTOBUF_EXPORT StringOutputStream : public ZeroCopyOutputStream {
  private:
   static const int kMinimumSize = 16;
 
-  string* target_;
+  std::string* target_;
 
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(StringOutputStream);
 };

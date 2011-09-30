@@ -61,7 +61,7 @@ namespace {
 void PrintFieldComment(io::Printer* printer, const FieldDescriptor* field) {
   // Print the field's proto-syntax definition as a comment.  We don't want to
   // print group bodies so we cut off after the first line.
-  string def = field->DebugString();
+  std::string def = field->DebugString();
   printer->Print("// $def$\n",
     "def", def.substr(0, def.find_first_of('\n')));
 }
@@ -90,7 +90,7 @@ const FieldDescriptor** SortFieldsByNumber(const Descriptor* descriptor) {
   for (int i = 0; i < descriptor->field_count(); i++) {
     fields[i] = descriptor->field(i);
   }
-  sort(fields, fields + descriptor->field_count(),
+  std::sort(fields, fields + descriptor->field_count(),
        FieldOrderingByNumber());
   return fields;
 }
@@ -200,7 +200,7 @@ class FieldGroup {
   }
 
   void SetPreferredLocation(float location) { preferred_location_ = location; }
-  const vector<const FieldDescriptor*>& fields() const { return fields_; }
+  const std::vector<const FieldDescriptor*>& fields() const { return fields_; }
 
   // FieldGroup objects sort by their preferred location.
   bool operator<(const FieldGroup& other) const {
@@ -214,7 +214,7 @@ class FieldGroup {
   // approximate, but should put this group close to where its member fields
   // originally went.
   float preferred_location_;
-  vector<const FieldDescriptor*> fields_;
+  std::vector<const FieldDescriptor*> fields_;
   // We rely on the default copy constructor and operator= so this type can be
   // used in a vector.
 };
@@ -223,9 +223,9 @@ class FieldGroup {
 // order, the alignment padding is minimized.  We try to do this while keeping
 // each field as close as possible to its original position so that we don't
 // reduce cache locality much for function that access each field in order.
-void OptimizePadding(vector<const FieldDescriptor*>* fields) {
+void OptimizePadding(std::vector<const FieldDescriptor*>* fields) {
   // First divide fields into those that align to 1 byte, 4 bytes or 8 bytes.
-  vector<FieldGroup> aligned_to_1, aligned_to_4, aligned_to_8;
+  std::vector<FieldGroup> aligned_to_1, aligned_to_4, aligned_to_8;
   for (int i = 0; i < fields->size(); ++i) {
     switch (EstimateAlignmentSize((*fields)[i])) {
       case 1: aligned_to_1.push_back(FieldGroup(i, (*fields)[i])); break;
@@ -247,7 +247,7 @@ void OptimizePadding(vector<const FieldDescriptor*>* fields) {
   }
   // Sort by preferred location to keep fields as close to their original
   // location as possible.
-  sort(aligned_to_4.begin(), aligned_to_4.end());
+  std::sort(aligned_to_4.begin(), aligned_to_4.end());
 
   // Now group fields aligned to 4 bytes (or the 4-field groups created above)
   // into pairs, and treat those like a single field aligned to 8 bytes.
@@ -264,7 +264,7 @@ void OptimizePadding(vector<const FieldDescriptor*>* fields) {
   }
   // Sort by preferred location to keep fields as close to their original
   // location as possible.
-  sort(aligned_to_8.begin(), aligned_to_8.end());
+  std::sort(aligned_to_8.begin(), aligned_to_8.end());
 
   // Now pull out all the FieldDescriptors in order.
   fields->clear();
@@ -280,7 +280,7 @@ void OptimizePadding(vector<const FieldDescriptor*>* fields) {
 // ===================================================================
 
 MessageGenerator::MessageGenerator(const Descriptor* descriptor,
-                                   const string& dllexport_decl)
+                                   const std::string& dllexport_decl)
   : descriptor_(descriptor),
     classname_(ClassName(descriptor, false)),
     dllexport_decl_(dllexport_decl),
@@ -348,7 +348,7 @@ GenerateFieldAccessorDeclarations(io::Printer* printer) {
 
     PrintFieldComment(printer, field);
 
-    map<string, string> vars;
+    std::map<std::string, std::string> vars;
     SetCommonFieldVariables(field, &vars);
     vars["constant_name"] = FieldConstantName(field);
 
@@ -385,7 +385,7 @@ GenerateFieldAccessorDefinitions(io::Printer* printer) {
 
     PrintFieldComment(printer, field);
 
-    map<string, string> vars;
+    std::map<std::string, std::string> vars;
     SetCommonFieldVariables(field, &vars);
 
     // Generate has_$name$() or $name$_size().
@@ -443,7 +443,7 @@ GenerateClassDefinition(io::Printer* printer) {
     printer->Print("\n");
   }
 
-  map<string, string> vars;
+  std::map<std::string, std::string> vars;
   vars["classname"] = classname_;
   vars["field_count"] = SimpleItoa(descriptor_->field_count());
   if (dllexport_decl_.empty()) {
@@ -626,7 +626,7 @@ GenerateClassDefinition(io::Printer* printer) {
 
   // Field members:
 
-  vector<const FieldDescriptor*> fields;
+  std::vector<const FieldDescriptor*> fields;
   for (int i = 0; i < descriptor_->field_count(); i++) {
     fields.push_back(descriptor_->field(i));
   }
@@ -716,7 +716,7 @@ void MessageGenerator::
 GenerateDescriptorInitializer(io::Printer* printer, int index) {
   // TODO(kenton):  Passing the index to this method is redundant; just use
   //   descriptor_->index() instead.
-  map<string, string> vars;
+  std::map<std::string, std::string> vars;
   vars["classname"] = classname_;
   vars["index"] = SimpleItoa(index);
 
@@ -932,7 +932,7 @@ GenerateOffsets(io::Printer* printer) {
   printer->Print(
     "static const int $classname$_offsets_[$field_count$] = {\n",
     "classname", classname_,
-    "field_count", SimpleItoa(max(1, descriptor_->field_count())));
+    "field_count", SimpleItoa(std::max(1, descriptor_->field_count())));
   printer->Indent();
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
@@ -1007,7 +1007,7 @@ GenerateSharedDestructorCode(io::Printer* printer) {
 
 void MessageGenerator::
 GenerateStructors(io::Printer* printer) {
-  string superclass = SuperClassName(descriptor_);
+  std::string superclass = SuperClassName(descriptor_);
 
   // Generate the default constructor.
   printer->Print(
@@ -1608,7 +1608,7 @@ void MessageGenerator::GenerateSerializeOneField(
 void MessageGenerator::GenerateSerializeOneExtensionRange(
     io::Printer* printer, const Descriptor::ExtensionRange* range,
     bool to_array) {
-  map<string, string> vars;
+  std::map<std::string, std::string> vars;
   vars["start"] = SimpleItoa(range->start);
   vars["end"] = SimpleItoa(range->end);
   printer->Print(vars,
@@ -1697,11 +1697,11 @@ GenerateSerializeWithCachedSizesBody(io::Printer* printer, bool to_array) {
   scoped_array<const FieldDescriptor*> ordered_fields(
     SortFieldsByNumber(descriptor_));
 
-  vector<const Descriptor::ExtensionRange*> sorted_extensions;
+  std::vector<const Descriptor::ExtensionRange*> sorted_extensions;
   for (int i = 0; i < descriptor_->extension_range_count(); ++i) {
     sorted_extensions.push_back(descriptor_->extension_range(i));
   }
-  sort(sorted_extensions.begin(), sorted_extensions.end(),
+  std::sort(sorted_extensions.begin(), sorted_extensions.end(),
        ExtensionRangeSorter());
 
   // Merge the fields and the extension ranges, both sorted by field number.

@@ -564,7 +564,7 @@ bool Tokenizer::Next() {
 // are given is text that the tokenizer actually parsed as a token
 // of the given type.
 
-bool Tokenizer::ParseInteger(const string& text, uint64 max_value,
+bool Tokenizer::ParseInteger(const std::string& text, uint64 max_value,
                              uint64* output) {
   // Sadly, we can't just use strtoul() since it is only 32-bit and strtoull()
   // is non-standard.  I hate the C standard library.  :(
@@ -589,7 +589,7 @@ bool Tokenizer::ParseInteger(const string& text, uint64 max_value,
     int digit = DigitValue(*ptr);
     GOOGLE_LOG_IF(DFATAL, digit < 0 || digit >= base)
       << " Tokenizer::ParseInteger() passed text that could not have been"
-         " tokenized as an integer: " << CEscape(text);
+         " tokenized as an integer: " << protobuf::CEscape(text);
     if (digit > max_value || result > (max_value - digit) / base) {
       // Overflow.
       return false;
@@ -601,7 +601,7 @@ bool Tokenizer::ParseInteger(const string& text, uint64 max_value,
   return true;
 }
 
-double Tokenizer::ParseFloat(const string& text) {
+double Tokenizer::ParseFloat(const std::string& text) {
   const char* start = text.c_str();
   char* end;
   double result = NoLocaleStrtod(start, &end);
@@ -622,17 +622,17 @@ double Tokenizer::ParseFloat(const string& text) {
 
   GOOGLE_LOG_IF(DFATAL, end - start != text.size() || *start == '-')
     << " Tokenizer::ParseFloat() passed text that could not have been"
-       " tokenized as a float: " << CEscape(text);
+       " tokenized as a float: " << protobuf::CEscape(text);
   return result;
 }
 
-void Tokenizer::ParseStringAppend(const string& text, string* output) {
+void Tokenizer::ParseStringAppend(const std::string& text, std::string* output) {
   // Reminder:  text[0] is always the quote character.  (If text is
   //   empty, it's invalid, so we'll just return.)
   if (text.empty()) {
     GOOGLE_LOG(DFATAL)
       << " Tokenizer::ParseStringAppend() passed text that could not"
-         " have been tokenized as a string: " << CEscape(text);
+         " have been tokenized as a string: " << protobuf::CEscape(text);
     return;
   }
 

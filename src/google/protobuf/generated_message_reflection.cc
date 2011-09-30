@@ -45,7 +45,7 @@ namespace google {
 namespace protobuf {
 namespace internal {
 
-int StringSpaceUsedExcludingSelf(const string& str) {
+int StringSpaceUsedExcludingSelf(const std::string& str) {
   const void* start = &str;
   const void* end = &str + 1;
 
@@ -58,7 +58,7 @@ int StringSpaceUsedExcludingSelf(const string& str) {
 }
 
 bool ParseNamedEnum(const EnumDescriptor* descriptor,
-                    const string& name,
+                    const std::string& name,
                     int* value) {
   const EnumValueDescriptor* d = descriptor->FindValueByName(name);
   if (d == NULL) return false;
@@ -66,7 +66,7 @@ bool ParseNamedEnum(const EnumDescriptor* descriptor,
   return true;
 }
 
-const string& NameOfEnum(const EnumDescriptor* descriptor, int value) {
+const std::string& NameOfEnum(const EnumDescriptor* descriptor, int value) {
   const EnumValueDescriptor* d = descriptor->FindValueByNumber(value);
   return (d == NULL ? kEmptyString : d->name());
 }
@@ -239,7 +239,7 @@ int GeneratedMessageReflection::SpaceUsed(const Message& message) const {
           switch (field->options().ctype()) {
             default:  // TODO(kenton):  Support other string reps.
             case FieldOptions::STRING:
-              total_size += GetRaw<RepeatedPtrField<string> >(message, field)
+              total_size += GetRaw<RepeatedPtrField<std::string> >(message, field)
                               .SpaceUsedExcludingSelf();
               break;
           }
@@ -270,12 +270,12 @@ int GeneratedMessageReflection::SpaceUsed(const Message& message) const {
           switch (field->options().ctype()) {
             default:  // TODO(kenton):  Support other string reps.
             case FieldOptions::STRING: {
-              const string* ptr = GetField<const string*>(message, field);
+              const std::string* ptr = GetField<const std::string*>(message, field);
 
               // Initially, the string points to the default value stored in
               // the prototype. Only count the string if it has been changed
               // from the default value.
-              const string* default_ptr = DefaultRaw<const string*>(field);
+              const std::string* default_ptr = DefaultRaw<const std::string*>(field);
 
               if (ptr != default_ptr) {
                 // string fields are represented by just a pointer, so also
@@ -387,8 +387,8 @@ void GeneratedMessageReflection::Swap(
           switch (field->options().ctype()) {
             default:  // TODO(kenton):  Support other string reps.
             case FieldOptions::STRING:
-              std::swap(*MutableRaw<string*>(message1, field),
-                        *MutableRaw<string*>(message2, field));
+              std::swap(*MutableRaw<std::string*>(message1, field),
+                        *MutableRaw<std::string*>(message2, field));
               break;
           }
           break;
@@ -489,8 +489,8 @@ void GeneratedMessageReflection::ClearField(
           switch (field->options().ctype()) {
             default:  // TODO(kenton):  Support other string reps.
             case FieldOptions::STRING:
-              const string* default_ptr = DefaultRaw<const string*>(field);
-              string** value = MutableRaw<string*>(message, field);
+              const std::string* default_ptr = DefaultRaw<const std::string*>(field);
+	      std::string** value = MutableRaw<std::string*>(message, field);
               if (*value != default_ptr) {
                 if (field->has_default_value()) {
                   (*value)->assign(field->default_value_string());
@@ -529,7 +529,7 @@ void GeneratedMessageReflection::ClearField(
         switch (field->options().ctype()) {
           default:  // TODO(kenton):  Support other string reps.
           case FieldOptions::STRING:
-            MutableRaw<RepeatedPtrField<string> >(message, field)->Clear();
+            MutableRaw<RepeatedPtrField<std::string> >(message, field)->Clear();
             break;
         }
         break;
@@ -575,7 +575,7 @@ void GeneratedMessageReflection::RemoveLast(
         switch (field->options().ctype()) {
           default:  // TODO(kenton):  Support other string reps.
           case FieldOptions::STRING:
-            MutableRaw<RepeatedPtrField<string> >(message, field)->RemoveLast();
+            MutableRaw<RepeatedPtrField<std::string> >(message, field)->RemoveLast();
             break;
         }
         break;
@@ -637,7 +637,7 @@ struct FieldNumberSorter {
 
 void GeneratedMessageReflection::ListFields(
     const Message& message,
-    vector<const FieldDescriptor*>* output) const {
+    std::vector<const FieldDescriptor*>* output) const {
   output->clear();
 
   // Optimization:  The default instance never has any fields set.
@@ -740,7 +740,7 @@ DEFINE_PRIMITIVE_ACCESSORS(Bool  , bool  , bool  , BOOL  )
 
 // -------------------------------------------------------------------
 
-string GeneratedMessageReflection::GetString(
+std::string GeneratedMessageReflection::GetString(
     const Message& message, const FieldDescriptor* field) const {
   USAGE_CHECK_ALL(GetString, SINGULAR, STRING);
   if (field->is_extension()) {
@@ -750,7 +750,7 @@ string GeneratedMessageReflection::GetString(
     switch (field->options().ctype()) {
       default:  // TODO(kenton):  Support other string reps.
       case FieldOptions::STRING:
-        return *GetField<const string*>(message, field);
+        return *GetField<const std::string*>(message, field);
     }
 
     GOOGLE_LOG(FATAL) << "Can't get here.";
@@ -758,9 +758,9 @@ string GeneratedMessageReflection::GetString(
   }
 }
 
-const string& GeneratedMessageReflection::GetStringReference(
+const std::string& GeneratedMessageReflection::GetStringReference(
     const Message& message,
-    const FieldDescriptor* field, string* scratch) const {
+    const FieldDescriptor* field, std::string* scratch) const {
   USAGE_CHECK_ALL(GetStringReference, SINGULAR, STRING);
   if (field->is_extension()) {
     return GetExtensionSet(message).GetString(field->number(),
@@ -769,7 +769,7 @@ const string& GeneratedMessageReflection::GetStringReference(
     switch (field->options().ctype()) {
       default:  // TODO(kenton):  Support other string reps.
       case FieldOptions::STRING:
-        return *GetField<const string*>(message, field);
+        return *GetField<const std::string*>(message, field);
     }
 
     GOOGLE_LOG(FATAL) << "Can't get here.";
@@ -780,7 +780,7 @@ const string& GeneratedMessageReflection::GetStringReference(
 
 void GeneratedMessageReflection::SetString(
     Message* message, const FieldDescriptor* field,
-    const string& value) const {
+    const std::string& value) const {
   USAGE_CHECK_ALL(SetString, SINGULAR, STRING);
   if (field->is_extension()) {
     return MutableExtensionSet(message)->SetString(field->number(),
@@ -789,9 +789,9 @@ void GeneratedMessageReflection::SetString(
     switch (field->options().ctype()) {
       default:  // TODO(kenton):  Support other string reps.
       case FieldOptions::STRING: {
-        string** ptr = MutableField<string*>(message, field);
-        if (*ptr == DefaultRaw<const string*>(field)) {
-          *ptr = new string(value);
+        std::string** ptr = MutableField<std::string*>(message, field);
+        if (*ptr == DefaultRaw<const std::string*>(field)) {
+          *ptr = new std::string(value);
         } else {
           (*ptr)->assign(value);
         }
@@ -802,7 +802,7 @@ void GeneratedMessageReflection::SetString(
 }
 
 
-string GeneratedMessageReflection::GetRepeatedString(
+std::string GeneratedMessageReflection::GetRepeatedString(
     const Message& message, const FieldDescriptor* field, int index) const {
   USAGE_CHECK_ALL(GetRepeatedString, REPEATED, STRING);
   if (field->is_extension()) {
@@ -811,7 +811,7 @@ string GeneratedMessageReflection::GetRepeatedString(
     switch (field->options().ctype()) {
       default:  // TODO(kenton):  Support other string reps.
       case FieldOptions::STRING:
-        return GetRepeatedPtrField<string>(message, field, index);
+        return GetRepeatedPtrField<std::string>(message, field, index);
     }
 
     GOOGLE_LOG(FATAL) << "Can't get here.";
@@ -819,9 +819,9 @@ string GeneratedMessageReflection::GetRepeatedString(
   }
 }
 
-const string& GeneratedMessageReflection::GetRepeatedStringReference(
+const std::string& GeneratedMessageReflection::GetRepeatedStringReference(
     const Message& message, const FieldDescriptor* field,
-    int index, string* scratch) const {
+    int index, std::string* scratch) const {
   USAGE_CHECK_ALL(GetRepeatedStringReference, REPEATED, STRING);
   if (field->is_extension()) {
     return GetExtensionSet(message).GetRepeatedString(field->number(), index);
@@ -829,7 +829,7 @@ const string& GeneratedMessageReflection::GetRepeatedStringReference(
     switch (field->options().ctype()) {
       default:  // TODO(kenton):  Support other string reps.
       case FieldOptions::STRING:
-        return GetRepeatedPtrField<string>(message, field, index);
+        return GetRepeatedPtrField<std::string>(message, field, index);
     }
 
     GOOGLE_LOG(FATAL) << "Can't get here.";
@@ -840,7 +840,7 @@ const string& GeneratedMessageReflection::GetRepeatedStringReference(
 
 void GeneratedMessageReflection::SetRepeatedString(
     Message* message, const FieldDescriptor* field,
-    int index, const string& value) const {
+    int index, const std::string& value) const {
   USAGE_CHECK_ALL(SetRepeatedString, REPEATED, STRING);
   if (field->is_extension()) {
     MutableExtensionSet(message)->SetRepeatedString(
@@ -849,7 +849,7 @@ void GeneratedMessageReflection::SetRepeatedString(
     switch (field->options().ctype()) {
       default:  // TODO(kenton):  Support other string reps.
       case FieldOptions::STRING:
-        *MutableRepeatedField<string>(message, field, index) = value;
+        *MutableRepeatedField<std::string>(message, field, index) = value;
         break;
     }
   }
@@ -858,7 +858,7 @@ void GeneratedMessageReflection::SetRepeatedString(
 
 void GeneratedMessageReflection::AddString(
     Message* message, const FieldDescriptor* field,
-    const string& value) const {
+    const std::string& value) const {
   USAGE_CHECK_ALL(AddString, REPEATED, STRING);
   if (field->is_extension()) {
     MutableExtensionSet(message)->AddString(field->number(),
@@ -867,7 +867,7 @@ void GeneratedMessageReflection::AddString(
     switch (field->options().ctype()) {
       default:  // TODO(kenton):  Support other string reps.
       case FieldOptions::STRING:
-        *AddField<string>(message, field) = value;
+        *AddField<std::string>(message, field) = value;
         break;
     }
   }
@@ -1054,7 +1054,7 @@ Message* GeneratedMessageReflection::AddMessage(
 // -------------------------------------------------------------------
 
 const FieldDescriptor* GeneratedMessageReflection::FindKnownExtensionByName(
-    const string& name) const {
+    const std::string& name) const {
   if (extensions_offset_ == -1) return NULL;
 
   const FieldDescriptor* result = descriptor_pool_->FindExtensionByName(name);

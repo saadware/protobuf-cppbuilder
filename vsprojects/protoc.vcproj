@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="protoc"
 	ProjectGUID="{1738D5F6-ED1E-47E0-B2F0-456864B93C1E}"
+	RootNamespace="protoc"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="0"
 	>

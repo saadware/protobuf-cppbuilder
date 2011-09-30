@@ -52,11 +52,11 @@ CppGenerator::CppGenerator() {}
 CppGenerator::~CppGenerator() {}
 
 bool CppGenerator::Generate(const FileDescriptor* file,
-                            const string& parameter,
+                            const std::string& parameter,
                             GeneratorContext* generator_context,
-                            string* error) const {
-  vector<pair<string, string> > options;
-  ParseGeneratorParameter(parameter, &options);
+                            std::string* error) const {
+  std::vector<std::pair<std::string, std::string> > options;
+  compiler::ParseGeneratorParameter(parameter, &options);
 
   // -----------------------------------------------------------------
   // parse generator options
@@ -78,7 +78,7 @@ bool CppGenerator::Generate(const FileDescriptor* file,
   //   }
   // FOO_EXPORT is a macro which should expand to __declspec(dllexport) or
   // __declspec(dllimport) depending on what is being compiled.
-  string dllexport_decl;
+  std::string dllexport_decl;
 
   for (int i = 0; i < options.size(); i++) {
     if (options[i].first == "dllexport_decl") {
@@ -92,7 +92,7 @@ bool CppGenerator::Generate(const FileDescriptor* file,
   // -----------------------------------------------------------------
 
 
-  string basename = StripProto(file->name());
+  std::string basename = StripProto(file->name());
   basename.append(".pb");
 
   FileGenerator file_generator(file, dllexport_decl);

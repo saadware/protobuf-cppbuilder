@@ -40,6 +40,13 @@
 #include <google/protobuf/stubs/common.h>
 #include <google/protobuf/compiler/cpp/cpp_field.h>
 
+// Need to include these (vs. forward declare) as a scoped_ptr inside a
+// scoped_array needs to be fully defined. Otherwise some compilers complain.
+#include <google/protobuf/compiler/cpp/cpp_extension.h>
+#include <google/protobuf/compiler/cpp/cpp_service.h>
+#include <google/protobuf/compiler/cpp/cpp_message.h>
+#include <google/protobuf/compiler/cpp/cpp_enum.h>
+
 namespace google {
 namespace protobuf {
   class FileDescriptor;        // descriptor.h
@@ -52,16 +59,11 @@ namespace protobuf {
 namespace compiler {
 namespace cpp {
 
-class EnumGenerator;           // enum.h
-class MessageGenerator;        // message.h
-class ServiceGenerator;        // service.h
-class ExtensionGenerator;      // extension.h
-
 class FileGenerator {
  public:
   // See generator.cc for the meaning of dllexport_decl.
   explicit FileGenerator(const FileDescriptor* file,
-                         const string& dllexport_decl);
+                         const std::string& dllexport_decl);
   ~FileGenerator();
 
   void GenerateHeader(io::Printer* printer);
@@ -83,9 +85,9 @@ class FileGenerator {
   scoped_array<scoped_ptr<ExtensionGenerator> > extension_generators_;
 
   // E.g. if the package is foo.bar, package_parts_ is {"foo", "bar"}.
-  vector<string> package_parts_;
+  std::vector<std::string> package_parts_;
 
-  string dllexport_decl_;
+  std::string dllexport_decl_;
 
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(FileGenerator);
 };

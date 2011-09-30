@@ -267,7 +267,7 @@ inline bool WireFormatLite::ReadRepeatedFixedSizePrimitive(
     // The number of bytes each type occupies on the wire.
     const int per_value_size = tag_size + sizeof(value);
 
-    int elements_available = min(values->Capacity() - values->size(),
+    int elements_available = std::min(values->Capacity() - values->size(),
                                  size / per_value_size);
     int num_read = 0;
     while (num_read < elements_available &&
@@ -383,8 +383,7 @@ inline bool WireFormatLite::ReadGroupNoVirtual(
     int field_number, io::CodedInputStream* input,
     MessageType_WorkAroundCppLookupDefect* value) {
   if (!input->IncrementRecursionDepth()) return false;
-  if (!value->
-      MessageType_WorkAroundCppLookupDefect::MergePartialFromCodedStream(input))
+  if (!value->MergePartialFromCodedStream(input))
     return false;
   input->DecrementRecursionDepth();
   // Make sure the last thing read was an end tag for this group.
@@ -400,8 +399,7 @@ inline bool WireFormatLite::ReadMessageNoVirtual(
   if (!input->ReadVarint32(&length)) return false;
   if (!input->IncrementRecursionDepth()) return false;
   io::CodedInputStream::Limit limit = input->PushLimit(length);
-  if (!value->
-      MessageType_WorkAroundCppLookupDefect::MergePartialFromCodedStream(input))
+  if (!value->MergePartialFromCodedStream(input))
     return false;
   // Make sure that parsing stopped when the limit was hit, not at an endgroup
   // tag.
@@ -654,7 +652,7 @@ inline uint8* WireFormatLite::WriteEnumToArray(int field_number,
 }
 
 inline uint8* WireFormatLite::WriteStringToArray(int field_number,
-                                                 const string& value,
+                                                 const std::string& value,
                                                  uint8* target) {
   // String is for UTF-8 text only
   // WARNING:  In wire_format.cc, both strings and bytes are handled by
@@ -665,7 +663,7 @@ inline uint8* WireFormatLite::WriteStringToArray(int field_number,
   return io::CodedOutputStream::WriteStringToArray(value, target);
 }
 inline uint8* WireFormatLite::WriteBytesToArray(int field_number,
-                                                const string& value,
+                                                const std::string& value,
                                                 uint8* target) {
   target = WriteTagToArray(field_number, WIRETYPE_LENGTH_DELIMITED, target);
   target = io::CodedOutputStream::WriteVarint32ToArray(value.size(), target);
@@ -705,10 +703,8 @@ inline uint8* WireFormatLite::WriteMessageNoVirtualToArray(
     int field_number, const MessageType_WorkAroundCppLookupDefect& value,
     uint8* target) {
   target = WriteTagToArray(field_number, WIRETYPE_LENGTH_DELIMITED, target);
-  target = io::CodedOutputStream::WriteVarint32ToArray(
-    value.MessageType_WorkAroundCppLookupDefect::GetCachedSize(), target);
-  return value.MessageType_WorkAroundCppLookupDefect
-      ::SerializeWithCachedSizesToArray(target);
+  target = io::CodedOutputStream::WriteVarint32ToArray(value.GetCachedSize(), target);
+  return value.SerializeWithCachedSizesToArray(target);
 }
 
 // ===================================================================
@@ -735,11 +731,11 @@ inline int WireFormatLite::EnumSize(int value) {
   return io::CodedOutputStream::VarintSize32SignExtended(value);
 }
 
-inline int WireFormatLite::StringSize(const string& value) {
+inline int WireFormatLite::StringSize(const std::string& value) {
   return io::CodedOutputStream::VarintSize32(value.size()) +
          value.size();
 }
-inline int WireFormatLite::BytesSize(const string& value) {
+inline int WireFormatLite::BytesSize(const std::string& value) {
   return io::CodedOutputStream::VarintSize32(value.size()) +
          value.size();
 }
@@ -763,7 +759,7 @@ inline int WireFormatLite::GroupSizeNoVirtual(
 template<typename MessageType_WorkAroundCppLookupDefect>
 inline int WireFormatLite::MessageSizeNoVirtual(
     const MessageType_WorkAroundCppLookupDefect& value) {
-  int size = value.MessageType_WorkAroundCppLookupDefect::ByteSize();
+  int size = value.ByteSize();
   return io::CodedOutputStream::VarintSize32(size) + size;
 }
 

@@ -110,7 +110,7 @@
 #define GOOGLE_PROTOBUF_IO_CODED_STREAM_H__
 
 #include <string>
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(_CPPBUILDER)
   #if defined(_M_IX86) && \
       !defined(PROTOBUF_DISABLE_LITTLE_ENDIAN_OPT_FOR_TEST)
     #define PROTOBUF_LITTLE_ENDIAN 1
@@ -199,10 +199,10 @@ class LIBPROTOBUF_EXPORT CodedInputStream {
   // upfront.  This prevents denial-of-service attacks in which a client
   // could claim that a string is going to be MAX_INT bytes long in order to
   // crash the server because it can't allocate this much space at once.
-  bool ReadString(string* buffer, int size);
+  bool ReadString(std::string* buffer, int size);
   // Like the above, with inlined optimizations. This should only be used
   // by the protobuf implementation.
-  inline bool InternalReadStringInline(string* buffer,
+  inline bool InternalReadStringInline(std::string* buffer,
                                        int size) GOOGLE_ATTRIBUTE_ALWAYS_INLINE;
 
 
@@ -531,7 +531,7 @@ class LIBPROTOBUF_EXPORT CodedInputStream {
   // stream.
   uint32 ReadTagFallback();
   uint32 ReadTagSlow();
-  bool ReadStringFallback(string* buffer, int size);
+  bool ReadStringFallback(std::string* buffer, int size);
 
   // Return the size of the buffer.
   int BufferSize() const;
@@ -631,9 +631,9 @@ class LIBPROTOBUF_EXPORT CodedOutputStream {
   static uint8* WriteRawToArray(const void* buffer, int size, uint8* target);
 
   // Equivalent to WriteRaw(str.data(), str.size()).
-  void WriteString(const string& str);
+  void WriteString(const std::string& str);
   // Like WriteString()  but writing directly to the target array.
-  static uint8* WriteStringToArray(const string& str, uint8* target);
+  static uint8* WriteStringToArray(const std::string& str, uint8* target);
 
 
   // Write a 32-bit little-endian integer.
@@ -989,12 +989,12 @@ inline int CodedOutputStream::VarintSize32SignExtended(int32 value) {
   }
 }
 
-inline void CodedOutputStream::WriteString(const string& str) {
+inline void CodedOutputStream::WriteString(const std::string& str) {
   WriteRaw(str.data(), static_cast<int>(str.size()));
 }
 
 inline uint8* CodedOutputStream::WriteStringToArray(
-    const string& str, uint8* target) {
+    const std::string& str, uint8* target) {
   return WriteRawToArray(str.data(), static_cast<int>(str.size()), target);
 }
 

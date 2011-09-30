@@ -32,6 +32,8 @@
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
+#include <string>
+#include <map>
 #include <algorithm>
 #include <google/protobuf/stubs/hash.h>
 #include <google/protobuf/compiler/java/java_message.h>
@@ -57,7 +59,7 @@ namespace {
 void PrintFieldComment(io::Printer* printer, const FieldDescriptor* field) {
   // Print the field's proto-syntax definition as a comment.  We don't want to
   // print group bodies so we cut off after the first line.
-  string def = field->DebugString();
+  std::string def = field->DebugString();
   printer->Print("// $def$\n",
     "def", def.substr(0, def.find_first_of('\n')));
 }
@@ -84,7 +86,7 @@ const FieldDescriptor** SortFieldsByNumber(const Descriptor* descriptor) {
   for (int i = 0; i < descriptor->field_count(); i++) {
     fields[i] = descriptor->field(i);
   }
-  sort(fields, fields + descriptor->field_count(),
+  std::sort(fields, fields + descriptor->field_count(),
        FieldOrderingByNumber());
   return fields;
 }
@@ -92,8 +94,8 @@ const FieldDescriptor** SortFieldsByNumber(const Descriptor* descriptor) {
 // Get an identifier that uniquely identifies this type within the file.
 // This is used to declare static variables related to this type at the
 // outermost file scope.
-string UniqueFileScopeIdentifier(const Descriptor* descriptor) {
-  return "static_" + StringReplace(descriptor->full_name(), ".", "_", true);
+std::string UniqueFileScopeIdentifier(const Descriptor* descriptor) {
+  return "static_" + protobuf::StringReplace(descriptor->full_name(), ".", "_", true);
 }
 
 // Returns true if the message type has any required fields.  If it doesn't,
@@ -127,7 +129,7 @@ static bool HasRequiredFields(
     if (field->is_required()) {
       return true;
     }
-    if (GetJavaType(field) == JAVATYPE_MESSAGE) {
+    if (java::GetJavaType(field) == JAVATYPE_MESSAGE) {
       if (HasRequiredFields(field->message_type(), already_seen)) {
         return true;
       }
@@ -162,7 +164,7 @@ void MessageGenerator::GenerateStaticVariables(io::Printer* printer) {
     // the outermost class in the file.  This way, they will be initialized in
     // a deterministic order.
 
-    map<string, string> vars;
+    std::map<std::string, std::string> vars;
     vars["identifier"] = UniqueFileScopeIdentifier(descriptor_);
     vars["index"] = SimpleItoa(descriptor_->index());
     vars["classname"] = ClassName(descriptor_);
@@ -201,7 +203,7 @@ void MessageGenerator::GenerateStaticVariables(io::Printer* printer) {
 void MessageGenerator::GenerateStaticVariableInitializers(
     io::Printer* printer) {
   if (HasDescriptorMethods(descriptor_)) {
-    map<string, string> vars;
+    std::map<std::string, std::string> vars;
     vars["identifier"] = UniqueFileScopeIdentifier(descriptor_);
     vars["index"] = SimpleItoa(descriptor_->index());
     vars["classname"] = ClassName(descriptor_);
@@ -442,11 +444,11 @@ GenerateMessageSerializationMethods(io::Printer* printer) {
   scoped_array<const FieldDescriptor*> sorted_fields(
     SortFieldsByNumber(descriptor_));
 
-  vector<const Descriptor::ExtensionRange*> sorted_extensions;
+  std::vector<const Descriptor::ExtensionRange*> sorted_extensions;
   for (int i = 0; i < descriptor_->extension_range_count(); ++i) {
     sorted_extensions.push_back(descriptor_->extension_range(i));
   }
-  sort(sorted_extensions.begin(), sorted_extensions.end(),
+  std::sort(sorted_extensions.begin(), sorted_extensions.end(),
        ExtensionRangeOrdering());
 
   printer->Print(

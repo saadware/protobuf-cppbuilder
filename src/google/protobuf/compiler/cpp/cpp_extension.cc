@@ -49,7 +49,7 @@ namespace {
 // Returns the fully-qualified class name of the message that this field
 // extends. This function is used in the Google-internal code to handle some
 // legacy cases.
-string ExtendeeClassName(const FieldDescriptor* descriptor) {
+std::string ExtendeeClassName(const FieldDescriptor* descriptor) {
   const Descriptor* extendee = descriptor->containing_type();
   return ClassName(extendee, true);
 }
@@ -57,7 +57,7 @@ string ExtendeeClassName(const FieldDescriptor* descriptor) {
 }  // anonymous namespace
 
 ExtensionGenerator::ExtensionGenerator(const FieldDescriptor* descriptor,
-                                       const string& dllexport_decl)
+                                       const std::string& dllexport_decl)
   : descriptor_(descriptor),
     dllexport_decl_(dllexport_decl) {
   // Construct type_traits_.
@@ -92,7 +92,7 @@ ExtensionGenerator::ExtensionGenerator(const FieldDescriptor* descriptor,
 ExtensionGenerator::~ExtensionGenerator() {}
 
 void ExtensionGenerator::GenerateDeclaration(io::Printer* printer) {
-  map<string, string> vars;
+  std::map<std::string, std::string> vars;
   vars["extendee"     ] = ExtendeeClassName(descriptor_);
   vars["number"       ] = SimpleItoa(descriptor_->number());
   vars["type_traits"  ] = type_traits_;
@@ -124,11 +124,11 @@ void ExtensionGenerator::GenerateDeclaration(io::Printer* printer) {
 
 void ExtensionGenerator::GenerateDefinition(io::Printer* printer) {
   // If this is a class member, it needs to be declared in its class scope.
-  string scope = (descriptor_->extension_scope() == NULL) ? "" :
-    ClassName(descriptor_->extension_scope(), false) + "::";
-  string name = scope + descriptor_->name();
+  std::string scope = (descriptor_->extension_scope() == NULL) ? std::string() :
+    std::string( ClassName(descriptor_->extension_scope(), false) + "::" );
+  std::string name = scope + descriptor_->name();
 
-  map<string, string> vars;
+  std::map<std::string, std::string> vars;
   vars["extendee"     ] = ExtendeeClassName(descriptor_);
   vars["type_traits"  ] = type_traits_;
   vars["name"         ] = name;
@@ -139,16 +139,16 @@ void ExtensionGenerator::GenerateDefinition(io::Printer* printer) {
   vars["scope"        ] = scope;
 
   if (descriptor_->cpp_type() == FieldDescriptor::CPPTYPE_STRING) {
-    // We need to declare a global string which will contain the default value.
+    // We need to declare a global std::string which will contain the default value.
     // We cannot declare it at class scope because that would require exposing
     // it in the header which would be annoying for other reasons.  So we
     // replace :: with _ in the name and declare it as a global.
-    string global_name = StringReplace(name, "::", "_", true);
+    std::string global_name = protobuf::StringReplace(name, "::", "_", true);
     vars["global_name"] = global_name;
     printer->Print(vars,
       "const ::std::string $global_name$_default($default$);\n");
 
-    // Update the default to refer to the string global.
+    // Update the default to refer to the std::string global.
     vars["default"] = global_name + "_default";
   }
 
@@ -167,7 +167,7 @@ void ExtensionGenerator::GenerateDefinition(io::Printer* printer) {
 }
 
 void ExtensionGenerator::GenerateRegistration(io::Printer* printer) {
-  map<string, string> vars;
+  std::map<std::string, std::string> vars;
   vars["extendee"   ] = ExtendeeClassName(descriptor_);
   vars["number"     ] = SimpleItoa(descriptor_->number());
   vars["field_type" ] = SimpleItoa(static_cast<int>(descriptor_->type()));

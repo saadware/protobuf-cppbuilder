@@ -59,7 +59,7 @@ inline WireFormatLite::CppType cpp_type(FieldType type) {
 }
 
 // Registry stuff.
-typedef hash_map<pair<const MessageLite*, int>,
+typedef hash_map<std::pair<const MessageLite*, int>,
                  ExtensionInfo> ExtensionRegistry;
 ExtensionRegistry* registry_ = NULL;
 GOOGLE_PROTOBUF_DECLARE_ONCE(registry_init_);
@@ -80,7 +80,7 @@ void Register(const MessageLite* containing_type,
               int number, ExtensionInfo info) {
   ::google::protobuf::GoogleOnceInit(&registry_init_, &InitRegistry);
 
-  if (!InsertIfNotPresent(registry_, make_pair(containing_type, number),
+  if (!InsertIfNotPresent(registry_, std::make_pair(containing_type, number),
                           info)) {
     GOOGLE_LOG(FATAL) << "Multiple extension registrations for type \""
                << containing_type->GetTypeName()
@@ -91,7 +91,7 @@ void Register(const MessageLite* containing_type,
 const ExtensionInfo* FindRegisteredExtension(
     const MessageLite* containing_type, int number) {
   return (registry_ == NULL) ? NULL :
-         FindOrNull(*registry_, make_pair(containing_type, number));
+         FindOrNull(*registry_, std::make_pair(containing_type, number));
 }
 
 }  // namespace
@@ -162,7 +162,7 @@ void ExtensionSet::RegisterMessageExtension(const MessageLite* containing_type,
 ExtensionSet::ExtensionSet() {}
 
 ExtensionSet::~ExtensionSet() {
-  for (map<int, Extension>::iterator iter = extensions_.begin();
+  for (std::map<int, Extension>::iterator iter = extensions_.begin();
        iter != extensions_.end(); ++iter) {
     iter->second.Free();
   }
@@ -174,20 +174,20 @@ ExtensionSet::~ExtensionSet() {
 //                                 vector<const FieldDescriptor*>* output) const
 
 bool ExtensionSet::Has(int number) const {
-  map<int, Extension>::const_iterator iter = extensions_.find(number);
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);
   if (iter == extensions_.end()) return false;
   GOOGLE_DCHECK(!iter->second.is_repeated);
   return !iter->second.is_cleared;
 }
 
 int ExtensionSet::ExtensionSize(int number) const {
-  map<int, Extension>::const_iterator iter = extensions_.find(number);
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);
   if (iter == extensions_.end()) return false;
   return iter->second.GetSize();
 }
 
 FieldType ExtensionSet::ExtensionType(int number) const {
-  map<int, Extension>::const_iterator iter = extensions_.find(number);
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);
   if (iter == extensions_.end()) {
     GOOGLE_LOG(DFATAL) << "Don't lookup extension types if they aren't present (1). ";
     return 0;
@@ -199,7 +199,7 @@ FieldType ExtensionSet::ExtensionType(int number) const {
 }
 
 void ExtensionSet::ClearExtension(int number) {
-  map<int, Extension>::iterator iter = extensions_.find(number);
+  std::map<int, Extension>::iterator iter = extensions_.find(number);
   if (iter == extensions_.end()) return;
   iter->second.Clear();
 }
@@ -227,7 +227,7 @@ enum Cardinality {
                                                                                \
 LOWERCASE ExtensionSet::Get##CAMELCASE(int number,                             \
                                        LOWERCASE default_value) const {        \
-  map<int, Extension>::const_iterator iter = extensions_.find(number);         \
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);         \
   if (iter == extensions_.end() || iter->second.is_cleared) {                  \
     return default_value;                                                      \
   } else {                                                                     \
@@ -252,7 +252,7 @@ void ExtensionSet::Set##CAMELCASE(int number, FieldType type,                  \
 }                                                                              \
                                                                                \
 LOWERCASE ExtensionSet::GetRepeated##CAMELCASE(int number, int index) const {  \
-  map<int, Extension>::const_iterator iter = extensions_.find(number);         \
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);         \
   GOOGLE_CHECK(iter != extensions_.end()) << "Index out-of-bounds (field is empty)."; \
   GOOGLE_DCHECK_TYPE(iter->second, REPEATED, UPPERCASE);                              \
   return iter->second.repeated_##LOWERCASE##_value->Get(index);                \
@@ -260,7 +260,7 @@ LOWERCASE ExtensionSet::GetRepeated##CAMELCASE(int number, int index) const {  \
                                                                                \
 void ExtensionSet::SetRepeated##CAMELCASE(                                     \
     int number, int index, LOWERCASE value) {                                  \
-  map<int, Extension>::iterator iter = extensions_.find(number);               \
+  std::map<int, Extension>::iterator iter = extensions_.find(number);               \
   GOOGLE_CHECK(iter != extensions_.end()) << "Index out-of-bounds (field is empty)."; \
   GOOGLE_DCHECK_TYPE(iter->second, REPEATED, UPPERCASE);                              \
   iter->second.repeated_##LOWERCASE##_value->Set(index, value);                \
@@ -297,7 +297,7 @@ PRIMITIVE_ACCESSORS(  BOOL,   bool,   Bool)
 // Enums
 
 int ExtensionSet::GetEnum(int number, int default_value) const {
-  map<int, Extension>::const_iterator iter = extensions_.find(number);
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);
   if (iter == extensions_.end() || iter->second.is_cleared) {
     // Not present.  Return the default value.
     return default_value;
@@ -322,14 +322,14 @@ void ExtensionSet::SetEnum(int number, FieldType type, int value,
 }
 
 int ExtensionSet::GetRepeatedEnum(int number, int index) const {
-  map<int, Extension>::const_iterator iter = extensions_.find(number);
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);
   GOOGLE_CHECK(iter != extensions_.end()) << "Index out-of-bounds (field is empty).";
   GOOGLE_DCHECK_TYPE(iter->second, REPEATED, ENUM);
   return iter->second.repeated_enum_value->Get(index);
 }
 
 void ExtensionSet::SetRepeatedEnum(int number, int index, int value) {
-  map<int, Extension>::iterator iter = extensions_.find(number);
+  std::map<int, Extension>::iterator iter = extensions_.find(number);
   GOOGLE_CHECK(iter != extensions_.end()) << "Index out-of-bounds (field is empty).";
   GOOGLE_DCHECK_TYPE(iter->second, REPEATED, ENUM);
   iter->second.repeated_enum_value->Set(index, value);
@@ -355,9 +355,9 @@ void ExtensionSet::AddEnum(int number, FieldType type,
 // -------------------------------------------------------------------
 // Strings
 
-const string& ExtensionSet::GetString(int number,
-                                      const string& default_value) const {
-  map<int, Extension>::const_iterator iter = extensions_.find(number);
+const std::string& ExtensionSet::GetString(int number,
+                                      const std::string& default_value) const {
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);
   if (iter == extensions_.end() || iter->second.is_cleared) {
     // Not present.  Return the default value.
     return default_value;
@@ -367,14 +367,14 @@ const string& ExtensionSet::GetString(int number,
   }
 }
 
-string* ExtensionSet::MutableString(int number, FieldType type,
+std::string* ExtensionSet::MutableString(int number, FieldType type,
                                     const FieldDescriptor* descriptor) {
   Extension* extension;
   if (MaybeNewExtension(number, descriptor, &extension)) {
     extension->type = type;
     GOOGLE_DCHECK_EQ(cpp_type(extension->type), WireFormatLite::CPPTYPE_STRING);
     extension->is_repeated = false;
-    extension->string_value = new string;
+    extension->string_value = new std::string;
   } else {
     GOOGLE_DCHECK_TYPE(*extension, OPTIONAL, STRING);
   }
@@ -382,21 +382,21 @@ string* ExtensionSet::MutableString(int number, FieldType type,
   return extension->string_value;
 }
 
-const string& ExtensionSet::GetRepeatedString(int number, int index) const {
-  map<int, Extension>::const_iterator iter = extensions_.find(number);
+const std::string& ExtensionSet::GetRepeatedString(int number, int index) const {
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);
   GOOGLE_CHECK(iter != extensions_.end()) << "Index out-of-bounds (field is empty).";
   GOOGLE_DCHECK_TYPE(iter->second, REPEATED, STRING);
   return iter->second.repeated_string_value->Get(index);
 }
 
-string* ExtensionSet::MutableRepeatedString(int number, int index) {
-  map<int, Extension>::iterator iter = extensions_.find(number);
+std::string* ExtensionSet::MutableRepeatedString(int number, int index) {
+  std::map<int, Extension>::iterator iter = extensions_.find(number);
   GOOGLE_CHECK(iter != extensions_.end()) << "Index out-of-bounds (field is empty).";
   GOOGLE_DCHECK_TYPE(iter->second, REPEATED, STRING);
   return iter->second.repeated_string_value->Mutable(index);
 }
 
-string* ExtensionSet::AddString(int number, FieldType type,
+std::string* ExtensionSet::AddString(int number, FieldType type,
                                 const FieldDescriptor* descriptor) {
   Extension* extension;
   if (MaybeNewExtension(number, descriptor, &extension)) {
@@ -404,7 +404,7 @@ string* ExtensionSet::AddString(int number, FieldType type,
     GOOGLE_DCHECK_EQ(cpp_type(extension->type), WireFormatLite::CPPTYPE_STRING);
     extension->is_repeated = true;
     extension->is_packed = false;
-    extension->repeated_string_value = new RepeatedPtrField<string>();
+    extension->repeated_string_value = new RepeatedPtrField<std::string>();
   } else {
     GOOGLE_DCHECK_TYPE(*extension, REPEATED, STRING);
   }
@@ -416,7 +416,7 @@ string* ExtensionSet::AddString(int number, FieldType type,
 
 const MessageLite& ExtensionSet::GetMessage(
     int number, const MessageLite& default_value) const {
-  map<int, Extension>::const_iterator iter = extensions_.find(number);
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);
   if (iter == extensions_.end()) {
     // Not present.  Return the default value.
     return default_value;
@@ -454,14 +454,14 @@ MessageLite* ExtensionSet::MutableMessage(int number, FieldType type,
 
 const MessageLite& ExtensionSet::GetRepeatedMessage(
     int number, int index) const {
-  map<int, Extension>::const_iterator iter = extensions_.find(number);
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);
   GOOGLE_CHECK(iter != extensions_.end()) << "Index out-of-bounds (field is empty).";
   GOOGLE_DCHECK_TYPE(iter->second, REPEATED, MESSAGE);
   return iter->second.repeated_message_value->Get(index);
 }
 
 MessageLite* ExtensionSet::MutableRepeatedMessage(int number, int index) {
-  map<int, Extension>::iterator iter = extensions_.find(number);
+  std::map<int, Extension>::iterator iter = extensions_.find(number);
   GOOGLE_CHECK(iter != extensions_.end()) << "Index out-of-bounds (field is empty).";
   GOOGLE_DCHECK_TYPE(iter->second, REPEATED, MESSAGE);
   return iter->second.repeated_message_value->Mutable(index);
@@ -500,7 +500,7 @@ MessageLite* ExtensionSet::AddMessage(int number, FieldType type,
 #undef GOOGLE_DCHECK_TYPE
 
 void ExtensionSet::RemoveLast(int number) {
-  map<int, Extension>::iterator iter = extensions_.find(number);
+  std::map<int, Extension>::iterator iter = extensions_.find(number);
   GOOGLE_CHECK(iter != extensions_.end()) << "Index out-of-bounds (field is empty).";
 
   Extension* extension = &iter->second;
@@ -541,7 +541,7 @@ void ExtensionSet::RemoveLast(int number) {
 }
 
 void ExtensionSet::SwapElements(int number, int index1, int index2) {
-  map<int, Extension>::iterator iter = extensions_.find(number);
+  std::map<int, Extension>::iterator iter = extensions_.find(number);
   GOOGLE_CHECK(iter != extensions_.end()) << "Index out-of-bounds (field is empty).";
 
   Extension* extension = &iter->second;
@@ -584,14 +584,14 @@ void ExtensionSet::SwapElements(int number, int index1, int index2) {
 // ===================================================================
 
 void ExtensionSet::Clear() {
-  for (map<int, Extension>::iterator iter = extensions_.begin();
+  for (std::map<int, Extension>::iterator iter = extensions_.begin();
        iter != extensions_.end(); ++iter) {
     iter->second.Clear();
   }
 }
 
 void ExtensionSet::MergeFrom(const ExtensionSet& other) {
-  for (map<int, Extension>::const_iterator iter = other.extensions_.begin();
+  for (std::map<int, Extension>::const_iterator iter = other.extensions_.begin();
        iter != other.extensions_.end(); ++iter) {
     const Extension& other_extension = iter->second;
 
@@ -619,15 +619,15 @@ void ExtensionSet::MergeFrom(const ExtensionSet& other) {
             *other_extension.repeated_##LOWERCASE##_value);          \
           break;
 
-        HANDLE_TYPE(  INT32,   int32, RepeatedField   <  int32>);
-        HANDLE_TYPE(  INT64,   int64, RepeatedField   <  int64>);
-        HANDLE_TYPE( UINT32,  uint32, RepeatedField   < uint32>);
-        HANDLE_TYPE( UINT64,  uint64, RepeatedField   < uint64>);
-        HANDLE_TYPE(  FLOAT,   float, RepeatedField   <  float>);
-        HANDLE_TYPE( DOUBLE,  double, RepeatedField   < double>);
-        HANDLE_TYPE(   BOOL,    bool, RepeatedField   <   bool>);
-        HANDLE_TYPE(   ENUM,    enum, RepeatedField   <    int>);
-        HANDLE_TYPE( STRING,  string, RepeatedPtrField< string>);
+        HANDLE_TYPE(INT32, int32, RepeatedField<int32>);
+        HANDLE_TYPE(INT64, int64, RepeatedField<int64>);
+        HANDLE_TYPE(UINT32, uint32, RepeatedField<uint32>);
+        HANDLE_TYPE(UINT64, uint64, RepeatedField<uint64>);
+        HANDLE_TYPE(FLOAT, float, RepeatedField<float>);
+        HANDLE_TYPE(DOUBLE, double, RepeatedField<double>);
+        HANDLE_TYPE(BOOL, bool, RepeatedField<bool>);
+        HANDLE_TYPE(ENUM, enum, RepeatedField<int>);
+        HANDLE_TYPE(STRING, string, RepeatedPtrField<std::string>);
 #undef HANDLE_TYPE
 
         case WireFormatLite::CPPTYPE_MESSAGE:
@@ -694,7 +694,7 @@ void ExtensionSet::Swap(ExtensionSet* x) {
 bool ExtensionSet::IsInitialized() const {
   // Extensions are never required.  However, we need to check that all
   // embedded messages are initialized.
-  for (map<int, Extension>::const_iterator iter = extensions_.begin();
+  for (std::map<int, Extension>::const_iterator iter = extensions_.begin();
        iter != extensions_.end(); ++iter) {
     const Extension& extension = iter->second;
     if (cpp_type(extension.type) == WireFormatLite::CPPTYPE_MESSAGE) {
@@ -842,7 +842,7 @@ bool ExtensionSet::ParseField(uint32 tag, io::CodedInputStream* input,
       }
 
       case WireFormatLite::TYPE_STRING:  {
-        string* value = extension.is_repeated ?
+        std::string* value = extension.is_repeated ?
           AddString(number, WireFormatLite::TYPE_STRING, extension.descriptor) :
           MutableString(number, WireFormatLite::TYPE_STRING,
                         extension.descriptor);
@@ -851,7 +851,7 @@ bool ExtensionSet::ParseField(uint32 tag, io::CodedInputStream* input,
       }
 
       case WireFormatLite::TYPE_BYTES:  {
-        string* value = extension.is_repeated ?
+        std::string* value = extension.is_repeated ?
           AddString(number, WireFormatLite::TYPE_STRING, extension.descriptor) :
           MutableString(number, WireFormatLite::TYPE_STRING,
                         extension.descriptor);
@@ -951,7 +951,7 @@ bool ExtensionSet::ParseMessageSetItem(io::CodedInputStream* input,
   // as no MessageSet encoder I know of writes the message before the type ID.
   // But, it's technically valid so we should allow it.
   // TODO(kenton):  Use a Cord instead?  Do I care?
-  string message_data;
+  std::string message_data;
 
   while (true) {
     uint32 tag = input->ReadTag();
@@ -983,7 +983,7 @@ bool ExtensionSet::ParseMessageSetItem(io::CodedInputStream* input,
       case WireFormatLite::kMessageSetMessageTag: {
         if (fake_tag == 0) {
           // We haven't seen a type_id yet.  Append this data to message_data.
-          string temp;
+          std::string temp;
           uint32 length;
           if (!input->ReadVarint32(&length)) return false;
           if (!input->ReadString(&temp, length)) return false;
@@ -1013,7 +1013,7 @@ bool ExtensionSet::ParseMessageSetItem(io::CodedInputStream* input,
 void ExtensionSet::SerializeWithCachedSizes(
     int start_field_number, int end_field_number,
     io::CodedOutputStream* output) const {
-  map<int, Extension>::const_iterator iter;
+  std::map<int, Extension>::const_iterator iter;
   for (iter = extensions_.lower_bound(start_field_number);
        iter != extensions_.end() && iter->first < end_field_number;
        ++iter) {
@@ -1023,7 +1023,7 @@ void ExtensionSet::SerializeWithCachedSizes(
 
 void ExtensionSet::SerializeMessageSetWithCachedSizes(
     io::CodedOutputStream* output) const {
-  map<int, Extension>::const_iterator iter;
+  std::map<int, Extension>::const_iterator iter;
   for (iter = extensions_.begin(); iter != extensions_.end(); ++iter) {
     iter->second.SerializeMessageSetItemWithCachedSizes(iter->first, output);
   }
@@ -1032,7 +1032,7 @@ void ExtensionSet::SerializeMessageSetWithCachedSizes(
 int ExtensionSet::ByteSize() const {
   int total_size = 0;
 
-  for (map<int, Extension>::const_iterator iter = extensions_.begin();
+  for (std::map<int, Extension>::const_iterator iter = extensions_.begin();
        iter != extensions_.end(); ++iter) {
     total_size += iter->second.ByteSize(iter->first);
   }
@@ -1043,7 +1043,7 @@ int ExtensionSet::ByteSize() const {
 int ExtensionSet::MessageSetByteSize() const {
   int total_size = 0;
 
-  for (map<int, Extension>::const_iterator iter = extensions_.begin();
+  for (std::map<int, Extension>::const_iterator iter = extensions_.begin();
        iter != extensions_.end(); ++iter) {
     total_size += iter->second.MessageSetItemByteSize(iter->first);
   }
@@ -1057,8 +1057,8 @@ int ExtensionSet::MessageSetByteSize() const {
 bool ExtensionSet::MaybeNewExtension(int number,
                                      const FieldDescriptor* descriptor,
                                      Extension** result) {
-  pair<map<int, Extension>::iterator, bool> insert_result =
-      extensions_.insert(make_pair(number, Extension()));
+  std::pair<std::map<int, Extension>::iterator, bool> insert_result =
+      extensions_.insert(std::make_pair(number, Extension()));
   *result = &insert_result.first->second;
   (*result)->descriptor = descriptor;
   return insert_result.second;

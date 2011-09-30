@@ -93,7 +93,7 @@ bool IsReferenceType(JavaType type) {
 }
 
 const char* GetCapitalizedType(const FieldDescriptor* field) {
-  switch (GetType(field)) {
+  switch (java::GetType(field)) {
     case FieldDescriptor::TYPE_INT32   : return "Int32"   ;
     case FieldDescriptor::TYPE_UINT32  : return "UInt32"  ;
     case FieldDescriptor::TYPE_SINT32  : return "SInt32"  ;
@@ -156,27 +156,27 @@ int FixedSize(FieldDescriptor::Type type) {
 void SetPrimitiveVariables(const FieldDescriptor* descriptor,
                            int messageBitIndex,
                            int builderBitIndex,
-                           map<string, string>* variables) {
+                           std::map<std::string, std::string>* variables) {
   (*variables)["name"] =
     UnderscoresToCamelCase(descriptor);
   (*variables)["capitalized_name"] =
-    UnderscoresToCapitalizedCamelCase(descriptor);
-  (*variables)["constant_name"] = FieldConstantName(descriptor);
+    java::UnderscoresToCapitalizedCamelCase(descriptor);
+  (*variables)["constant_name"] = java::FieldConstantName(descriptor);
   (*variables)["number"] = SimpleItoa(descriptor->number());
-  (*variables)["type"] = PrimitiveTypeName(GetJavaType(descriptor));
-  (*variables)["boxed_type"] = BoxedPrimitiveTypeName(GetJavaType(descriptor));
+  (*variables)["type"] = PrimitiveTypeName(java::GetJavaType(descriptor));
+  (*variables)["boxed_type"] = BoxedPrimitiveTypeName(java::GetJavaType(descriptor));
   (*variables)["field_type"] = (*variables)["type"];
   (*variables)["field_list_type"] = "java.util.List<" +
       (*variables)["boxed_type"] + ">";
   (*variables)["empty_list"] = "java.util.Collections.emptyList()";
-  (*variables)["default"] = DefaultValue(descriptor);
-  (*variables)["default_init"] = IsDefaultValueJavaDefault(descriptor) ?
-      "" : ("= " + DefaultValue(descriptor));
+  (*variables)["default"] = java::DefaultValue(descriptor);
+  (*variables)["default_init"] = java::IsDefaultValueJavaDefault(descriptor) ?
+      std::string() : std::string("= " + java::DefaultValue(descriptor));
   (*variables)["capitalized_type"] = GetCapitalizedType(descriptor);
   (*variables)["tag"] = SimpleItoa(WireFormat::MakeTag(descriptor));
   (*variables)["tag_size"] = SimpleItoa(
-      WireFormat::TagSize(descriptor->number(), GetType(descriptor)));
-  if (IsReferenceType(GetJavaType(descriptor))) {
+      WireFormat::TagSize(descriptor->number(), java::GetType(descriptor)));
+  if (IsReferenceType(java::GetJavaType(descriptor))) {
     (*variables)["null_check"] =
         "  if (value == null) {\n"
         "    throw new NullPointerException();\n"
@@ -188,7 +188,7 @@ void SetPrimitiveVariables(const FieldDescriptor* descriptor,
   // by the proto compiler
   (*variables)["deprecation"] = descriptor->options().deprecated()
       ? "@java.lang.Deprecated " : "";
-  int fixed_size = FixedSize(GetType(descriptor));
+  int fixed_size = FixedSize(java::GetType(descriptor));
   if (fixed_size != -1) {
     (*variables)["fixed_size"] = SimpleItoa(fixed_size);
   }
@@ -440,7 +440,7 @@ GenerateHashCode(io::Printer* printer) const {
   }
 }
 
-string PrimitiveFieldGenerator::GetBoxedType() const {
+std::string PrimitiveFieldGenerator::GetBoxedType() const {
   return BoxedPrimitiveTypeName(GetJavaType(descriptor_));
 }
 
@@ -709,7 +709,7 @@ GenerateHashCode(io::Printer* printer) const {
     "}\n");
 }
 
-string RepeatedPrimitiveFieldGenerator::GetBoxedType() const {
+std::string RepeatedPrimitiveFieldGenerator::GetBoxedType() const {
   return BoxedPrimitiveTypeName(GetJavaType(descriptor_));
 }
 

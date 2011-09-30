@@ -45,11 +45,11 @@ namespace cpp {
 namespace {
 
 void SetMessageVariables(const FieldDescriptor* descriptor,
-                         map<string, string>* variables) {
-  SetCommonFieldVariables(descriptor, variables);
-  (*variables)["type"] = FieldMessageTypeName(descriptor);
+                         std::map<std::string, std::string>* variables) {
+  cpp::SetCommonFieldVariables(descriptor, variables);
+  (*variables)["type"] = cpp::FieldMessageTypeName(descriptor);
   (*variables)["stream_writer"] = (*variables)["declared_type"] +
-      (HasFastArraySerialization(descriptor->message_type()->file()) ?
+      (cpp::HasFastArraySerialization(descriptor->message_type()->file()) ?
        "MaybeToArray" :
        "");
 }

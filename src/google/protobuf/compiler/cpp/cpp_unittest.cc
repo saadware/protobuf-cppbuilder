@@ -44,8 +44,6 @@
 // correctly and produces the interfaces we expect, which is why this test
 // is written this way.
 
-#include <vector>
-
 #include <google/protobuf/unittest.pb.h>
 #include <google/protobuf/unittest_optimize_for.pb.h>
 #include <google/protobuf/unittest_embed_optimize_for.pb.h>
@@ -80,11 +78,11 @@ class MockErrorCollector : public MultiFileErrorCollector {
   MockErrorCollector() {}
   ~MockErrorCollector() {}
 
-  string text_;
+  std::string text_;
 
   // implements ErrorCollector ---------------------------------------
-  void AddError(const string& filename, int line, int column,
-                const string& message) {
+  void AddError(const std::string& filename, int line, int column,
+                const std::string& message) {
     strings::SubstituteAndAppend(&text_, "$0:$1:$2: $3\n",
                                  filename, line, column, message);
   }
@@ -155,14 +153,14 @@ TEST(GeneratedMessageTest, FloatingPointDefaults) {
   EXPECT_EQ(-1.5f, extreme_default.negative_float());
   EXPECT_EQ(2.0e8f, extreme_default.large_float());
   EXPECT_EQ(-8e-28f, extreme_default.small_negative_float());
-  EXPECT_EQ(numeric_limits<double>::infinity(),
+  EXPECT_EQ(std::numeric_limits<double>::infinity(),
             extreme_default.inf_double());
-  EXPECT_EQ(-numeric_limits<double>::infinity(),
+  EXPECT_EQ(-std::numeric_limits<double>::infinity(),
             extreme_default.neg_inf_double());
   EXPECT_TRUE(extreme_default.nan_double() != extreme_default.nan_double());
-  EXPECT_EQ(numeric_limits<float>::infinity(),
+  EXPECT_EQ(std::numeric_limits<float>::infinity(),
             extreme_default.inf_float());
-  EXPECT_EQ(-numeric_limits<float>::infinity(),
+  EXPECT_EQ(-std::numeric_limits<float>::infinity(),
             extreme_default.neg_inf_float());
   EXPECT_TRUE(extreme_default.nan_float() != extreme_default.nan_float());
 }
@@ -213,7 +211,7 @@ TEST(GeneratedMessageTest, ReleaseString) {
 
   message.set_default_string("blah");
   EXPECT_TRUE(message.has_default_string());
-  string* str = message.release_default_string();
+  std::string* str = message.release_default_string();
   EXPECT_FALSE(message.has_default_string());
   ASSERT_TRUE(str != NULL);
   EXPECT_EQ("blah", *str);
@@ -507,7 +505,7 @@ TEST(GeneratedMessageTest, MergeFromSelf) {
 // Test the generated SerializeWithCachedSizesToArray(),
 TEST(GeneratedMessageTest, SerializationToArray) {
   unittest::TestAllTypes message1, message2;
-  string data;
+  std::string data;
   TestUtil::SetAllFields(&message1);
   int size = message1.ByteSize();
   data.resize(size);
@@ -521,7 +519,7 @@ TEST(GeneratedMessageTest, SerializationToArray) {
 
 TEST(GeneratedMessageTest, PackedFieldsSerializationToArray) {
   unittest::TestPackedTypes packed_message1, packed_message2;
-  string packed_data;
+  std::string packed_data;
   TestUtil::SetPackedFields(&packed_message1);
   int packed_size = packed_message1.ByteSize();
   packed_data.resize(packed_size);
@@ -538,7 +536,7 @@ TEST(GeneratedMessageTest, SerializationToStream) {
   unittest::TestAllTypes message1, message2;
   TestUtil::SetAllFields(&message1);
   int size = message1.ByteSize();
-  string data;
+  std::string data;
   data.resize(size);
   {
     // Allow the output stream to buffer only one byte at a time.
@@ -557,7 +555,7 @@ TEST(GeneratedMessageTest, PackedFieldsSerializationToStream) {
   unittest::TestPackedTypes message1, message2;
   TestUtil::SetPackedFields(&message1);
   int size = message1.ByteSize();
-  string data;
+  std::string data;
   data.resize(size);
   {
     // Allow the output stream to buffer only one byte at a time.
@@ -624,7 +622,7 @@ TEST(GeneratedMessageTest, ForeignNested) {
 TEST(GeneratedMessageTest, ReallyLargeTagNumber) {
   // Test that really large tag numbers don't break anything.
   unittest::TestReallyLargeTagNumber message1, message2;
-  string data;
+  std::string data;
 
   // For the most part, if this compiles and runs then we're probably good.
   // (The most likely cause for failure would be if something were attempting
@@ -720,7 +718,7 @@ TEST(GeneratedMessageTest, TestEmbedOptimizedForSize) {
   protobuf_unittest::TestEmbedOptimizedForSize message, message2;
   message.mutable_optional_message()->set_i(1);
   message.add_repeated_message()->mutable_msg()->set_c(2);
-  string data;
+  std::string data;
   message.SerializeToString(&data);
   ASSERT_TRUE(message2.ParseFromString(data));
   EXPECT_EQ(1, message2.optional_message().i());
@@ -740,17 +738,17 @@ TEST(GeneratedMessageTest, TestSpaceUsed) {
   message1.set_optional_uint64(12345);
   EXPECT_EQ(empty_message_size, message1.SpaceUsed());
 
-  // On some STL implementations, setting the string to a small value should
-  // only increase SpaceUsed() by the size of a string object, though this is
+  // On some STL implementations, setting the std::string to a small value should
+  // only increase SpaceUsed() by the size of a std::string object, though this is
   // not true everywhere.
   message1.set_optional_string("abc");
-  EXPECT_LE(empty_message_size + sizeof(string), message1.SpaceUsed());
+  EXPECT_LE(empty_message_size + sizeof(std::string), message1.SpaceUsed());
 
   // Setting a string to a value larger than the string object itself should
   // increase SpaceUsed(), because it cannot store the value internally.
-  message1.set_optional_string(string(sizeof(string) + 1, 'x'));
+  message1.set_optional_string(std::string(sizeof(std::string) + 1, 'x'));
   int min_expected_increase = message1.optional_string().capacity() +
-      sizeof(string);
+      sizeof(std::string);
   EXPECT_LE(empty_message_size + min_expected_increase,
             message1.SpaceUsed());
 
@@ -970,7 +968,7 @@ class GeneratedServiceTest : public testing::Test {
     // ---------------------------------------------------------------
 
     bool called_;
-    string method_;
+    std::string method_;
     RpcController* controller_;
     const Message* request_;
     Message* response_;
@@ -1030,14 +1028,14 @@ class GeneratedServiceTest : public testing::Test {
       ADD_FAILURE() << "Failed() not expected during this test.";
       return false;
     }
-    string ErrorText() const {
+    std::string ErrorText() const {
       ADD_FAILURE() << "ErrorText() not expected during this test.";
       return "";
     }
     void StartCancel() {
       ADD_FAILURE() << "StartCancel() not expected during this test.";
     }
-    void SetFailed(const string& reason) {
+    void SetFailed(const std::string& reason) {
       ADD_FAILURE() << "SetFailed() not expected during this test.";
     }
     bool IsCanceled() const {
@@ -1197,7 +1195,7 @@ TEST_F(GeneratedServiceTest, NotImplemented) {
    public:
     ExpectUnimplementedController() : called_(false) {}
 
-    void SetFailed(const string& reason) {
+    void SetFailed(const std::string& reason) {
       EXPECT_FALSE(called_);
       called_ = true;
       EXPECT_EQ("Method Foo() not implemented.", reason);

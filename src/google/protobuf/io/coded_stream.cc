@@ -85,7 +85,7 @@ void CodedInputStream::BackUpInputToCurrentPosition() {
 
 inline void CodedInputStream::RecomputeBufferLimits() {
   buffer_end_ += buffer_size_after_limit_;
-  int closest_limit = min(current_limit_, total_bytes_limit_);
+  int closest_limit = std::min(current_limit_, total_bytes_limit_);
   if (closest_limit < total_bytes_read_) {
     // The limit position is in the current buffer.  We must adjust
     // the buffer size accordingly.
@@ -116,7 +116,7 @@ CodedInputStream::Limit CodedInputStream::PushLimit(int byte_limit) {
   // We need to enforce all limits, not just the new one, so if the previous
   // limit was before the new requested limit, we continue to enforce the
   // previous limit.
-  current_limit_ = min(current_limit_, old_limit);
+  current_limit_ = std::min(current_limit_, old_limit);
 
   RecomputeBufferLimits();
   return old_limit;
@@ -147,7 +147,7 @@ void CodedInputStream::SetTotalBytesLimit(
   // code.
   int current_position = total_bytes_read_ -
       (BufferSize() + buffer_size_after_limit_);
-  total_bytes_limit_ = max(current_position, total_bytes_limit);
+  total_bytes_limit_ = std::max(current_position, total_bytes_limit);
   total_bytes_warning_threshold_ = warning_threshold;
   RecomputeBufferLimits();
 }
@@ -182,7 +182,7 @@ bool CodedInputStream::Skip(int count) {
   buffer_end_ = buffer_;
 
   // Make sure this skip doesn't try to skip past the current limit.
-  int closest_limit = min(current_limit_, total_bytes_limit_);
+  int closest_limit = std::min(current_limit_, total_bytes_limit_);
   int bytes_until_limit = closest_limit - total_bytes_read_;
   if (bytes_until_limit < count) {
     // We hit the limit.  Skip up to it then fail.
@@ -222,12 +222,12 @@ bool CodedInputStream::ReadRaw(void* buffer, int size) {
   return true;
 }
 
-bool CodedInputStream::ReadString(string* buffer, int size) {
+bool CodedInputStream::ReadString(std::string* buffer, int size) {
   if (size < 0) return false;  // security: size is often user-supplied
   return InternalReadStringInline(buffer, size);
 }
 
-bool CodedInputStream::ReadStringFallback(string* buffer, int size) {
+bool CodedInputStream::ReadStringFallback(std::string* buffer, int size) {
   if (!buffer->empty()) {
     buffer->clear();
   }

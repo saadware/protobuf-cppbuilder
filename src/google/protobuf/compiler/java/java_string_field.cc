@@ -56,21 +56,21 @@ namespace {
 void SetPrimitiveVariables(const FieldDescriptor* descriptor,
                            int messageBitIndex,
                            int builderBitIndex,
-                           map<string, string>* variables) {
+                           std::map<std::string, std::string>* variables) {
   (*variables)["name"] =
     UnderscoresToCamelCase(descriptor);
   (*variables)["capitalized_name"] =
-    UnderscoresToCapitalizedCamelCase(descriptor);
-  (*variables)["constant_name"] = FieldConstantName(descriptor);
+    java::UnderscoresToCapitalizedCamelCase(descriptor);
+  (*variables)["constant_name"] = java::FieldConstantName(descriptor);
   (*variables)["number"] = SimpleItoa(descriptor->number());
   (*variables)["empty_list"] = "com.google.protobuf.LazyStringArrayList.EMPTY";
 
-  (*variables)["default"] = DefaultValue(descriptor);
-  (*variables)["default_init"] = ("= " + DefaultValue(descriptor));
+  (*variables)["default"] = java::DefaultValue(descriptor);
+  (*variables)["default_init"] = ("= " + java::DefaultValue(descriptor));
   (*variables)["capitalized_type"] = "String";
   (*variables)["tag"] = SimpleItoa(WireFormat::MakeTag(descriptor));
   (*variables)["tag_size"] = SimpleItoa(
-      WireFormat::TagSize(descriptor->number(), GetType(descriptor)));
+      WireFormat::TagSize(descriptor->number(), java::GetType(descriptor)));
   (*variables)["null_check"] =
       "  if (value == null) {\n"
       "    throw new NullPointerException();\n"
@@ -324,7 +324,7 @@ GenerateHashCode(io::Printer* printer) const {
     "hash = (53 * hash) + get$capitalized_name$().hashCode();\n");
 }
 
-string StringFieldGenerator::GetBoxedType() const {
+std::string StringFieldGenerator::GetBoxedType() const {
   return "java.lang.String";
 }
 
@@ -600,7 +600,7 @@ GenerateHashCode(io::Printer* printer) const {
     "}\n");
 }
 
-string RepeatedStringFieldGenerator::GetBoxedType() const {
+std::string RepeatedStringFieldGenerator::GetBoxedType() const {
   return "String";
 }
 

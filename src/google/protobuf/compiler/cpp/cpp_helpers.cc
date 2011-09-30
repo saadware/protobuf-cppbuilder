@@ -33,7 +33,6 @@
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
 #include <limits>
-#include <vector>
 #include <google/protobuf/stubs/hash.h>
 
 #include <google/protobuf/compiler/cpp/cpp_helpers.h>
@@ -49,12 +48,12 @@ namespace cpp {
 
 namespace {
 
-string DotsToUnderscores(const string& name) {
-  return StringReplace(name, ".", "_", true);
+std::string DotsToUnderscores(const std::string& name) {
+  return protobuf::StringReplace(name, ".", "_", true);
 }
 
-string DotsToColons(const string& name) {
-  return StringReplace(name, ".", "::", true);
+std::string DotsToColons(const std::string& name) {
+  return protobuf::StringReplace(name, ".", "::", true);
 }
 
 const char* const kKeywordList[] = {
@@ -70,18 +69,18 @@ const char* const kKeywordList[] = {
   "void", "volatile", "wchar_t", "while", "xor", "xor_eq"
 };
 
-hash_set<string> MakeKeywordsMap() {
-  hash_set<string> result;
+hash_set<std::string> MakeKeywordsMap() {
+  hash_set<std::string> result;
   for (int i = 0; i < GOOGLE_ARRAYSIZE(kKeywordList); i++) {
     result.insert(kKeywordList[i]);
   }
   return result;
 }
 
-hash_set<string> kKeywords = MakeKeywordsMap();
+hash_set<std::string> kKeywords = MakeKeywordsMap();
 
-string UnderscoresToCamelCase(const string& input, bool cap_next_letter) {
-  string result;
+std::string UnderscoresToCamelCase(const std::string& input, bool cap_next_letter) {
+  std::string result;
   // Note:  I distrust ctype.h due to locales.
   for (int i = 0; i < input.size(); i++) {
     if ('a' <= input[i] && input[i] <= 'z') {
@@ -112,15 +111,15 @@ const char kThickSeparator[] =
 const char kThinSeparator[] =
   "// -------------------------------------------------------------------\n";
 
-string ClassName(const Descriptor* descriptor, bool qualified) {
+std::string ClassName(const Descriptor* descriptor, bool qualified) {
 
   // Find "outer", the descriptor of the top-level message in which
   // "descriptor" is embedded.
   const Descriptor* outer = descriptor;
   while (outer->containing_type() != NULL) outer = outer->containing_type();
 
-  const string& outer_name = outer->full_name();
-  string inner_name = descriptor->full_name().substr(outer_name.size());
+  const std::string& outer_name = outer->full_name();
+  std::string inner_name = descriptor->full_name().substr(outer_name.size());
 
   if (qualified) {
     return "::" + DotsToColons(outer_name) + DotsToUnderscores(inner_name);
@@ -129,7 +128,7 @@ string ClassName(const Descriptor* descriptor, bool qualified) {
   }
 }
 
-string ClassName(const EnumDescriptor* enum_descriptor, bool qualified) {
+std::string ClassName(const EnumDescriptor* enum_descriptor, bool qualified) {
   if (enum_descriptor->containing_type() == NULL) {
     if (qualified) {
       return DotsToColons(enum_descriptor->full_name());
@@ -137,7 +136,7 @@ string ClassName(const EnumDescriptor* enum_descriptor, bool qualified) {
       return enum_descriptor->name();
     }
   } else {
-    string result = ClassName(enum_descriptor->containing_type(), qualified);
+    std::string result = ClassName(enum_descriptor->containing_type(), qualified);
     result += '_';
     result += enum_descriptor->name();
     return result;
@@ -145,23 +144,23 @@ string ClassName(const EnumDescriptor* enum_descriptor, bool qualified) {
 }
 
 
-string SuperClassName(const Descriptor* descriptor) {
+std::string SuperClassName(const Descriptor* descriptor) {
   return HasDescriptorMethods(descriptor->file()) ?
       "::google::protobuf::Message" : "::google::protobuf::MessageLite";
 }
 
-string FieldName(const FieldDescriptor* field) {
-  string result = field->name();
-  LowerString(&result);
+std::string FieldName(const FieldDescriptor* field) {
+  std::string result = field->name();
+  protobuf::LowerString(&result);
   if (kKeywords.count(result) > 0) {
     result.append("_");
   }
   return result;
 }
 
-string FieldConstantName(const FieldDescriptor *field) {
-  string field_name = UnderscoresToCamelCase(field->name(), true);
-  string result = "k" + field_name + "FieldNumber";
+std::string FieldConstantName(const FieldDescriptor *field) {
+  std::string field_name = UnderscoresToCamelCase(field->name(), true);
+  std::string result = "k" + field_name + "FieldNumber";
 
   if (!field->is_extension() &&
       field->containing_type()->FindFieldByCamelcaseName(
@@ -175,17 +174,17 @@ string FieldConstantName(const FieldDescriptor *field) {
   return result;
 }
 
-string FieldMessageTypeName(const FieldDescriptor* field) {
+std::string FieldMessageTypeName(const FieldDescriptor* field) {
   // Note:  The Google-internal version of Protocol Buffers uses this function
   //   as a hook point for hacks to support legacy code.
   return ClassName(field->message_type(), true);
 }
 
-string StripProto(const string& filename) {
-  if (HasSuffixString(filename, ".protodevel")) {
-    return StripSuffixString(filename, ".protodevel");
+std::string StripProto(const std::string& filename) {
+  if (protobuf::HasSuffixString(filename, ".protodevel")) {
+    return protobuf::StripSuffixString(filename, ".protodevel");
   } else {
-    return StripSuffixString(filename, ".proto");
+    return protobuf::StripSuffixString(filename, ".proto");
   }
 }
 
@@ -240,7 +239,7 @@ const char* DeclaredTypeMethodName(FieldDescriptor::Type type) {
   return "";
 }
 
-string DefaultValue(const FieldDescriptor* field) {
+std::string DefaultValue(const FieldDescriptor* field) {
   switch (field->cpp_type()) {
     case FieldDescriptor::CPPTYPE_INT32:
       return SimpleItoa(field->default_value_int32());
@@ -252,9 +251,9 @@ string DefaultValue(const FieldDescriptor* field) {
       return "GOOGLE_ULONGLONG(" + SimpleItoa(field->default_value_uint64())+ ")";
     case FieldDescriptor::CPPTYPE_DOUBLE: {
       double value = field->default_value_double();
-      if (value == numeric_limits<double>::infinity()) {
+      if (value == std::numeric_limits<double>::infinity()) {
         return "::google::protobuf::internal::Infinity()";
-      } else if (value == -numeric_limits<double>::infinity()) {
+      } else if (value == -std::numeric_limits<double>::infinity()) {
         return "-::google::protobuf::internal::Infinity()";
       } else if (value != value) {
         return "::google::protobuf::internal::NaN()";
@@ -265,18 +264,18 @@ string DefaultValue(const FieldDescriptor* field) {
     case FieldDescriptor::CPPTYPE_FLOAT:
       {
         float value = field->default_value_float();
-        if (value == numeric_limits<float>::infinity()) {
+        if (value == std::numeric_limits<float>::infinity()) {
           return "static_cast<float>(::google::protobuf::internal::Infinity())";
-        } else if (value == -numeric_limits<float>::infinity()) {
+        } else if (value == -std::numeric_limits<float>::infinity()) {
           return "static_cast<float>(-::google::protobuf::internal::Infinity())";
         } else if (value != value) {
           return "static_cast<float>(::google::protobuf::internal::NaN())";
         } else {
-          string float_value = SimpleFtoa(value);
+          std::string float_value = SimpleFtoa(value);
           // If floating point value contains a period (.) or an exponent
           // (either E or e), then append suffix 'f' to make it a float
           // literal.
-          if (float_value.find_first_of(".eE") != string::npos) {
+          if (float_value.find_first_of(".eE") != std::string::npos) {
             float_value.push_back('f');
           }
           return float_value;
@@ -292,7 +291,7 @@ string DefaultValue(const FieldDescriptor* field) {
           ClassName(field->enum_type(), true),
           field->default_value_enum()->number());
     case FieldDescriptor::CPPTYPE_STRING:
-      return "\"" + EscapeTrigraphs(CEscape(field->default_value_string())) +
+      return "\"" + EscapeTrigraphs(protobuf::CEscape(field->default_value_string())) +
              "\"";
     case FieldDescriptor::CPPTYPE_MESSAGE:
       return FieldMessageTypeName(field) + "::default_instance()";
@@ -305,8 +304,8 @@ string DefaultValue(const FieldDescriptor* field) {
 }
 
 // Convert a file name into a valid identifier.
-string FilenameIdentifier(const string& filename) {
-  string result;
+std::string FilenameIdentifier(const std::string& filename) {
+  std::string result;
   for (int i = 0; i < filename.size(); i++) {
     if (ascii_isalnum(filename[i])) {
       result.push_back(filename[i]);
@@ -322,23 +321,23 @@ string FilenameIdentifier(const string& filename) {
 }
 
 // Return the name of the AddDescriptors() function for a given file.
-string GlobalAddDescriptorsName(const string& filename) {
+std::string GlobalAddDescriptorsName(const std::string& filename) {
   return "protobuf_AddDesc_" + FilenameIdentifier(filename);
 }
 
 // Return the name of the AssignDescriptors() function for a given file.
-string GlobalAssignDescriptorsName(const string& filename) {
+std::string GlobalAssignDescriptorsName(const std::string& filename) {
   return "protobuf_AssignDesc_" + FilenameIdentifier(filename);
 }
 
 // Return the name of the ShutdownFile() function for a given file.
-string GlobalShutdownFileName(const string& filename) {
+std::string GlobalShutdownFileName(const std::string& filename) {
   return "protobuf_ShutdownFile_" + FilenameIdentifier(filename);
 }
 
 // Escape C++ trigraphs by escaping question marks to \?
-string EscapeTrigraphs(const string& to_escape) {
-  return StringReplace(to_escape, "?", "\\?", true);
+std::string EscapeTrigraphs(const std::string& to_escape) {
+  return protobuf::StringReplace(to_escape, "?", "\\?", true);
 }
 
 }  // namespace cpp

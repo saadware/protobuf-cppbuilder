@@ -48,6 +48,7 @@
 
 #include <string>
 #include <iterator>
+#include <algorithm>
 #include <google/protobuf/stubs/common.h>
 #include <google/protobuf/message_lite.h>
 
@@ -60,7 +61,7 @@ class Message;
 namespace internal {
 
 // We need this (from generated_message_reflection.cc).
-LIBPROTOBUF_EXPORT int StringSpaceUsedExcludingSelf(const string& str);
+LIBPROTOBUF_EXPORT int StringSpaceUsedExcludingSelf(const std::string& str);
 
 }  // namespace internal
 
@@ -298,16 +299,16 @@ inline void GenericTypeHandler<MessageLite>::Merge(
 // TODO(kenton):  There has to be a better way.
 class LIBPROTOBUF_EXPORT StringTypeHandlerBase {
  public:
-  typedef string Type;
-  static string* New();
-  static void Delete(string* value);
-  static void Clear(string* value) { value->clear(); }
-  static void Merge(const string& from, string* to) { *to = from; }
+  typedef std::string Type;
+  static std::string* New();
+  static void Delete(std::string* value);
+  static void Clear(std::string* value) { value->clear(); }
+  static void Merge(const std::string& from, std::string* to) { *to = from; }
 };
 
 class StringTypeHandler : public StringTypeHandlerBase {
  public:
-  static int SpaceUsed(const string& value)  {
+  static int SpaceUsed(const std::string& value)  {
     return sizeof(value) + StringSpaceUsedExcludingSelf(value);
   }
 };
@@ -600,7 +601,7 @@ void RepeatedField<Element>::Reserve(int new_size) {
   if (total_size_ >= new_size) return;
 
   Element* old_elements = elements_;
-  total_size_ = max(total_size_ * 2, new_size);
+  total_size_ = std::max(total_size_ * 2, new_size);
   elements_ = new Element[total_size_];
   MoveArray(elements_, old_elements, current_size_);
   if (old_elements != initial_space_) {
@@ -615,17 +616,16 @@ inline void RepeatedField<Element>::Truncate(int new_size) {
 }
 
 template <typename Element>
-inline void RepeatedField<Element>::MoveArray(
+void RepeatedField<Element>::MoveArray(
     Element to[], Element from[], int array_size) {
-  memcpy(to, from, array_size * sizeof(Element));
+  memcpy(to, from, array_size * sizeof(typename Element));
 }
 
 template <typename Element>
-inline void RepeatedField<Element>::CopyArray(
+void RepeatedField<Element>::CopyArray(
     Element to[], const Element from[], int array_size) {
   memcpy(to, from, array_size * sizeof(Element));
 }
-
 
 // -------------------------------------------------------------------
 
@@ -825,7 +825,7 @@ class RepeatedPtrField<Element>::TypeHandler
     : public internal::GenericTypeHandler<Element> {};
 
 template <>
-class RepeatedPtrField<string>::TypeHandler
+class RepeatedPtrField<std::string>::TypeHandler
     : public internal::StringTypeHandler {};
 
 
@@ -852,105 +852,105 @@ inline RepeatedPtrField<Element>& RepeatedPtrField<Element>::operator=(
 
 template <typename Element>
 inline int RepeatedPtrField<Element>::size() const {
-  return RepeatedPtrFieldBase::size();
+  return internal::RepeatedPtrFieldBase::size();
 }
 
 template <typename Element>
 inline const Element& RepeatedPtrField<Element>::Get(int index) const {
-  return RepeatedPtrFieldBase::Get<TypeHandler>(index);
+  return internal::RepeatedPtrFieldBase::Get<TypeHandler>(index);
 }
 
 template <typename Element>
 inline Element* RepeatedPtrField<Element>::Mutable(int index) {
-  return RepeatedPtrFieldBase::Mutable<TypeHandler>(index);
+  return internal::RepeatedPtrFieldBase::Mutable<TypeHandler>(index);
 }
 
 template <typename Element>
 inline Element* RepeatedPtrField<Element>::Add() {
-  return RepeatedPtrFieldBase::Add<TypeHandler>();
+  return internal::RepeatedPtrFieldBase::Add<TypeHandler>();
 }
 
 template <typename Element>
 inline void RepeatedPtrField<Element>::RemoveLast() {
-  RepeatedPtrFieldBase::RemoveLast<TypeHandler>();
+  internal::RepeatedPtrFieldBase::RemoveLast<TypeHandler>();
 }
 
 template <typename Element>
 inline void RepeatedPtrField<Element>::Clear() {
-  RepeatedPtrFieldBase::Clear<TypeHandler>();
+  internal::RepeatedPtrFieldBase::Clear<TypeHandler>();
 }
 
 template <typename Element>
 inline void RepeatedPtrField<Element>::MergeFrom(
     const RepeatedPtrField& other) {
-  RepeatedPtrFieldBase::MergeFrom<TypeHandler>(other);
+  internal::RepeatedPtrFieldBase::MergeFrom<TypeHandler>(other);
 }
 
 template <typename Element>
 inline void RepeatedPtrField<Element>::CopyFrom(
     const RepeatedPtrField& other) {
-  RepeatedPtrFieldBase::CopyFrom<TypeHandler>(other);
+  internal::RepeatedPtrFieldBase::CopyFrom<TypeHandler>(other);
 }
 
 template <typename Element>
 inline Element** RepeatedPtrField<Element>::mutable_data() {
-  return RepeatedPtrFieldBase::mutable_data<TypeHandler>();
+  return internal::RepeatedPtrFieldBase::mutable_data<TypeHandler>();
 }
 
 template <typename Element>
 inline const Element* const* RepeatedPtrField<Element>::data() const {
-  return RepeatedPtrFieldBase::data<TypeHandler>();
+  return internal::RepeatedPtrFieldBase::data<TypeHandler>();
 }
 
 template <typename Element>
 void RepeatedPtrField<Element>::Swap(RepeatedPtrField* other) {
-  RepeatedPtrFieldBase::Swap(other);
+  internal::RepeatedPtrFieldBase::Swap(other);
 }
 
 template <typename Element>
 void RepeatedPtrField<Element>::SwapElements(int index1, int index2) {
-  RepeatedPtrFieldBase::SwapElements(index1, index2);
+  internal::RepeatedPtrFieldBase::SwapElements(index1, index2);
 }
 
 template <typename Element>
 inline int RepeatedPtrField<Element>::SpaceUsedExcludingSelf() const {
-  return RepeatedPtrFieldBase::SpaceUsedExcludingSelf<TypeHandler>();
+  return internal::RepeatedPtrFieldBase::SpaceUsedExcludingSelf<TypeHandler>();
 }
 
 template <typename Element>
 inline void RepeatedPtrField<Element>::AddAllocated(Element* value) {
-  RepeatedPtrFieldBase::AddAllocated<TypeHandler>(value);
+  internal::RepeatedPtrFieldBase::AddAllocated<TypeHandler>(value);
 }
 
 template <typename Element>
 inline Element* RepeatedPtrField<Element>::ReleaseLast() {
-  return RepeatedPtrFieldBase::ReleaseLast<TypeHandler>();
+  return internal::RepeatedPtrFieldBase::ReleaseLast<TypeHandler>();
 }
 
 
 template <typename Element>
 inline int RepeatedPtrField<Element>::ClearedCount() const {
-  return RepeatedPtrFieldBase::ClearedCount();
+  return internal::RepeatedPtrFieldBase::ClearedCount();
 }
 
 template <typename Element>
 inline void RepeatedPtrField<Element>::AddCleared(Element* value) {
-  return RepeatedPtrFieldBase::AddCleared<TypeHandler>(value);
+  return internal::RepeatedPtrFieldBase::AddCleared<TypeHandler>(value);
 }
 
 template <typename Element>
 inline Element* RepeatedPtrField<Element>::ReleaseCleared() {
-  return RepeatedPtrFieldBase::ReleaseCleared<TypeHandler>();
+  return internal::RepeatedPtrFieldBase::ReleaseCleared<TypeHandler>();
 }
 
 template <typename Element>
 inline void RepeatedPtrField<Element>::Reserve(int new_size) {
-  return RepeatedPtrFieldBase::Reserve(new_size);
+  return internal::RepeatedPtrFieldBase::Reserve(new_size);
 }
 
 template <typename Element>
 inline int RepeatedPtrField<Element>::Capacity() const {
-  return RepeatedPtrFieldBase::Capacity();
+  return internal::RepeatedPtrFieldBase::Capacity();
 }
 
 // -------------------------------------------------------------------

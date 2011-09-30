@@ -495,11 +495,11 @@ struct Fixed64Case {
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Fixed32Case& c) {
-  return os << "0x" << hex << c.value << dec;
+  return os << "0x" << std::hex << c.value << std::dec;
 }
 
 inline std::ostream& operator<<(std::ostream& os, const Fixed64Case& c) {
-  return os << "0x" << hex << c.value << dec;
+  return os << "0x" << std::hex << c.value << std::dec;
 }
 
 Fixed32Case kFixed32Cases[] = {
@@ -639,7 +639,7 @@ TEST_1D(CodedStreamTest, ReadString, kBlockSizes) {
   {
     CodedInputStream coded_input(&input);
 
-    string str;
+    std::string str;
     EXPECT_TRUE(coded_input.ReadString(&str, strlen(kRawBytes)));
     EXPECT_EQ(kRawBytes, str);
   }
@@ -654,7 +654,7 @@ TEST_1D(CodedStreamTest, ReadStringImpossiblyLarge, kBlockSizes) {
   {
     CodedInputStream coded_input(&input);
 
-    string str;
+    std::string str;
     // Try to read a gigabyte.
     EXPECT_FALSE(coded_input.ReadString(&str, 1 << 30));
   }
@@ -665,14 +665,14 @@ TEST_F(CodedStreamTest, ReadStringImpossiblyLargeFromStringOnStack) {
   // crashes while the above did not.
   uint8 buffer[8];
   CodedInputStream coded_input(buffer, 8);
-  string str;
+  std::string str;
   EXPECT_FALSE(coded_input.ReadString(&str, 1 << 30));
 }
 
 TEST_F(CodedStreamTest, ReadStringImpossiblyLargeFromStringOnHeap) {
   scoped_array<uint8> buffer(new uint8[8]);
   CodedInputStream coded_input(buffer.get(), 8);
-  string str;
+  std::string str;
   EXPECT_FALSE(coded_input.ReadString(&str, 1 << 30));
 }
 
@@ -692,7 +692,7 @@ TEST_1D(CodedStreamTest, SkipInput, kBlockSizes) {
   {
     CodedInputStream coded_input(&input);
 
-    string str;
+    std::string str;
     EXPECT_TRUE(coded_input.ReadString(&str, strlen("<Before skipping>")));
     EXPECT_EQ("<Before skipping>", str);
     EXPECT_TRUE(coded_input.Skip(strlen("<To be skipped>")));
@@ -975,10 +975,10 @@ TEST_F(CodedStreamTest, TotalBytesLimit) {
   CodedInputStream coded_input(&input);
   coded_input.SetTotalBytesLimit(16, -1);
 
-  string str;
+  std::string str;
   EXPECT_TRUE(coded_input.ReadString(&str, 16));
 
-  vector<string> errors;
+  std::vector<std::string> errors;
 
   {
     ScopedMemoryLog error_log;
@@ -1005,7 +1005,7 @@ TEST_F(CodedStreamTest, TotalBytesLimitNotValidMessageEnd) {
   CodedInputStream::Limit limit = coded_input.PushLimit(16);
 
   // Read 16 bytes.
-  string str;
+  std::string str;
   EXPECT_TRUE(coded_input.ReadString(&str, 16));
 
   // Read a tag.  Should fail, but report being a valid endpoint since it's
@@ -1107,12 +1107,12 @@ TEST_F(CodedStreamTest, InputOver2G) {
   // input.BackUp() with the correct number of bytes on destruction.
   ReallyBigInputStream input;
 
-  vector<string> errors;
+  std::vector<std::string> errors;
 
   {
     ScopedMemoryLog error_log;
     CodedInputStream coded_input(&input);
-    string str;
+    std::string str;
     EXPECT_TRUE(coded_input.ReadString(&str, 512));
     EXPECT_TRUE(coded_input.ReadString(&str, 1024));
     errors = error_log.GetMessages(ERROR);

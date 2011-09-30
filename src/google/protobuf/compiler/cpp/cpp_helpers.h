@@ -57,20 +57,20 @@ extern const char kThinSeparator[];
 //   ::foo::bar::Baz_Qux
 // While the non-qualified version would be:
 //   Baz_Qux
-string ClassName(const Descriptor* descriptor, bool qualified);
-string ClassName(const EnumDescriptor* enum_descriptor, bool qualified);
+std::string ClassName(const Descriptor* descriptor, bool qualified);
+std::string ClassName(const EnumDescriptor* enum_descriptor, bool qualified);
 
-string SuperClassName(const Descriptor* descriptor);
+std::string SuperClassName(const Descriptor* descriptor);
 
 // Get the (unqualified) name that should be used for this field in C++ code.
 // The name is coerced to lower-case to emulate proto1 behavior.  People
 // should be using lowercase-with-underscores style for proto field names
 // anyway, so normally this just returns field->name().
-string FieldName(const FieldDescriptor* field);
+std::string FieldName(const FieldDescriptor* field);
 
 // Get the unqualified name that should be used for a field's field
 // number constant.
-string FieldConstantName(const FieldDescriptor *field);
+std::string FieldConstantName(const FieldDescriptor *field);
 
 // Returns the scope where the field was defined (for extensions, this is
 // different from the message type to which the field applies).
@@ -81,10 +81,10 @@ inline const Descriptor* FieldScope(const FieldDescriptor* field) {
 
 // Returns the fully-qualified type name field->message_type().  Usually this
 // is just ClassName(field->message_type(), true);
-string FieldMessageTypeName(const FieldDescriptor* field);
+std::string FieldMessageTypeName(const FieldDescriptor* field);
 
 // Strips ".proto" or ".protodevel" from the end of a filename.
-string StripProto(const string& filename);
+std::string StripProto(const std::string& filename);
 
 // Get the C++ type name for a primitive type (e.g. "double", "::google::protobuf::int32", etc.).
 // Note:  non-built-in type names will be qualified, meaning they will start
@@ -98,22 +98,22 @@ const char* PrimitiveTypeName(FieldDescriptor::CppType type);
 const char* DeclaredTypeMethodName(FieldDescriptor::Type type);
 
 // Get code that evaluates to the field's default value.
-string DefaultValue(const FieldDescriptor* field);
+std::string DefaultValue(const FieldDescriptor* field);
 
 // Convert a file name into a valid identifier.
-string FilenameIdentifier(const string& filename);
+std::string FilenameIdentifier(const std::string& filename);
 
 // Return the name of the AddDescriptors() function for a given file.
-string GlobalAddDescriptorsName(const string& filename);
+std::string GlobalAddDescriptorsName(const std::string& filename);
 
 // Return the name of the AssignDescriptors() function for a given file.
-string GlobalAssignDescriptorsName(const string& filename);
+std::string GlobalAssignDescriptorsName(const std::string& filename);
 
 // Return the name of the ShutdownFile() function for a given file.
-string GlobalShutdownFileName(const string& filename);
+std::string GlobalShutdownFileName(const std::string& filename);
 
 // Escape C++ trigraphs by escaping question marks to \?
-string EscapeTrigraphs(const string& to_escape);
+std::string EscapeTrigraphs(const std::string& to_escape);
 
 // Do message classes in this file keep track of unknown fields?
 inline bool HasUnknownFields(const FileDescriptor *file) {

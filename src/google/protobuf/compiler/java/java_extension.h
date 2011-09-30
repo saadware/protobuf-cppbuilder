@@ -65,7 +65,7 @@ class ExtensionGenerator {
 
  private:
   const FieldDescriptor* descriptor_;
-  string scope_;
+  std::string scope_;
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(ExtensionGenerator);
 };
 

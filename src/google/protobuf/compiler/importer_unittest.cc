@@ -60,11 +60,11 @@ class MockErrorCollector : public MultiFileErrorCollector {
   MockErrorCollector() {}
   ~MockErrorCollector() {}
 
-  string text_;
+  std::string text_;
 
   // implements ErrorCollector ---------------------------------------
-  void AddError(const string& filename, int line, int column,
-                const string& message) {
+  void AddError(const std::string& filename, int line, int column,
+                const std::string& message) {
     strings::SubstituteAndAppend(&text_, "$0:$1:$2: $3\n",
                                  filename, line, column, message);
   }
@@ -78,12 +78,12 @@ class MockSourceTree : public SourceTree {
   MockSourceTree() {}
   ~MockSourceTree() {}
 
-  void AddFile(const string& name, const char* contents) {
+  void AddFile(const std::string& name, const char* contents) {
     files_[name] = contents;
   }
 
   // implements SourceTree -------------------------------------------
-  io::ZeroCopyInputStream* Open(const string& filename) {
+  io::ZeroCopyInputStream* Open(const std::string& filename) {
     const char* contents = FindPtrOrNull(files_, filename);
     if (contents == NULL) {
       return NULL;
@@ -93,7 +93,7 @@ class MockSourceTree : public SourceTree {
   }
 
  private:
-  hash_map<string, const char*> files_;
+  hash_map<std::string, const char*> files_;
 };
 
 // ===================================================================
@@ -103,12 +103,12 @@ class ImporterTest : public testing::Test {
   ImporterTest()
     : importer_(&source_tree_, &error_collector_) {}
 
-  void AddFile(const string& filename, const char* text) {
+  void AddFile(const std::string& filename, const char* text) {
     source_tree_.AddFile(filename, text);
   }
 
   // Return the collected error text
-  string error() const { return error_collector_.text_; }
+  std::string error() const { return error_collector_.text_; }
 
   MockErrorCollector error_collector_;
   MockSourceTree source_tree_;
@@ -346,22 +346,22 @@ class DiskSourceTreeTest : public testing::Test {
     }
   }
 
-  void AddFile(const string& filename, const char* contents) {
+  void AddFile(const std::string& filename, const char* contents) {
     File::WriteStringToFileOrDie(contents, filename);
   }
 
-  void AddSubdir(const string& dirname) {
+  void AddSubdir(const std::string& dirname) {
     GOOGLE_CHECK(File::CreateDir(dirname.c_str(), DEFAULT_FILE_MODE));
   }
 
-  void ExpectFileContents(const string& filename,
+  void ExpectFileContents(const std::string& filename,
                           const char* expected_contents) {
     scoped_ptr<io::ZeroCopyInputStream> input(source_tree_.Open(filename));
 
     ASSERT_FALSE(input == NULL);
 
     // Read all the data from the file.
-    string file_contents;
+    std::string file_contents;
     const void* data;
     int size;
     while (input->Next(&data, &size)) {
@@ -371,7 +371,7 @@ class DiskSourceTreeTest : public testing::Test {
     EXPECT_EQ(expected_contents, file_contents);
   }
 
-  void ExpectFileNotFound(const string& filename) {
+  void ExpectFileNotFound(const std::string& filename) {
     scoped_ptr<io::ZeroCopyInputStream> input(source_tree_.Open(filename));
     EXPECT_TRUE(input == NULL);
   }
@@ -379,7 +379,7 @@ class DiskSourceTreeTest : public testing::Test {
   DiskSourceTree source_tree_;
 
   // Paths of two on-disk directories to use during the test.
-  vector<string> dirnames_;
+  std::vector<std::string> dirnames_;
 };
 
 TEST_F(DiskSourceTreeTest, MapRoot) {
@@ -474,8 +474,8 @@ TEST_F(DiskSourceTreeTest, DiskFileToVirtualFile) {
   source_tree_.MapPath("bar", dirnames_[0]);
   source_tree_.MapPath("bar", dirnames_[1]);
 
-  string virtual_file;
-  string shadowing_disk_file;
+  std::string virtual_file;
+  std::string shadowing_disk_file;
 
   EXPECT_EQ(DiskSourceTree::NO_MAPPING,
     source_tree_.DiskFileToVirtualFile(
@@ -508,8 +508,8 @@ TEST_F(DiskSourceTreeTest, DiskFileToVirtualFileCanonicalization) {
   source_tree_.MapPath("", "/qux");
   source_tree_.MapPath("dir5", "/quux/");
 
-  string virtual_file;
-  string shadowing_disk_file;
+  std::string virtual_file;
+  std::string shadowing_disk_file;
 
   // "../.." should not be considered to be under "..".
   EXPECT_EQ(DiskSourceTree::NO_MAPPING,
@@ -575,14 +575,14 @@ TEST_F(DiskSourceTreeTest, VirtualFileToDiskFile) {
   source_tree_.MapPath("bar", dirnames_[1]);
 
   // Existent files, shadowed and non-shadowed case.
-  string disk_file;
+  std::string disk_file;
   EXPECT_TRUE(source_tree_.VirtualFileToDiskFile("bar/foo", &disk_file));
   EXPECT_EQ(dirnames_[0] + "/foo", disk_file);
   EXPECT_TRUE(source_tree_.VirtualFileToDiskFile("bar/quux", &disk_file));
   EXPECT_EQ(dirnames_[1] + "/quux", disk_file);
 
   // Nonexistent file in existent directory and vice versa.
-  string not_touched = "not touched";
+  std::string not_touched = "not touched";
   EXPECT_FALSE(source_tree_.VirtualFileToDiskFile("bar/baz", &not_touched));
   EXPECT_EQ("not touched", not_touched);
   EXPECT_FALSE(source_tree_.VirtualFileToDiskFile("baz/foo", &not_touched));

@@ -33,7 +33,6 @@
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
 #include <limits>
-#include <vector>
 
 #include <google/protobuf/compiler/java/java_helpers.h>
 #include <google/protobuf/descriptor.pb.h>
@@ -54,19 +53,19 @@ namespace {
 
 const char* kDefaultPackage = "";
 
-const string& FieldName(const FieldDescriptor* field) {
+const std::string& FieldName(const FieldDescriptor* field) {
   // Groups are hacky:  The name of the field is just the lower-cased name
   // of the group type.  In Java, though, we would like to retain the original
   // capitalization of the type name.
-  if (GetType(field) == FieldDescriptor::TYPE_GROUP) {
+  if (java::GetType(field) == FieldDescriptor::TYPE_GROUP) {
     return field->message_type()->name();
   } else {
     return field->name();
   }
 }
 
-string UnderscoresToCamelCaseImpl(const string& input, bool cap_next_letter) {
-  string result;
+std::string UnderscoresToCamelCaseImpl(const std::string& input, bool cap_next_letter) {
+  std::string result;
   // Note:  I distrust ctype.h due to locales.
   for (int i = 0; i < input.size(); i++) {
     if ('a' <= input[i] && input[i] <= 'z') {
@@ -98,33 +97,33 @@ string UnderscoresToCamelCaseImpl(const string& input, bool cap_next_letter) {
 
 }  // namespace
 
-string UnderscoresToCamelCase(const FieldDescriptor* field) {
+std::string UnderscoresToCamelCase(const FieldDescriptor* field) {
   return UnderscoresToCamelCaseImpl(FieldName(field), false);
 }
 
-string UnderscoresToCapitalizedCamelCase(const FieldDescriptor* field) {
+std::string UnderscoresToCapitalizedCamelCase(const FieldDescriptor* field) {
   return UnderscoresToCamelCaseImpl(FieldName(field), true);
 }
 
-string UnderscoresToCamelCase(const MethodDescriptor* method) {
+std::string UnderscoresToCamelCase(const MethodDescriptor* method) {
   return UnderscoresToCamelCaseImpl(method->name(), false);
 }
 
-string StripProto(const string& filename) {
-  if (HasSuffixString(filename, ".protodevel")) {
-    return StripSuffixString(filename, ".protodevel");
+std::string StripProto(const std::string& filename) {
+  if (protobuf::HasSuffixString(filename, ".protodevel")) {
+    return protobuf::StripSuffixString(filename, ".protodevel");
   } else {
-    return StripSuffixString(filename, ".proto");
+    return protobuf::StripSuffixString(filename, ".proto");
   }
 }
 
-string FileClassName(const FileDescriptor* file) {
+std::string FileClassName(const FileDescriptor* file) {
   if (file->options().has_java_outer_classname()) {
     return file->options().java_outer_classname();
   } else {
-    string basename;
-    string::size_type last_slash = file->name().find_last_of('/');
-    if (last_slash == string::npos) {
+    std::string basename;
+    std::string::size_type last_slash = file->name().find_last_of('/');
+    if (last_slash == std::string::npos) {
       basename = file->name();
     } else {
       basename = file->name().substr(last_slash + 1);
@@ -133,8 +132,8 @@ string FileClassName(const FileDescriptor* file) {
   }
 }
 
-string FileJavaPackage(const FileDescriptor* file) {
-  string result;
+std::string FileJavaPackage(const FileDescriptor* file) {
+  std::string result;
 
   if (file->options().has_java_package()) {
     result = file->options().java_package();
@@ -150,15 +149,15 @@ string FileJavaPackage(const FileDescriptor* file) {
   return result;
 }
 
-string JavaPackageToDir(string package_name) {
-  string package_dir =
-    StringReplace(package_name, ".", "/", true);
+std::string JavaPackageToDir(std::string package_name) {
+  std::string package_dir =
+    protobuf::StringReplace(package_name, ".", "/", true);
   if (!package_dir.empty()) package_dir += "/";
   return package_dir;
 }
 
-string ToJavaName(const string& full_name, const FileDescriptor* file) {
-  string result;
+std::string ToJavaName(const std::string& full_name, const FileDescriptor* file) {
+  std::string result;
   if (file->options().java_multiple_files()) {
     result = FileJavaPackage(file);
   } else {
@@ -177,16 +176,16 @@ string ToJavaName(const string& full_name, const FileDescriptor* file) {
   return result;
 }
 
-string ClassName(const FileDescriptor* descriptor) {
-  string result = FileJavaPackage(descriptor);
+std::string ClassName(const FileDescriptor* descriptor) {
+  std::string result = FileJavaPackage(descriptor);
   if (!result.empty()) result += '.';
   result += FileClassName(descriptor);
   return result;
 }
 
-string FieldConstantName(const FieldDescriptor *field) {
-  string name = field->name() + "_FIELD_NUMBER";
-  UpperString(&name);
+std::string FieldConstantName(const FieldDescriptor *field) {
+  std::string name = field->name() + "_FIELD_NUMBER";
+  protobuf::UpperString(&name);
   return name;
 }
 
@@ -260,7 +259,7 @@ const char* BoxedPrimitiveTypeName(JavaType type) {
   return NULL;
 }
 
-bool AllAscii(const string& text) {
+bool AllAscii(const std::string& text) {
   for (int i = 0; i < text.size(); i++) {
     if ((text[i] & 0x80) != 0) {
       return false;
@@ -269,7 +268,7 @@ bool AllAscii(const string& text) {
   return true;
 }
 
-string DefaultValue(const FieldDescriptor* field) {
+std::string DefaultValue(const FieldDescriptor* field) {
   // Switch on CppType since we need to know which default_value_* method
   // of FieldDescriptor to call.
   switch (field->cpp_type()) {
@@ -285,9 +284,9 @@ string DefaultValue(const FieldDescriptor* field) {
              "L";
     case FieldDescriptor::CPPTYPE_DOUBLE: {
       double value = field->default_value_double();
-      if (value == numeric_limits<double>::infinity()) {
+      if (value == std::numeric_limits<double>::infinity()) {
         return "Double.POSITIVE_INFINITY";
-      } else if (value == -numeric_limits<double>::infinity()) {
+      } else if (value == -std::numeric_limits<double>::infinity()) {
         return "Double.NEGATIVE_INFINITY";
       } else if (value != value) {
         return "Double.NaN";
@@ -297,9 +296,9 @@ string DefaultValue(const FieldDescriptor* field) {
     }
     case FieldDescriptor::CPPTYPE_FLOAT: {
       float value = field->default_value_float();
-      if (value == numeric_limits<float>::infinity()) {
+      if (value == std::numeric_limits<float>::infinity()) {
         return "Float.POSITIVE_INFINITY";
-      } else if (value == -numeric_limits<float>::infinity()) {
+      } else if (value == -std::numeric_limits<float>::infinity()) {
         return "Float.NEGATIVE_INFINITY";
       } else if (value != value) {
         return "Float.NaN";
@@ -315,19 +314,19 @@ string DefaultValue(const FieldDescriptor* field) {
           // See comments in Internal.java for gory details.
           return strings::Substitute(
             "com.google.protobuf.Internal.bytesDefaultValue(\"$0\")",
-            CEscape(field->default_value_string()));
+            protobuf::CEscape(field->default_value_string()));
         } else {
           return "com.google.protobuf.ByteString.EMPTY";
         }
       } else {
         if (AllAscii(field->default_value_string())) {
           // All chars are ASCII.  In this case CEscape() works fine.
-          return "\"" + CEscape(field->default_value_string()) + "\"";
+          return "\"" + protobuf::CEscape(field->default_value_string()) + "\"";
         } else {
           // See comments in Internal.java for gory details.
           return strings::Substitute(
             "com.google.protobuf.Internal.stringDefaultValue(\"$0\")",
-            CEscape(field->default_value_string()));
+            protobuf::CEscape(field->default_value_string()));
         }
       }
 
@@ -416,59 +415,59 @@ const char* bit_masks[] = {
   "0x80000000",
 };
 
-string GetBitFieldName(int index) {
-  string varName = "bitField";
+std::string GetBitFieldName(int index) {
+  std::string varName = "bitField";
   varName += SimpleItoa(index);
   varName += "_";
   return varName;
 }
 
-string GetBitFieldNameForBit(int bitIndex) {
+std::string GetBitFieldNameForBit(int bitIndex) {
   return GetBitFieldName(bitIndex / 32);
 }
 
-string GenerateGetBit(int bitIndex) {
-  string varName = GetBitFieldNameForBit(bitIndex);
+std::string GenerateGetBit(int bitIndex) {
+  std::string varName = GetBitFieldNameForBit(bitIndex);
   int bitInVarIndex = bitIndex % 32;
 
-  string mask = bit_masks[bitInVarIndex];
-  string result = "((" + varName + " & " + mask + ") == " + mask + ")";
+  std::string mask = bit_masks[bitInVarIndex];
+  std::string result = "((" + varName + " & " + mask + ") == " + mask + ")";
   return result;
 }
 
-string GenerateSetBit(int bitIndex) {
-  string varName = GetBitFieldNameForBit(bitIndex);
+std::string GenerateSetBit(int bitIndex) {
+  std::string varName = GetBitFieldNameForBit(bitIndex);
   int bitInVarIndex = bitIndex % 32;
 
-  string mask = bit_masks[bitInVarIndex];
-  string result = varName + " |= " + mask;
+  std::string mask = bit_masks[bitInVarIndex];
+  std::string result = varName + " |= " + mask;
   return result;
 }
 
-string GenerateClearBit(int bitIndex) {
-  string varName = GetBitFieldNameForBit(bitIndex);
+std::string GenerateClearBit(int bitIndex) {
+  std::string varName = GetBitFieldNameForBit(bitIndex);
   int bitInVarIndex = bitIndex % 32;
 
-  string mask = bit_masks[bitInVarIndex];
-  string result = varName + " = (" + varName + " & ~" + mask + ")";
+  std::string mask = bit_masks[bitInVarIndex];
+  std::string result = varName + " = (" + varName + " & ~" + mask + ")";
   return result;
 }
 
-string GenerateGetBitFromLocal(int bitIndex) {
-  string varName = "from_" + GetBitFieldNameForBit(bitIndex);
+std::string GenerateGetBitFromLocal(int bitIndex) {
+  std::string varName = "from_" + GetBitFieldNameForBit(bitIndex);
   int bitInVarIndex = bitIndex % 32;
 
-  string mask = bit_masks[bitInVarIndex];
-  string result = "((" + varName + " & " + mask + ") == " + mask + ")";
+  std::string mask = bit_masks[bitInVarIndex];
+  std::string result = "((" + varName + " & " + mask + ") == " + mask + ")";
   return result;
 }
 
-string GenerateSetBitToLocal(int bitIndex) {
-  string varName = "to_" + GetBitFieldNameForBit(bitIndex);
+std::string GenerateSetBitToLocal(int bitIndex) {
+  std::string varName = "to_" + GetBitFieldNameForBit(bitIndex);
   int bitInVarIndex = bitIndex % 32;
 
-  string mask = bit_masks[bitInVarIndex];
-  string result = varName + " |= " + mask;
+  std::string mask = bit_masks[bitInVarIndex];
+  std::string result = varName + " |= " + mask;
   return result;
 }
 

@@ -57,7 +57,7 @@ namespace protobuf {
 namespace {
 
 // Shorthand to get a FieldDescriptor for a field of unittest::TestAllTypes.
-const FieldDescriptor* F(const string& name) {
+const FieldDescriptor* F(const std::string& name) {
   const FieldDescriptor* result =
     unittest::TestAllTypes::descriptor()->FindFieldByName(name);
   GOOGLE_CHECK(result != NULL);
@@ -110,7 +110,7 @@ TEST(GeneratedMessageReflectionTest, GetStringReference) {
   message.add_repeated_string("foo");
 
   const Reflection* reflection = message.GetReflection();
-  string scratch;
+  std::string scratch;
 
   EXPECT_EQ(&message.optional_string(),
       &reflection->GetStringReference(message, F("optional_string"), &scratch))

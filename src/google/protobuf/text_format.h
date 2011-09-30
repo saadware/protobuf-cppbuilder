@@ -67,11 +67,11 @@ class LIBPROTOBUF_EXPORT TextFormat {
                                  io::ZeroCopyOutputStream* output);
 
   // Like Print(), but outputs directly to a string.
-  static bool PrintToString(const Message& message, string* output);
+  static bool PrintToString(const Message& message, std::string* output);
 
   // Like PrintUnknownFields(), but outputs directly to a string.
   static bool PrintUnknownFieldsToString(const UnknownFieldSet& unknown_fields,
-                                         string* output);
+                                         std::string* output);
 
   // Outputs a textual representation of the value of the field supplied on
   // the message supplied. For non-repeated fields, an index of -1 must
@@ -80,7 +80,7 @@ class LIBPROTOBUF_EXPORT TextFormat {
   static void PrintFieldValueToString(const Message& message,
                                       const FieldDescriptor* field,
                                       int index,
-                                      string* output);
+                                      std::string* output);
 
   // Class for those users which require more fine-grained control over how
   // a protobuffer message is printed out.
@@ -95,15 +95,15 @@ class LIBPROTOBUF_EXPORT TextFormat {
     bool PrintUnknownFields(const UnknownFieldSet& unknown_fields,
                             io::ZeroCopyOutputStream* output) const;
     // Like TextFormat::PrintToString
-    bool PrintToString(const Message& message, string* output) const;
+    bool PrintToString(const Message& message, std::string* output) const;
     // Like TextFormat::PrintUnknownFieldsToString
     bool PrintUnknownFieldsToString(const UnknownFieldSet& unknown_fields,
-                                    string* output) const;
+                                    std::string* output) const;
     // Like TextFormat::PrintFieldValueToString
     void PrintFieldValueToString(const Message& message,
                                  const FieldDescriptor* field,
                                  int index,
-                                 string* output) const;
+                                 std::string* output) const;
 
     // Adjust the initial indent level of all output.  Each indent level is
     // equal to two spaces.
@@ -191,18 +191,18 @@ class LIBPROTOBUF_EXPORT TextFormat {
   // by Print().
   static bool Parse(io::ZeroCopyInputStream* input, Message* output);
   // Like Parse(), but reads directly from a string.
-  static bool ParseFromString(const string& input, Message* output);
+  static bool ParseFromString(const std::string& input, Message* output);
 
   // Like Parse(), but the data is merged into the given message, as if
   // using Message::MergeFrom().
   static bool Merge(io::ZeroCopyInputStream* input, Message* output);
   // Like Merge(), but reads directly from a string.
-  static bool MergeFromString(const string& input, Message* output);
+  static bool MergeFromString(const std::string& input, Message* output);
 
   // Parse the given text as a single field value and store it into the
   // given field of the given message. If the field is a repeated field,
   // the new value will be added to the end
-  static bool ParseFieldValueFromString(const string& input,
+  static bool ParseFieldValueFromString(const std::string& input,
                                         const FieldDescriptor* field,
                                         Message* message);
 
@@ -217,7 +217,7 @@ class LIBPROTOBUF_EXPORT TextFormat {
     // name.  Returns NULL if no extension is known for this name or number.
     virtual const FieldDescriptor* FindExtension(
         Message* message,
-        const string& name) const = 0;
+        const std::string& name) const = 0;
   };
 
   // For more control over parsing, use this class.
@@ -229,11 +229,11 @@ class LIBPROTOBUF_EXPORT TextFormat {
     // Like TextFormat::Parse().
     bool Parse(io::ZeroCopyInputStream* input, Message* output);
     // Like TextFormat::ParseFromString().
-    bool ParseFromString(const string& input, Message* output);
+    bool ParseFromString(const std::string& input, Message* output);
     // Like TextFormat::Merge().
     bool Merge(io::ZeroCopyInputStream* input, Message* output);
     // Like TextFormat::MergeFromString().
-    bool MergeFromString(const string& input, Message* output);
+    bool MergeFromString(const std::string& input, Message* output);
 
     // Set where to report parse errors.  If NULL (the default), errors will
     // be printed to stderr.
@@ -255,7 +255,7 @@ class LIBPROTOBUF_EXPORT TextFormat {
     }
 
     // Like TextFormat::ParseFieldValueFromString
-    bool ParseFieldValueFromString(const string& input,
+    bool ParseFieldValueFromString(const std::string& input,
                                    const FieldDescriptor* field,
                                    Message* output);
 

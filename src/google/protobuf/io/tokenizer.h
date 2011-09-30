@@ -61,12 +61,12 @@ class LIBPROTOBUF_EXPORT ErrorCollector {
   // Indicates that there was an error in the input at the given line and
   // column numbers.  The numbers are zero-based, so you may want to add
   // 1 to each before printing them.
-  virtual void AddError(int line, int column, const string& message) = 0;
+  virtual void AddError(int line, int column, const std::string& message) = 0;
 
   // Indicates that there was a warning in the input at the given line and
   // column numbers.  The numbers are zero-based, so you may want to add
   // 1 to each before printing them.
-  virtual void AddWarning(int line, int column, const string& message) { }
+  virtual void AddWarning(int line, int column, const std::string& message) { }
 
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(ErrorCollector);
@@ -114,7 +114,7 @@ class LIBPROTOBUF_EXPORT Tokenizer {
   // Structure representing a token read from the token stream.
   struct Token {
     TokenType type;
-    string text;       // The exact text of the token as it appeared in
+    std::string text;       // The exact text of the token as it appeared in
                        // the input.  e.g. tokens of TYPE_STRING will still
                        // be escaped and in quotes.
 
@@ -142,22 +142,22 @@ class LIBPROTOBUF_EXPORT Tokenizer {
   // Parses a TYPE_FLOAT token.  This never fails, so long as the text actually
   // comes from a TYPE_FLOAT token parsed by Tokenizer.  If it doesn't, the
   // result is undefined (possibly an assert failure).
-  static double ParseFloat(const string& text);
+  static double ParseFloat(const std::string& text);
 
   // Parses a TYPE_STRING token.  This never fails, so long as the text actually
   // comes from a TYPE_STRING token parsed by Tokenizer.  If it doesn't, the
   // result is undefined (possibly an assert failure).
-  static void ParseString(const string& text, string* output);
+  static void ParseString(const std::string& text, std::string* output);
 
   // Identical to ParseString, but appends to output.
-  static void ParseStringAppend(const string& text, string* output);
+  static void ParseStringAppend(const std::string& text, std::string* output);
 
   // Parses a TYPE_INTEGER token.  Returns false if the result would be
   // greater than max_value.  Otherwise, returns true and sets *output to the
   // result.  If the text is not from a Token of type TYPE_INTEGER originally
   // parsed by a Tokenizer, the result is undefined (possibly an assert
   // failure).
-  static bool ParseInteger(const string& text, uint64 max_value,
+  static bool ParseInteger(const std::string& text, uint64 max_value,
                            uint64* output);
 
   // Options ---------------------------------------------------------
@@ -232,7 +232,7 @@ class LIBPROTOBUF_EXPORT Tokenizer {
   inline void EndToken();
 
   // Convenience method to add an error at the current line and column.
-  void AddError(const string& message) {
+  void AddError(const std::string& message) {
     error_collector_->AddError(line_, column_, message);
   }
 
@@ -301,7 +301,7 @@ inline const Tokenizer::Token& Tokenizer::previous() {
   return previous_;
 }
 
-inline void Tokenizer::ParseString(const string& text, string* output) {
+inline void Tokenizer::ParseString(const std::string& text, std::string* output) {
   output->clear();
   ParseStringAppend(text, output);
 }

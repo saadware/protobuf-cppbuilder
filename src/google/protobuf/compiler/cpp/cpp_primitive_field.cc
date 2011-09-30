@@ -80,10 +80,10 @@ int FixedSize(FieldDescriptor::Type type) {
 }
 
 void SetPrimitiveVariables(const FieldDescriptor* descriptor,
-                           map<string, string>* variables) {
-  SetCommonFieldVariables(descriptor, variables);
-  (*variables)["type"] = PrimitiveTypeName(descriptor->cpp_type());
-  (*variables)["default"] = DefaultValue(descriptor);
+                           std::map<std::string, std::string>* variables) {
+  cpp::SetCommonFieldVariables(descriptor, variables);
+  (*variables)["type"] = cpp::PrimitiveTypeName(descriptor->cpp_type());
+  (*variables)["default"] = cpp::DefaultValue(descriptor);
   (*variables)["tag"] = SimpleItoa(internal::WireFormat::MakeTag(descriptor));
   int fixed_size = FixedSize(descriptor->type());
   if (fixed_size != -1) {

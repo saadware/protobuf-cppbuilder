@@ -58,7 +58,7 @@ static void AddToDatabase(SimpleDescriptorDatabase* database,
 }
 
 static void ExpectContainsType(const FileDescriptorProto& proto,
-                               const string& type_name) {
+                               const std::string& type_name) {
   for (int i = 0; i < proto.message_type_size(); i++) {
     if (proto.message_type(i).name() == type_name) return;
   }
@@ -122,7 +122,7 @@ class EncodedDescriptorDatabaseTestCase : public DescriptorDatabaseTestCase {
     return &database_;
   }
   virtual bool AddToDatabase(const FileDescriptorProto& file) {
-    string data;
+    std::string data;
     file.SerializeToString(&data);
     return database_.AddCopy(data.data(), data.size());
   }
@@ -405,7 +405,7 @@ TEST_P(DescriptorDatabaseTest, FindAllExtensionNumbers) {
     "extension { name:\"waldo\"  extendee: \"Bar\"        number:56 } ");
 
   {
-    vector<int> numbers;
+    std::vector<int> numbers;
     EXPECT_TRUE(database_->FindAllExtensionNumbers("Foo", &numbers));
     ASSERT_EQ(2, numbers.size());
     sort(numbers.begin(), numbers.end());
@@ -414,7 +414,7 @@ TEST_P(DescriptorDatabaseTest, FindAllExtensionNumbers) {
   }
 
   {
-    vector<int> numbers;
+    std::vector<int> numbers;
     EXPECT_TRUE(database_->FindAllExtensionNumbers("corge.Bar", &numbers));
     // Note: won't find extension 56 due to the name not being fully qualified.
     ASSERT_EQ(1, numbers.size());
@@ -423,13 +423,13 @@ TEST_P(DescriptorDatabaseTest, FindAllExtensionNumbers) {
 
   {
     // Can't find extensions for non-existent types.
-    vector<int> numbers;
+    std::vector<int> numbers;
     EXPECT_FALSE(database_->FindAllExtensionNumbers("NoSuchType", &numbers));
   }
 
   {
     // Can't find extensions for unqualified types.
-    vector<int> numbers;
+    std::vector<int> numbers;
     EXPECT_FALSE(database_->FindAllExtensionNumbers("Bar", &numbers));
   }
 }
@@ -491,10 +491,10 @@ TEST(EncodedDescriptorDatabaseExtraTest, FindNameOfFileContainingSymbol) {
   file2b.add_message_type()->set_name("Bar");
 
   // Normal serialization allows our optimization to kick in.
-  string data1 = file1.SerializeAsString();
+  std::string data1 = file1.SerializeAsString();
 
   // Force out-of-order serialization to test slow path.
-  string data2 = file2b.SerializeAsString() + file2a.SerializeAsString();
+  std::string data2 = file2b.SerializeAsString() + file2a.SerializeAsString();
 
   // Create EncodedDescriptorDatabase containing both files.
   EncodedDescriptorDatabase db;
@@ -502,7 +502,7 @@ TEST(EncodedDescriptorDatabaseExtraTest, FindNameOfFileContainingSymbol) {
   db.Add(data2.data(), data2.size());
 
   // Test!
-  string filename;
+  std::string filename;
   EXPECT_TRUE(db.FindNameOfFileContainingSymbol("foo.Foo", &filename));
   EXPECT_EQ("foo.proto", filename);
   EXPECT_TRUE(db.FindNameOfFileContainingSymbol("foo.Foo.Blah", &filename));
@@ -703,7 +703,7 @@ TEST_F(MergedDescriptorDatabaseTest, FindFileContainingExtension) {
 TEST_F(MergedDescriptorDatabaseTest, FindAllExtensionNumbers) {
   {
     // Message only has extension in database1_
-    vector<int> numbers;
+    std::vector<int> numbers;
     EXPECT_TRUE(forward_merged_.FindAllExtensionNumbers("Foo", &numbers));
     ASSERT_EQ(1, numbers.size());
     EXPECT_EQ(3, numbers[0]);
@@ -711,7 +711,7 @@ TEST_F(MergedDescriptorDatabaseTest, FindAllExtensionNumbers) {
 
   {
     // Message only has extension in database2_
-    vector<int> numbers;
+    std::vector<int> numbers;
     EXPECT_TRUE(forward_merged_.FindAllExtensionNumbers("Bar", &numbers));
     ASSERT_EQ(1, numbers.size());
     EXPECT_EQ(5, numbers[0]);
@@ -719,7 +719,7 @@ TEST_F(MergedDescriptorDatabaseTest, FindAllExtensionNumbers) {
 
   {
     // Merge results from the two databases.
-    vector<int> numbers;
+    std::vector<int> numbers;
     EXPECT_TRUE(forward_merged_.FindAllExtensionNumbers("Baz", &numbers));
     ASSERT_EQ(2, numbers.size());
     sort(numbers.begin(), numbers.end());
@@ -728,7 +728,7 @@ TEST_F(MergedDescriptorDatabaseTest, FindAllExtensionNumbers) {
   }
 
   {
-    vector<int> numbers;
+    std::vector<int> numbers;
     EXPECT_TRUE(reverse_merged_.FindAllExtensionNumbers("Baz", &numbers));
     ASSERT_EQ(2, numbers.size());
     sort(numbers.begin(), numbers.end());
@@ -738,7 +738,7 @@ TEST_F(MergedDescriptorDatabaseTest, FindAllExtensionNumbers) {
 
   {
     // Can't find extensions for a non-existent message.
-    vector<int> numbers;
+    std::vector<int> numbers;
     EXPECT_FALSE(reverse_merged_.FindAllExtensionNumbers("Blah", &numbers));
   }
 }

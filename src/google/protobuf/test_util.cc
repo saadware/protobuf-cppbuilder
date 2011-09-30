@@ -35,7 +35,7 @@
 #ifdef _WIN32
 // Verify that #including windows.h does not break anything (e.g. because
 // windows.h #defines GetMessage() as a macro).
-#include <windows.h>
+//#include <windows.h>
 #endif
 
 #include <google/protobuf/test_util.h>
@@ -1285,7 +1285,7 @@ void TestUtil::ExpectAllExtensionsSet(
 
 void TestUtil::ExpectExtensionsClear(
     const unittest::TestAllExtensions& message) {
-  string serialized;
+  std::string serialized;
   ASSERT_TRUE(message.SerializeToString(&serialized));
   EXPECT_EQ("", serialized);
   EXPECT_EQ(0, message.ByteSize());
@@ -1703,10 +1703,10 @@ void TestUtil::ExpectPackedExtensionsModified(
 
 // -------------------------------------------------------------------
 
-void TestUtil::ExpectAllFieldsAndExtensionsInOrder(const string& serialized) {
+void TestUtil::ExpectAllFieldsAndExtensionsInOrder(const std::string& serialized) {
   // We set each field individually, serialize separately, and concatenate all
   // the strings in canonical order to determine the expected serialization.
-  string expected;
+  std::string expected;
   unittest::TestFieldOrderings message;
   message.set_my_int(1);  // Field 1.
   message.AppendToString(&expected);
@@ -2079,7 +2079,7 @@ TestUtil::ReflectionTester::ReflectionTester(
 }
 
 // Shorthand to get a FieldDescriptor for a field of unittest::TestAllTypes.
-const FieldDescriptor* TestUtil::ReflectionTester::F(const string& name) {
+const FieldDescriptor* TestUtil::ReflectionTester::F(const std::string& name) {
   const FieldDescriptor* result = NULL;
   if (base_descriptor_->name() == "TestAllExtensions" ||
       base_descriptor_->name() == "TestPackedExtensions") {
@@ -2270,7 +2270,7 @@ void TestUtil::ReflectionTester::ExpectAllFieldsSetViaReflection(
 void TestUtil::ReflectionTester::ExpectAllFieldsSetViaReflection1(
     const Message& message) {
   const Reflection* reflection = message.GetReflection();
-  string scratch;
+  std::string scratch;
   const Message* sub_message;
 
   EXPECT_TRUE(reflection->HasField(message, F("optional_int32"   )));
@@ -2352,7 +2352,7 @@ void TestUtil::ReflectionTester::ExpectAllFieldsSetViaReflection1(
 void TestUtil::ReflectionTester::ExpectAllFieldsSetViaReflection2(
     const Message& message) {
   const Reflection* reflection = message.GetReflection();
-  string scratch;
+  std::string scratch;
   const Message* sub_message;
 
   // -----------------------------------------------------------------
@@ -2470,7 +2470,7 @@ void TestUtil::ReflectionTester::ExpectAllFieldsSetViaReflection2(
 void TestUtil::ReflectionTester::ExpectAllFieldsSetViaReflection3(
     const Message& message) {
   const Reflection* reflection = message.GetReflection();
-  string scratch;
+  std::string scratch;
 
   // -----------------------------------------------------------------
 
@@ -2585,7 +2585,7 @@ void TestUtil::ReflectionTester::ExpectPackedFieldsSetViaReflection(
 void TestUtil::ReflectionTester::ExpectClearViaReflection(
     const Message& message) {
   const Reflection* reflection = message.GetReflection();
-  string scratch;
+  std::string scratch;
   const Message* sub_message;
 
   // has_blah() should initially be false for all optional fields.
@@ -2827,7 +2827,7 @@ void TestUtil::ReflectionTester::ModifyPackedFieldsViaReflection(
 void TestUtil::ReflectionTester::RemoveLastRepeatedsViaReflection(Message* message) {
   const Reflection* reflection = message->GetReflection();
 
-  vector<const FieldDescriptor*> output;
+  std::vector<const FieldDescriptor*> output;
   reflection->ListFields(*message, &output);
   for (int i=0; i<output.size(); ++i) {
     const FieldDescriptor* field = output[i];
@@ -2840,7 +2840,7 @@ void TestUtil::ReflectionTester::RemoveLastRepeatedsViaReflection(Message* messa
 void TestUtil::ReflectionTester::SwapRepeatedsViaReflection(Message* message) {
   const Reflection* reflection = message->GetReflection();
 
-  vector<const FieldDescriptor*> output;
+  std::vector<const FieldDescriptor*> output;
   reflection->ListFields(*message, &output);
   for (int i=0; i<output.size(); ++i) {
     const FieldDescriptor* field = output[i];

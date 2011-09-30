@@ -67,8 +67,8 @@ class DescriptorPoolExtensionFinder : public ExtensionFinder {
 
 void ExtensionSet::AppendToList(const Descriptor* containing_type,
                                 const DescriptorPool* pool,
-                                vector<const FieldDescriptor*>* output) const {
-  for (map<int, Extension>::const_iterator iter = extensions_.begin();
+                                std::vector<const FieldDescriptor*>* output) const {
+  for (std::map<int, Extension>::const_iterator iter = extensions_.begin();
        iter != extensions_.end(); ++iter) {
     bool has = false;
     if (iter->second.is_repeated) {
@@ -112,7 +112,7 @@ inline FieldDescriptor::CppType cpp_type(FieldType type) {
 const MessageLite& ExtensionSet::GetMessage(int number,
                                             const Descriptor* message_type,
                                             MessageFactory* factory) const {
-  map<int, Extension>::const_iterator iter = extensions_.find(number);
+  std::map<int, Extension>::const_iterator iter = extensions_.find(number);
   if (iter == extensions_.end() || iter->second.is_cleared) {
     // Not present.  Return the default value.
     return *factory->GetPrototype(message_type);
@@ -234,8 +234,8 @@ bool ExtensionSet::ParseMessageSet(io::CodedInputStream* input,
 
 int ExtensionSet::SpaceUsedExcludingSelf() const {
   int total_size =
-      extensions_.size() * sizeof(map<int, Extension>::value_type);
-  for (map<int, Extension>::const_iterator iter = extensions_.begin(),
+      extensions_.size() * sizeof(std::map<int, Extension>::value_type);
+  for (std::map<int, Extension>::const_iterator iter = extensions_.begin(),
        end = extensions_.end();
        iter != end;
        ++iter) {
@@ -301,7 +301,7 @@ int ExtensionSet::Extension::SpaceUsedExcludingSelf() const {
 uint8* ExtensionSet::SerializeWithCachedSizesToArray(
     int start_field_number, int end_field_number,
     uint8* target) const {
-  map<int, Extension>::const_iterator iter;
+  std::map<int, Extension>::const_iterator iter;
   for (iter = extensions_.lower_bound(start_field_number);
        iter != extensions_.end() && iter->first < end_field_number;
        ++iter) {
@@ -313,7 +313,7 @@ uint8* ExtensionSet::SerializeWithCachedSizesToArray(
 
 uint8* ExtensionSet::SerializeMessageSetWithCachedSizesToArray(
     uint8* target) const {
-  map<int, Extension>::const_iterator iter;
+  std::map<int, Extension>::const_iterator iter;
   for (iter = extensions_.begin(); iter != extensions_.end(); ++iter) {
     target = iter->second.SerializeMessageSetItemWithCachedSizesToArray(
         iter->first, target);

@@ -56,7 +56,7 @@ using internal::WireFormat;
 
 namespace {
 
-typedef hash_map<string, FieldDescriptorProto::Type> TypeNameMap;
+typedef hash_map<std::string, FieldDescriptorProto::Type> TypeNameMap;
 
 TypeNameMap MakeTypeNameTable() {
   TypeNameMap result;
@@ -141,12 +141,12 @@ bool Parser::Consume(const char* text) {
   if (TryConsume(text)) {
     return true;
   } else {
-    AddError("Expected \"" + string(text) + "\".");
+    AddError("Expected \"" + std::string(text) + "\".");
     return false;
   }
 }
 
-bool Parser::ConsumeIdentifier(string* output, const char* error) {
+bool Parser::ConsumeIdentifier(std::string* output, const char* error) {
   if (LookingAtType(io::Tokenizer::TYPE_IDENTIFIER)) {
     *output = input_->current().text;
     input_->Next();
@@ -208,11 +208,11 @@ bool Parser::ConsumeNumber(double* output, const char* error) {
     input_->Next();
     return true;
   } else if (LookingAt("inf")) {
-    *output = numeric_limits<double>::infinity();
+    *output = std::numeric_limits<double>::infinity();
     input_->Next();
     return true;
   } else if (LookingAt("nan")) {
-    *output = numeric_limits<double>::quiet_NaN();
+    *output = std::numeric_limits<double>::quiet_NaN();
     input_->Next();
     return true;
   } else {
@@ -221,7 +221,7 @@ bool Parser::ConsumeNumber(double* output, const char* error) {
   }
 }
 
-bool Parser::ConsumeString(string* output, const char* error) {
+bool Parser::ConsumeString(std::string* output, const char* error) {
   if (LookingAtType(io::Tokenizer::TYPE_STRING)) {
     io::Tokenizer::ParseString(input_->current().text, output);
     input_->Next();
@@ -239,14 +239,14 @@ bool Parser::ConsumeString(string* output, const char* error) {
 
 // -------------------------------------------------------------------
 
-void Parser::AddError(int line, int column, const string& error) {
+void Parser::AddError(int line, int column, const std::string& error) {
   if (error_collector_ != NULL) {
     error_collector_->AddError(line, column, error);
   }
   had_errors_ = true;
 }
 
-void Parser::AddError(const string& error) {
+void Parser::AddError(const std::string& error) {
   AddError(input_->current().line, input_->current().column, error);
 }
 
@@ -409,7 +409,7 @@ bool Parser::ParseSyntaxIdentifier() {
   DO(Consume("syntax", "File must begin with 'syntax = \"proto2\";'."));
   DO(Consume("="));
   io::Tokenizer::Token syntax_token = input_->current();
-  string syntax;
+  std::string syntax;
   DO(ConsumeString(&syntax, "Expected syntax identifier."));
   DO(Consume(";"));
 
@@ -565,7 +565,7 @@ bool Parser::ParseMessageField(FieldDescriptorProto* field,
     location.RecordLegacyLocation(field, DescriptorPool::ErrorCollector::TYPE);
 
     FieldDescriptorProto::Type type = FieldDescriptorProto::TYPE_INT32;
-    string type_name;
+    std::string type_name;
     DO(ParseType(&type, &type_name));
     if (type_name.empty()) {
       location.AddPath(FieldDescriptorProto::kTypeFieldNumber);
@@ -637,7 +637,7 @@ bool Parser::ParseMessageField(FieldDescriptorProto* field,
       AddError(name_token.line, name_token.column,
         "Group names must start with a capital letter.");
     }
-    LowerString(field->mutable_name());
+    protobuf::LowerString(field->mutable_name());
 
     field->set_type_name(group->name());
     if (LookingAt("{")) {
@@ -691,7 +691,7 @@ bool Parser::ParseDefaultAssignment(FieldDescriptorProto* field,
                             FieldDescriptorProto::kDefaultValueFieldNumber);
   location.RecordLegacyLocation(
       field, DescriptorPool::ErrorCollector::DEFAULT_VALUE);
-  string* default_value = field->mutable_default_value();
+  std::string* default_value = field->mutable_default_value();
 
   if (!field->has_type()) {
     // The field has a type name, but we don't know if it is a message or an
@@ -781,7 +781,7 @@ bool Parser::ParseDefaultAssignment(FieldDescriptorProto* field,
 
     case FieldDescriptorProto::TYPE_BYTES:
       DO(ConsumeString(default_value, "Expected string."));
-      *default_value = CEscape(*default_value);
+      *default_value = protobuf::CEscape(*default_value);
       break;
 
     case FieldDescriptorProto::TYPE_ENUM:
@@ -800,7 +800,7 @@ bool Parser::ParseDefaultAssignment(FieldDescriptorProto* field,
 bool Parser::ParseOptionNamePart(UninterpretedOption* uninterpreted_option,
                                  const LocationRecorder& part_location) {
   UninterpretedOption::NamePart* name = uninterpreted_option->add_name();
-  string identifier;  // We parse identifiers into this string.
+  std::string identifier;  // We parse identifiers into this string.
   if (LookingAt("(")) {  // This is an extension.
     DO(Consume("("));
 
@@ -833,7 +833,7 @@ bool Parser::ParseOptionNamePart(UninterpretedOption* uninterpreted_option,
   return true;
 }
 
-bool Parser::ParseUninterpretedBlock(string* value) {
+bool Parser::ParseUninterpretedBlock(std::string* value) {
   // Note that enclosing braces are not added to *value.
   DO(Consume("{"));
   int brace_depth = 1;
@@ -922,7 +922,7 @@ bool Parser::ParseOptionAssignment(Message* options,
         AddError("Invalid '-' symbol before identifier.");
         return false;
       }
-      string value;
+      std::string value;
       DO(ConsumeIdentifier(&value, "Expected identifier."));
       uninterpreted_option->set_identifier_value(value);
       break;
@@ -959,7 +959,7 @@ bool Parser::ParseOptionAssignment(Message* options,
         AddError("Invalid '-' symbol before string.");
         return false;
       }
-      string value;
+      std::string value;
       DO(ConsumeString(&value, "Expected string."));
       uninterpreted_option->set_string_value(value);
       break;
@@ -1041,7 +1041,7 @@ bool Parser::ParseExtend(RepeatedPtrField<FieldDescriptorProto>* extensions,
 
   // Parse the extendee type.
   io::Tokenizer::Token extendee_start = input_->current();
-  string extendee;
+  std::string extendee;
   DO(ParseUserDefinedType(&extendee));
   io::Tokenizer::Token extendee_end = input_->previous();
 
@@ -1335,7 +1335,7 @@ bool Parser::ParseLabel(FieldDescriptorProto::Label* label) {
 }
 
 bool Parser::ParseType(FieldDescriptorProto::Type* type,
-                       string* type_name) {
+                       std::string* type_name) {
   TypeNameMap::const_iterator iter = kTypeNames.find(input_->current().text);
   if (iter != kTypeNames.end()) {
     *type = iter->second;
@@ -1346,7 +1346,7 @@ bool Parser::ParseType(FieldDescriptorProto::Type* type,
   return true;
 }
 
-bool Parser::ParseUserDefinedType(string* type_name) {
+bool Parser::ParseUserDefinedType(std::string* type_name) {
   type_name->clear();
 
   TypeNameMap::const_iterator iter = kTypeNames.find(input_->current().text);
@@ -1367,7 +1367,7 @@ bool Parser::ParseUserDefinedType(string* type_name) {
   if (TryConsume(".")) type_name->append(".");
 
   // Consume the first part of the name.
-  string identifier;
+  std::string identifier;
   DO(ConsumeIdentifier(&identifier, "Expected type name."));
   type_name->append(identifier);
 
@@ -1400,7 +1400,7 @@ bool Parser::ParsePackage(FileDescriptorProto* file,
     location.RecordLegacyLocation(file, DescriptorPool::ErrorCollector::NAME);
 
     while (true) {
-      string identifier;
+      std::string identifier;
       DO(ConsumeIdentifier(&identifier, "Expected identifier."));
       file->mutable_package()->append(identifier);
       if (!TryConsume(".")) break;
@@ -1412,7 +1412,7 @@ bool Parser::ParsePackage(FileDescriptorProto* file,
   return true;
 }
 
-bool Parser::ParseImport(string* import_filename,
+bool Parser::ParseImport(std::string* import_filename,
                          const LocationRecorder& root_location,
                          int index) {
   DO(Consume("import"));
@@ -1444,8 +1444,8 @@ bool SourceLocationTable::Find(
     const Message* descriptor,
     DescriptorPool::ErrorCollector::ErrorLocation location,
     int* line, int* column) const {
-  const pair<int, int>* result =
-    FindOrNull(location_map_, make_pair(descriptor, location));
+  const std::pair<int, int>* result =
+    FindOrNull(location_map_, std::make_pair(descriptor, location));
   if (result == NULL) {
     *line   = -1;
     *column = 0;
@@ -1461,7 +1461,7 @@ void SourceLocationTable::Add(
     const Message* descriptor,
     DescriptorPool::ErrorCollector::ErrorLocation location,
     int line, int column) {
-  location_map_[make_pair(descriptor, location)] = make_pair(line, column);
+  location_map_[std::make_pair(descriptor, location)] = std::make_pair(line, column);
 }
 
 void SourceLocationTable::Clear() {

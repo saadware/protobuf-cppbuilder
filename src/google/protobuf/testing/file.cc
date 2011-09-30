@@ -58,11 +58,11 @@ namespace protobuf {
 #endif
 #endif
 
-bool File::Exists(const string& name) {
+bool File::Exists(const std::string& name) {
   return access(name.c_str(), F_OK) == 0;
 }
 
-bool File::ReadFileToString(const string& name, string* output) {
+bool File::ReadFileToString(const std::string& name, std::string* output) {
   char buffer[1024];
   FILE* file = fopen(name.c_str(), "rb");
   if (file == NULL) return false;
@@ -78,11 +78,11 @@ bool File::ReadFileToString(const string& name, string* output) {
   return error == 0;
 }
 
-void File::ReadFileToStringOrDie(const string& name, string* output) {
+void File::ReadFileToStringOrDie(const std::string& name, std::string* output) {
   GOOGLE_CHECK(ReadFileToString(name, output)) << "Could not read: " << name;
 }
 
-void File::WriteStringToFileOrDie(const string& contents, const string& name) {
+void File::WriteStringToFileOrDie(const std::string& contents, const std::string& name) {
   FILE* file = fopen(name.c_str(), "wb");
   GOOGLE_CHECK(file != NULL)
       << "fopen(" << name << ", \"wb\"): " << strerror(errno);
@@ -93,18 +93,18 @@ void File::WriteStringToFileOrDie(const string& contents, const string& name) {
       << "fclose(" << name << "): " << strerror(errno);
 }
 
-bool File::CreateDir(const string& name, int mode) {
+bool File::CreateDir(const std::string& name, int mode) {
   return mkdir(name.c_str(), mode) == 0;
 }
 
-bool File::RecursivelyCreateDir(const string& path, int mode) {
+bool File::RecursivelyCreateDir(const std::string& path, int mode) {
   if (CreateDir(path, mode)) return true;
 
   if (Exists(path)) return false;
 
   // Try creating the parent.
-  string::size_type slashpos = path.find_last_of('/');
-  if (slashpos == string::npos) {
+  std::string::size_type slashpos = path.find_last_of('/');
+  if (slashpos == std::string::npos) {
     // No parent given.
     return false;
   }
@@ -113,7 +113,7 @@ bool File::RecursivelyCreateDir(const string& path, int mode) {
          CreateDir(path, mode);
 }
 
-void File::DeleteRecursively(const string& name,
+void File::DeleteRecursively(const std::string& name,
                              void* dummy1, void* dummy2) {
   // We don't care too much about error checking here since this is only used
   // in tests to delete temporary directories that are under /tmp anyway.
@@ -130,9 +130,9 @@ void File::DeleteRecursively(const string& name,
   }
 
   do {
-    string entry_name = find_data.cFileName;
+    std::string entry_name = find_data.cFileName;
     if (entry_name != "." && entry_name != "..") {
-      string path = name + "/" + entry_name;
+      std::string path = name + "/" + entry_name;
       if (find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
         DeleteRecursively(path, NULL, NULL);
         RemoveDirectory(path.c_str());
@@ -156,7 +156,7 @@ void File::DeleteRecursively(const string& name,
       while (true) {
         struct dirent* entry = readdir(dir);
         if (entry == NULL) break;
-        string entry_name = entry->d_name;
+        std::string entry_name = entry->d_name;
         if (entry_name != "." && entry_name != "..") {
           DeleteRecursively(name + "/" + entry_name, NULL, NULL);
         }

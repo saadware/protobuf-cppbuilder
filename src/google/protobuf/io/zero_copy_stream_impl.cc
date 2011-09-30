@@ -32,14 +32,14 @@
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(_CPPBUILDER)
 #include <io.h>
 #else
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #endif
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <errno.h>
 #include <iostream>
 #include <algorithm>
@@ -268,7 +268,7 @@ bool FileOutputStream::CopyingFileOutputStream::Write(
 
 // ===================================================================
 
-IstreamInputStream::IstreamInputStream(istream* input, int block_size)
+IstreamInputStream::IstreamInputStream(std::istream* input, int block_size)
   : copying_input_(input),
     impl_(&copying_input_, block_size) {
 }
@@ -292,7 +292,7 @@ int64 IstreamInputStream::ByteCount() const {
 }
 
 IstreamInputStream::CopyingIstreamInputStream::CopyingIstreamInputStream(
-    istream* input)
+    std::istream* input)
   : input_(input) {
 }
 
@@ -310,7 +310,7 @@ int IstreamInputStream::CopyingIstreamInputStream::Read(
 
 // ===================================================================
 
-OstreamOutputStream::OstreamOutputStream(ostream* output, int block_size)
+OstreamOutputStream::OstreamOutputStream(std::ostream* output, int block_size)
   : copying_output_(output),
     impl_(&copying_output_, block_size) {
 }
@@ -332,7 +332,7 @@ int64 OstreamOutputStream::ByteCount() const {
 }
 
 OstreamOutputStream::CopyingOstreamOutputStream::CopyingOstreamOutputStream(
-    ostream* output)
+    std::ostream* output)
   : output_(output) {
 }
 

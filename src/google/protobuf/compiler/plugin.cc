@@ -48,6 +48,10 @@
 #include <unistd.h>
 #endif
 
+#ifdef _CPPBUILDER
+#define _setmode setmode   // use the WIN32 definition of setmode
+#endif
+
 #include <google/protobuf/stubs/common.h>
 #include <google/protobuf/compiler/plugin.pb.h>
 #include <google/protobuf/compiler/code_generator.h>
@@ -62,40 +66,40 @@ namespace compiler {
 class GeneratorResponseContext : public GeneratorContext {
  public:
   GeneratorResponseContext(CodeGeneratorResponse* response,
-                           const vector<const FileDescriptor*>& parsed_files)
+                           const std::vector<const FileDescriptor*>& parsed_files)
       : response_(response),
         parsed_files_(parsed_files) {}
   virtual ~GeneratorResponseContext() {}
 
   // implements GeneratorContext --------------------------------------
 
-  virtual io::ZeroCopyOutputStream* Open(const string& filename) {
+  virtual io::ZeroCopyOutputStream* Open(const std::string& filename) {
     CodeGeneratorResponse::File* file = response_->add_file();
     file->set_name(filename);
     return new io::StringOutputStream(file->mutable_content());
   }
 
   virtual io::ZeroCopyOutputStream* OpenForInsert(
-      const string& filename, const string& insertion_point) {
+      const std::string& filename, const std::string& insertion_point) {
     CodeGeneratorResponse::File* file = response_->add_file();
     file->set_name(filename);
     file->set_insertion_point(insertion_point);
     return new io::StringOutputStream(file->mutable_content());
   }
 
-  void ListParsedFiles(vector<const FileDescriptor*>* output) {
+  void ListParsedFiles(std::vector<const FileDescriptor*>* output) {
     *output = parsed_files_;
   }
 
  private:
   CodeGeneratorResponse* response_;
-  const vector<const FileDescriptor*>& parsed_files_;
+  const std::vector<const FileDescriptor*>& parsed_files_;
 };
 
 int PluginMain(int argc, char* argv[], const CodeGenerator* generator) {
 
   if (argc > 1) {
-    cerr << argv[0] << ": Unknown option: " << argv[1] << endl;
+    std::cerr << argv[0] << ": Unknown option: " << argv[1] << std::endl;
     return 1;
   }
 
@@ -106,7 +110,7 @@ int PluginMain(int argc, char* argv[], const CodeGenerator* generator) {
 
   CodeGeneratorRequest request;
   if (!request.ParseFromFileDescriptor(STDIN_FILENO)) {
-    cerr << argv[0] << ": protoc sent unparseable request to plugin." << endl;
+    std::cerr << argv[0] << ": protoc sent unparseable request to plugin." << std::endl;
     return 1;
   }
 
@@ -119,13 +123,13 @@ int PluginMain(int argc, char* argv[], const CodeGenerator* generator) {
     }
   }
 
-  vector<const FileDescriptor*> parsed_files;
+  std::vector<const FileDescriptor*> parsed_files;
   for (int i = 0; i < request.file_to_generate_size(); i++) {
     parsed_files.push_back(pool.FindFileByName(request.file_to_generate(i)));
     if (parsed_files.back() == NULL) {
-      cerr << argv[0] << ": protoc asked plugin to generate a file but "
+      std::cerr << argv[0] << ": protoc asked plugin to generate a file but "
               "did not provide a descriptor for the file: "
-           << request.file_to_generate(i) << endl;
+           << request.file_to_generate(i) << std::endl;
       return 1;
     }
   }
@@ -136,7 +140,7 @@ int PluginMain(int argc, char* argv[], const CodeGenerator* generator) {
   for (int i = 0; i < parsed_files.size(); i++) {
     const FileDescriptor* file = parsed_files[i];
 
-    string error;
+    std::string error;
     bool succeeded = generator->Generate(
         file, request.parameter(), &context, &error);
 
@@ -151,7 +155,7 @@ int PluginMain(int argc, char* argv[], const CodeGenerator* generator) {
   }
 
   if (!response.SerializeToFileDescriptor(STDOUT_FILENO)) {
-    cerr << argv[0] << ": Error writing to stdout." << endl;
+    std::cerr << argv[0] << ": Error writing to stdout." << std::endl;
     return 1;
   }
 

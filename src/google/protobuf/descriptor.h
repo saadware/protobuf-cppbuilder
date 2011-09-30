@@ -108,14 +108,14 @@ class UnknownField;
 class LIBPROTOBUF_EXPORT Descriptor {
  public:
   // The name of the message type, not including its scope.
-  const string& name() const;
+  const std::string& name() const;
 
   // The fully-qualified name of the message type, scope delimited by
   // periods.  For example, message type "Foo" which is declared in package
   // "bar" has full name "bar.Foo".  If a type "Baz" is nested within
   // Foo, Baz's full_name is "bar.Foo.Baz".  To get only the part that
   // comes after the last '.', use name().
-  const string& full_name() const;
+  const std::string& full_name() const;
 
   // Index of this descriptor within the file or containing type's message
   // type array.
@@ -142,7 +142,7 @@ class LIBPROTOBUF_EXPORT Descriptor {
 
   // Write the contents of this decriptor in a human-readable form. Output
   // will be suitable for re-parsing.
-  string DebugString() const;
+  std::string DebugString() const;
 
   // Field stuff -----------------------------------------------------
 
@@ -156,20 +156,20 @@ class LIBPROTOBUF_EXPORT Descriptor {
   // exists.
   const FieldDescriptor* FindFieldByNumber(int number) const;
   // Looks up a field by name.  Returns NULL if no such field exists.
-  const FieldDescriptor* FindFieldByName(const string& name) const;
+  const FieldDescriptor* FindFieldByName(const std::string& name) const;
 
   // Looks up a field by lowercased name (as returned by lowercase_name()).
   // This lookup may be ambiguous if multiple field names differ only by case,
   // in which case the field returned is chosen arbitrarily from the matches.
   const FieldDescriptor* FindFieldByLowercaseName(
-      const string& lowercase_name) const;
+      const std::string& lowercase_name) const;
 
   // Looks up a field by camel-case name (as returned by camelcase_name()).
   // This lookup may be ambiguous if multiple field names differ in a way that
   // leads them to have identical camel-case names, in which case the field
   // returned is chosen arbitrarily from the matches.
   const FieldDescriptor* FindFieldByCamelcaseName(
-      const string& camelcase_name) const;
+      const std::string& camelcase_name) const;
 
   // Nested type stuff -----------------------------------------------
 
@@ -181,7 +181,7 @@ class LIBPROTOBUF_EXPORT Descriptor {
 
   // Looks up a nested type by name.  Returns NULL if no such nested type
   // exists.
-  const Descriptor* FindNestedTypeByName(const string& name) const;
+  const Descriptor* FindNestedTypeByName(const std::string& name) const;
 
   // Enum stuff ------------------------------------------------------
 
@@ -192,11 +192,11 @@ class LIBPROTOBUF_EXPORT Descriptor {
   const EnumDescriptor* enum_type(int index) const;
 
   // Looks up an enum type by name.  Returns NULL if no such enum type exists.
-  const EnumDescriptor* FindEnumTypeByName(const string& name) const;
+  const EnumDescriptor* FindEnumTypeByName(const std::string& name) const;
 
   // Looks up an enum value by name, among all enum types in this message.
   // Returns NULL if no such value exists.
-  const EnumValueDescriptor* FindEnumValueByName(const string& name) const;
+  const EnumValueDescriptor* FindEnumValueByName(const std::string& name) const;
 
   // Extensions ------------------------------------------------------
 
@@ -226,25 +226,25 @@ class LIBPROTOBUF_EXPORT Descriptor {
 
   // Looks up a named extension (which extends some *other* message type)
   // defined within this message type's scope.
-  const FieldDescriptor* FindExtensionByName(const string& name) const;
+  const FieldDescriptor* FindExtensionByName(const std::string& name) const;
 
   // Similar to FindFieldByLowercaseName(), but finds extensions defined within
   // this message type's scope.
-  const FieldDescriptor* FindExtensionByLowercaseName(const string& name) const;
+  const FieldDescriptor* FindExtensionByLowercaseName(const std::string& name) const;
 
   // Similar to FindFieldByCamelcaseName(), but finds extensions defined within
   // this message type's scope.
-  const FieldDescriptor* FindExtensionByCamelcaseName(const string& name) const;
+  const FieldDescriptor* FindExtensionByCamelcaseName(const std::string& name) const;
 
  private:
   typedef MessageOptions OptionsType;
 
   // Internal version of DebugString; controls the level of indenting for
   // correct depth
-  void DebugString(int depth, string *contents) const;
+  void DebugString(int depth, std::string *contents) const;
 
-  const string* name_;
-  const string* full_name_;
+  const std::string* name_;
+  const std::string* full_name_;
   const FileDescriptor* file_;
   const Descriptor* containing_type_;
   const MessageOptions* options_;
@@ -363,8 +363,8 @@ class LIBPROTOBUF_EXPORT FieldDescriptor {
   // Users may not declare fields that use reserved numbers.
   static const int kLastReservedNumber  = 19999;
 
-  const string& name() const;        // Name of this field within the message.
-  const string& full_name() const;   // Fully-qualified name of the field.
+  const std::string& name() const;        // Name of this field within the message.
+  const std::string& full_name() const;   // Fully-qualified name of the field.
   const FileDescriptor* file() const;// File in which this field was defined.
   bool is_extension() const;         // Is this an extension field?
   int number() const;                // Declared tag number.
@@ -375,7 +375,7 @@ class LIBPROTOBUF_EXPORT FieldDescriptor {
   // field names should be lowercased anyway according to the protobuf style
   // guide, so this only makes a difference when dealing with old .proto files
   // which do not follow the guide.)
-  const string& lowercase_name() const;
+  const std::string& lowercase_name() const;
 
   // Same as name() except converted to camel-case.  In this conversion, any
   // time an underscore appears in the name, it is removed and the next
@@ -386,7 +386,7 @@ class LIBPROTOBUF_EXPORT FieldDescriptor {
   //   fooBar -> fooBar
   // This (and especially the FindFieldByCamelcaseName() method) can be useful
   // when parsing formats which prefer to use camel-case naming style.
-  const string& camelcase_name() const;
+  const std::string& camelcase_name() const;
 
   Type type() const;                 // Declared type of this field.
   CppType cpp_type() const;          // C++ type of this field.
@@ -433,7 +433,7 @@ class LIBPROTOBUF_EXPORT FieldDescriptor {
   const EnumValueDescriptor* default_value_enum() const;
   // Get the field default value if cpp_type() == CPPTYPE_STRING.  If no
   // explicit default was defined, the default is the empty string.
-  const string& default_value_string() const;
+  const std::string& default_value_string() const;
 
   // The Descriptor for the message of which this is a field.  For extensions,
   // this is the extended type.  Never NULL.
@@ -471,7 +471,7 @@ class LIBPROTOBUF_EXPORT FieldDescriptor {
   void CopyTo(FieldDescriptorProto* proto) const;
 
   // See Descriptor::DebugString().
-  string DebugString() const;
+  std::string DebugString() const;
 
   // Helper method to get the CppType for a particular Type.
   static CppType TypeToCppType(Type type);
@@ -483,17 +483,17 @@ class LIBPROTOBUF_EXPORT FieldDescriptor {
   typedef FieldOptions OptionsType;
 
   // See Descriptor::DebugString().
-  void DebugString(int depth, string *contents) const;
+  void DebugString(int depth, std::string *contents) const;
 
   // formats the default value appropriately and returns it as a string.
   // Must have a default value to call this. If quote_string_type is true, then
   // types of CPPTYPE_STRING whill be surrounded by quotes and CEscaped.
-  string DefaultValueAsString(bool quote_string_type) const;
+  std::string DefaultValueAsString(bool quote_string_type) const;
 
-  const string* name_;
-  const string* full_name_;
-  const string* lowercase_name_;
-  const string* camelcase_name_;
+  const std::string* name_;
+  const std::string* full_name_;
+  const std::string* lowercase_name_;
+  const std::string* camelcase_name_;
   const FileDescriptor* file_;
   int number_;
   Type type_;
@@ -520,7 +520,7 @@ class LIBPROTOBUF_EXPORT FieldDescriptor {
     bool   default_value_bool_;
 
     const EnumValueDescriptor* default_value_enum_;
-    const string* default_value_string_;
+    const std::string* default_value_string_;
   };
 
   static const CppType kTypeToCppTypeMap[MAX_TYPE + 1];
@@ -543,10 +543,10 @@ class LIBPROTOBUF_EXPORT FieldDescriptor {
 class LIBPROTOBUF_EXPORT EnumDescriptor {
  public:
   // The name of this enum type in the containing scope.
-  const string& name() const;
+  const std::string& name() const;
 
   // The fully-qualified name of the enum type, scope delimited by periods.
-  const string& full_name() const;
+  const std::string& full_name() const;
 
   // Index of this enum within the file or containing message's enum array.
   int index() const;
@@ -562,7 +562,7 @@ class LIBPROTOBUF_EXPORT EnumDescriptor {
   const EnumValueDescriptor* value(int index) const;
 
   // Looks up a value by name.  Returns NULL if no such value exists.
-  const EnumValueDescriptor* FindValueByName(const string& name) const;
+  const EnumValueDescriptor* FindValueByName(const std::string& name) const;
   // Looks up a value by number.  Returns NULL if no such value exists.  If
   // multiple values have this number, the first one defined is returned.
   const EnumValueDescriptor* FindValueByNumber(int number) const;
@@ -581,16 +581,16 @@ class LIBPROTOBUF_EXPORT EnumDescriptor {
   void CopyTo(EnumDescriptorProto* proto) const;
 
   // See Descriptor::DebugString().
-  string DebugString() const;
+  std::string DebugString() const;
 
  private:
   typedef EnumOptions OptionsType;
 
   // See Descriptor::DebugString().
-  void DebugString(int depth, string *contents) const;
+  void DebugString(int depth, std::string *contents) const;
 
-  const string* name_;
-  const string* full_name_;
+  const std::string* name_;
+  const std::string* full_name_;
   const FileDescriptor* file_;
   const Descriptor* containing_type_;
   const EnumOptions* options_;
@@ -623,7 +623,7 @@ class LIBPROTOBUF_EXPORT EnumDescriptor {
 // your own descriptors.
 class LIBPROTOBUF_EXPORT EnumValueDescriptor {
  public:
-  const string& name() const;  // Name of this enum constant.
+  const std::string& name() const;  // Name of this enum constant.
   int index() const;           // Index within the enums's Descriptor.
   int number() const;          // Numeric value of this enum constant.
 
@@ -632,7 +632,7 @@ class LIBPROTOBUF_EXPORT EnumValueDescriptor {
   // "google.protobuf.FieldDescriptorProto.TYPE_INT32", NOT
   // "google.protobuf.FieldDescriptorProto.Type.TYPE_INT32".  This is to conform
   // with C++ scoping rules for enums.
-  const string& full_name() const;
+  const std::string& full_name() const;
 
   // The type of this value.  Never NULL.
   const EnumDescriptor* type() const;
@@ -648,16 +648,16 @@ class LIBPROTOBUF_EXPORT EnumValueDescriptor {
   void CopyTo(EnumValueDescriptorProto* proto) const;
 
   // See Descriptor::DebugString().
-  string DebugString() const;
+  std::string DebugString() const;
 
  private:
   typedef EnumValueOptions OptionsType;
 
   // See Descriptor::DebugString().
-  void DebugString(int depth, string *contents) const;
+  void DebugString(int depth, std::string *contents) const;
 
-  const string* name_;
-  const string* full_name_;
+  const std::string* name_;
+  const std::string* full_name_;
   int number_;
   const EnumDescriptor* type_;
   const EnumValueOptions* options_;
@@ -679,9 +679,9 @@ class LIBPROTOBUF_EXPORT EnumValueDescriptor {
 class LIBPROTOBUF_EXPORT ServiceDescriptor {
  public:
   // The name of the service, not including its containing scope.
-  const string& name() const;
+  const std::string& name() const;
   // The fully-qualified name of the service, scope delimited by periods.
-  const string& full_name() const;
+  const std::string& full_name() const;
   // Index of this service within the file's services array.
   int index() const;
 
@@ -702,22 +702,22 @@ class LIBPROTOBUF_EXPORT ServiceDescriptor {
   const MethodDescriptor* method(int index) const;
 
   // Look up a MethodDescriptor by name.
-  const MethodDescriptor* FindMethodByName(const string& name) const;
+  const MethodDescriptor* FindMethodByName(const std::string& name) const;
 
   // See Descriptor::CopyTo().
   void CopyTo(ServiceDescriptorProto* proto) const;
 
   // See Descriptor::DebugString().
-  string DebugString() const;
+  std::string DebugString() const;
 
  private:
   typedef ServiceOptions OptionsType;
 
   // See Descriptor::DebugString().
-  void DebugString(string *contents) const;
+  void DebugString(std::string *contents) const;
 
-  const string* name_;
-  const string* full_name_;
+  const std::string* name_;
+  const std::string* full_name_;
   const FileDescriptor* file_;
   const ServiceOptions* options_;
   int method_count_;
@@ -741,9 +741,9 @@ class LIBPROTOBUF_EXPORT ServiceDescriptor {
 class LIBPROTOBUF_EXPORT MethodDescriptor {
  public:
   // Name of this method, not including containing scope.
-  const string& name() const;
+  const std::string& name() const;
   // The fully-qualified name of the method, scope delimited by periods.
-  const string& full_name() const;
+  const std::string& full_name() const;
   // Index within the service's Descriptor.
   int index() const;
 
@@ -766,16 +766,16 @@ class LIBPROTOBUF_EXPORT MethodDescriptor {
   void CopyTo(MethodDescriptorProto* proto) const;
 
   // See Descriptor::DebugString().
-  string DebugString() const;
+  std::string DebugString() const;
 
  private:
   typedef MethodOptions OptionsType;
 
   // See Descriptor::DebugString().
-  void DebugString(int depth, string *contents) const;
+  void DebugString(int depth, std::string *contents) const;
 
-  const string* name_;
-  const string* full_name_;
+  const std::string* name_;
+  const std::string* full_name_;
   const ServiceDescriptor* service_;
   const Descriptor* input_type_;
   const Descriptor* output_type_;
@@ -798,10 +798,10 @@ class LIBPROTOBUF_EXPORT FileDescriptor {
  public:
   // The filename, relative to the source tree.
   // e.g. "google/protobuf/descriptor.proto"
-  const string& name() const;
+  const std::string& name() const;
 
   // The package, e.g. "google.protobuf.compiler".
-  const string& package() const;
+  const std::string& package() const;
 
   // The DescriptorPool in which this FileDescriptor and all its contents were
   // allocated.  Never NULL.
@@ -848,34 +848,34 @@ class LIBPROTOBUF_EXPORT FileDescriptor {
   const FileOptions& options() const;
 
   // Find a top-level message type by name.  Returns NULL if not found.
-  const Descriptor* FindMessageTypeByName(const string& name) const;
+  const Descriptor* FindMessageTypeByName(const std::string& name) const;
   // Find a top-level enum type by name.  Returns NULL if not found.
-  const EnumDescriptor* FindEnumTypeByName(const string& name) const;
+  const EnumDescriptor* FindEnumTypeByName(const std::string& name) const;
   // Find an enum value defined in any top-level enum by name.  Returns NULL if
   // not found.
-  const EnumValueDescriptor* FindEnumValueByName(const string& name) const;
+  const EnumValueDescriptor* FindEnumValueByName(const std::string& name) const;
   // Find a service definition by name.  Returns NULL if not found.
-  const ServiceDescriptor* FindServiceByName(const string& name) const;
+  const ServiceDescriptor* FindServiceByName(const std::string& name) const;
   // Find a top-level extension definition by name.  Returns NULL if not found.
-  const FieldDescriptor* FindExtensionByName(const string& name) const;
+  const FieldDescriptor* FindExtensionByName(const std::string& name) const;
   // Similar to FindExtensionByName(), but searches by lowercased-name.  See
   // Descriptor::FindFieldByLowercaseName().
-  const FieldDescriptor* FindExtensionByLowercaseName(const string& name) const;
+  const FieldDescriptor* FindExtensionByLowercaseName(const std::string& name) const;
   // Similar to FindExtensionByName(), but searches by camelcased-name.  See
   // Descriptor::FindFieldByCamelcaseName().
-  const FieldDescriptor* FindExtensionByCamelcaseName(const string& name) const;
+  const FieldDescriptor* FindExtensionByCamelcaseName(const std::string& name) const;
 
   // See Descriptor::CopyTo().
   void CopyTo(FileDescriptorProto* proto) const;
 
   // See Descriptor::DebugString().
-  string DebugString() const;
+  std::string DebugString() const;
 
  private:
   typedef FileOptions OptionsType;
 
-  const string* name_;
-  const string* package_;
+  const std::string* name_;
+  const std::string* package_;
   const DescriptorPool* pool_;
   int dependency_count_;
   const FileDescriptor** dependencies_;
@@ -966,27 +966,27 @@ class LIBPROTOBUF_EXPORT DescriptorPool {
 
   // Find a FileDescriptor in the pool by file name.  Returns NULL if not
   // found.
-  const FileDescriptor* FindFileByName(const string& name) const;
+  const FileDescriptor* FindFileByName(const std::string& name) const;
 
   // Find the FileDescriptor in the pool which defines the given symbol.
   // If any of the Find*ByName() methods below would succeed, then this is
   // equivalent to calling that method and calling the result's file() method.
   // Otherwise this returns NULL.
   const FileDescriptor* FindFileContainingSymbol(
-      const string& symbol_name) const;
+      const std::string& symbol_name) const;
 
   // Looking up descriptors ------------------------------------------
   // These find descriptors by fully-qualified name.  These will find both
   // top-level descriptors and nested descriptors.  They return NULL if not
   // found.
 
-  const Descriptor* FindMessageTypeByName(const string& name) const;
-  const FieldDescriptor* FindFieldByName(const string& name) const;
-  const FieldDescriptor* FindExtensionByName(const string& name) const;
-  const EnumDescriptor* FindEnumTypeByName(const string& name) const;
-  const EnumValueDescriptor* FindEnumValueByName(const string& name) const;
-  const ServiceDescriptor* FindServiceByName(const string& name) const;
-  const MethodDescriptor* FindMethodByName(const string& name) const;
+  const Descriptor* FindMessageTypeByName(const std::string& name) const;
+  const FieldDescriptor* FindFieldByName(const std::string& name) const;
+  const FieldDescriptor* FindExtensionByName(const std::string& name) const;
+  const EnumDescriptor* FindEnumTypeByName(const std::string& name) const;
+  const EnumValueDescriptor* FindEnumValueByName(const std::string& name) const;
+  const ServiceDescriptor* FindServiceByName(const std::string& name) const;
+  const MethodDescriptor* FindMethodByName(const std::string& name) const;
 
   // Finds an extension of the given type by number.  The extendee must be
   // a member of this DescriptorPool or one of its underlays.
@@ -999,7 +999,7 @@ class LIBPROTOBUF_EXPORT DescriptorPool {
   // found: extensions defined in the fallback database might not be found
   // depending on the database implementation.
   void FindAllExtensions(const Descriptor* extendee,
-                         vector<const FieldDescriptor*>* out) const;
+                         std::vector<const FieldDescriptor*>* out) const;
 
   // Building descriptors --------------------------------------------
 
@@ -1029,11 +1029,11 @@ class LIBPROTOBUF_EXPORT DescriptorPool {
 
     // Reports an error in the FileDescriptorProto.
     virtual void AddError(
-      const string& filename,      // File name in which the error occurred.
-      const string& element_name,  // Full name of the erroneous element.
+      const std::string& filename,      // File name in which the error occurred.
+      const std::string& element_name,  // Full name of the erroneous element.
       const Message* descriptor,   // Descriptor of the erroneous element.
       ErrorLocation location,      // One of the location constants, above.
-      const string& message        // Human-readable error message.
+      const std::string& message        // Human-readable error message.
       ) = 0;
 
    private:
@@ -1122,7 +1122,7 @@ class LIBPROTOBUF_EXPORT DescriptorPool {
   // For internal (unit test) use only:  Returns true if a FileDescriptor has
   // been constructed for the given file, false otherwise.  Useful for testing
   // lazy descriptor initialization behavior.
-  bool InternalIsFileLoaded(const string& filename) const;
+  bool InternalIsFileLoaded(const std::string& filename) const;
 
  private:
   friend class Descriptor;
@@ -1136,8 +1136,8 @@ class LIBPROTOBUF_EXPORT DescriptorPool {
   // corresponding proto file.  Returns true if successful, in which case
   // the caller should search for the thing again.  These are declared
   // const because they are called by (semantically) const methods.
-  bool TryFindFileInFallbackDatabase(const string& name) const;
-  bool TryFindSymbolInFallbackDatabase(const string& name) const;
+  bool TryFindFileInFallbackDatabase(const std::string& name) const;
+  bool TryFindSymbolInFallbackDatabase(const std::string& name) const;
   bool TryFindExtensionInFallbackDatabase(const Descriptor* containing_type,
                                           int field_number) const;
 
@@ -1165,6 +1165,7 @@ class LIBPROTOBUF_EXPORT DescriptorPool {
   bool allow_unknown_;
 
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(DescriptorPool);
+  friend class Tables;
 };
 
 // inline methods ====================================================
@@ -1175,7 +1176,7 @@ class LIBPROTOBUF_EXPORT DescriptorPool {
 
 // Strings fields are stored as pointers but returned as const references.
 #define PROTOBUF_DEFINE_STRING_ACCESSOR(CLASS, FIELD) \
-  inline const string& CLASS::FIELD() const { return *FIELD##_; }
+  inline const std::string& CLASS::FIELD() const { return *FIELD##_; }
 
 // Arrays take an index parameter, obviously.
 #define PROTOBUF_DEFINE_ARRAY_ACCESSOR(CLASS, FIELD, TYPE) \

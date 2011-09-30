@@ -88,7 +88,7 @@ class SubstituteArg {
  public:
   inline SubstituteArg(const char* value)
     : text_(value), size_(strlen(text_)) {}
-  inline SubstituteArg(const string& value)
+  inline SubstituteArg(const std::string& value)
     : text_(value.data()), size_(value.size()) {}
 
   // Indicates that no argument was given.
@@ -137,7 +137,7 @@ class SubstituteArg {
 
 }  // namespace internal
 
-LIBPROTOBUF_EXPORT string Substitute(
+LIBPROTOBUF_EXPORT std::string Substitute(
   const char* format,
   const internal::SubstituteArg& arg0 = internal::SubstituteArg(),
   const internal::SubstituteArg& arg1 = internal::SubstituteArg(),
@@ -151,7 +151,7 @@ LIBPROTOBUF_EXPORT string Substitute(
   const internal::SubstituteArg& arg9 = internal::SubstituteArg());
 
 LIBPROTOBUF_EXPORT void SubstituteAndAppend(
-  string* output, const char* format,
+  std::string* output, const char* format,
   const internal::SubstituteArg& arg0 = internal::SubstituteArg(),
   const internal::SubstituteArg& arg1 = internal::SubstituteArg(),
   const internal::SubstituteArg& arg2 = internal::SubstituteArg(),

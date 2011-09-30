@@ -51,50 +51,50 @@ extern const char kThinSeparator[];
 
 // Converts the field's name to camel-case, e.g. "foo_bar_baz" becomes
 // "fooBarBaz" or "FooBarBaz", respectively.
-string UnderscoresToCamelCase(const FieldDescriptor* field);
-string UnderscoresToCapitalizedCamelCase(const FieldDescriptor* field);
+std::string UnderscoresToCamelCase(const FieldDescriptor* field);
+std::string UnderscoresToCapitalizedCamelCase(const FieldDescriptor* field);
 
 // Similar, but for method names.  (Typically, this merely has the effect
 // of lower-casing the first letter of the name.)
-string UnderscoresToCamelCase(const MethodDescriptor* method);
+std::string UnderscoresToCamelCase(const MethodDescriptor* method);
 
 // Strips ".proto" or ".protodevel" from the end of a filename.
-string StripProto(const string& filename);
+std::string StripProto(const std::string& filename);
 
 // Gets the unqualified class name for the file.  Each .proto file becomes a
 // single Java class, with all its contents nested in that class.
-string FileClassName(const FileDescriptor* file);
+std::string FileClassName(const FileDescriptor* file);
 
 // Returns the file's Java package name.
-string FileJavaPackage(const FileDescriptor* file);
+std::string FileJavaPackage(const FileDescriptor* file);
 
 // Returns output directory for the given package name.
-string JavaPackageToDir(string package_name);
+std::string JavaPackageToDir(std::string package_name);
 
 // Converts the given fully-qualified name in the proto namespace to its
 // fully-qualified name in the Java namespace, given that it is in the given
 // file.
-string ToJavaName(const string& full_name, const FileDescriptor* file);
+std::string ToJavaName(const std::string& full_name, const FileDescriptor* file);
 
 // These return the fully-qualified class name corresponding to the given
 // descriptor.
-inline string ClassName(const Descriptor* descriptor) {
+inline std::string ClassName(const Descriptor* descriptor) {
   return ToJavaName(descriptor->full_name(), descriptor->file());
 }
-inline string ClassName(const EnumDescriptor* descriptor) {
+inline std::string ClassName(const EnumDescriptor* descriptor) {
   return ToJavaName(descriptor->full_name(), descriptor->file());
 }
-inline string ClassName(const ServiceDescriptor* descriptor) {
+inline std::string ClassName(const ServiceDescriptor* descriptor) {
   return ToJavaName(descriptor->full_name(), descriptor->file());
 }
-inline string ExtensionIdentifierName(const FieldDescriptor* descriptor) {
+inline std::string ExtensionIdentifierName(const FieldDescriptor* descriptor) {
   return ToJavaName(descriptor->full_name(), descriptor->file());
 }
-string ClassName(const FileDescriptor* descriptor);
+std::string ClassName(const FileDescriptor* descriptor);
 
 // Get the unqualified name that should be used for a field's field
 // number constant.
-string FieldConstantName(const FieldDescriptor *field);
+std::string FieldConstantName(const FieldDescriptor *field);
 
 // Returns the type of the FieldDescriptor.
 // This does nothing interesting for the open source release, but is used for
@@ -120,7 +120,7 @@ JavaType GetJavaType(const FieldDescriptor* field);
 // types.
 const char* BoxedPrimitiveTypeName(JavaType type);
 
-string DefaultValue(const FieldDescriptor* field);
+std::string DefaultValue(const FieldDescriptor* field);
 bool IsDefaultValueJavaDefault(const FieldDescriptor* field);
 
 // Does this message class keep track of unknown fields?
@@ -172,38 +172,38 @@ inline bool HasGenericServices(const FileDescriptor *file) {
 // Methods for shared bitfields.
 
 // Gets the name of the shared bitfield for the given index.
-string GetBitFieldName(int index);
+std::string GetBitFieldName(int index);
 
 // Gets the name of the shared bitfield for the given bit index.
 // Effectively, GetBitFieldName(bitIndex / 32)
-string GetBitFieldNameForBit(int bitIndex);
+std::string GetBitFieldNameForBit(int bitIndex);
 
 // Generates the java code for the expression that returns the boolean value
 // of the bit of the shared bitfields for the given bit index.
 // Example: "((bitField1_ & 0x04) == 0x04)"
-string GenerateGetBit(int bitIndex);
+std::string GenerateGetBit(int bitIndex);
 
 // Generates the java code for the expression that sets the bit of the shared
 // bitfields for the given bit index.
 // Example: "bitField1_ = (bitField1_ | 0x04)"
-string GenerateSetBit(int bitIndex);
+std::string GenerateSetBit(int bitIndex);
 
 // Generates the java code for the expression that clears the bit of the shared
 // bitfields for the given bit index.
 // Example: "bitField1_ = (bitField1_ & ~0x04)"
-string GenerateClearBit(int bitIndex);
+std::string GenerateClearBit(int bitIndex);
 
 // Does the same as GenerateGetBit but operates on the bit field on a local
 // variable. This is used by the builder to copy the value in the builder to
 // the message.
 // Example: "((from_bitField1_ & 0x04) == 0x04)"
-string GenerateGetBitFromLocal(int bitIndex);
+std::string GenerateGetBitFromLocal(int bitIndex);
 
 // Does the same as GenerateSetBit but operates on the bit field on a local
 // variable. This is used by the builder to copy the value in the builder to
 // the message.
 // Example: "to_bitField1_ = (to_bitField1_ | 0x04)"
-string GenerateSetBitToLocal(int bitIndex);
+std::string GenerateSetBitToLocal(int bitIndex);
 
 }  // namespace java
 }  // namespace compiler

@@ -43,7 +43,6 @@
 #include <utility>
 #include <string>
 
-
 #include <google/protobuf/stubs/common.h>
 
 namespace google {
@@ -180,7 +179,7 @@ class LIBPROTOBUF_EXPORT ExtensionSet {
   // is useful to implement Reflection::ListFields().
   void AppendToList(const Descriptor* containing_type,
                     const DescriptorPool* pool,
-                    vector<const FieldDescriptor*>* output) const;
+                    std::vector<const FieldDescriptor*>* output) const;
 
   // =================================================================
   // Accessors
@@ -227,7 +226,7 @@ class LIBPROTOBUF_EXPORT ExtensionSet {
   double GetDouble(int number, double default_value) const;
   bool   GetBool  (int number, bool   default_value) const;
   int    GetEnum  (int number, int    default_value) const;
-  const string & GetString (int number, const string&  default_value) const;
+  const std::string & GetString (int number, const std::string&  default_value) const;
   const MessageLite& GetMessage(int number,
                                 const MessageLite& default_value) const;
   const MessageLite& GetMessage(int number, const Descriptor* message_type,
@@ -245,8 +244,8 @@ class LIBPROTOBUF_EXPORT ExtensionSet {
   void SetDouble(int number, FieldType type, double value, desc);
   void SetBool  (int number, FieldType type, bool   value, desc);
   void SetEnum  (int number, FieldType type, int    value, desc);
-  void SetString(int number, FieldType type, const string& value, desc);
-  string * MutableString (int number, FieldType type, desc);
+  void SetString(int number, FieldType type, const std::string& value, desc);
+  std::string * MutableString (int number, FieldType type, desc);
   MessageLite* MutableMessage(int number, FieldType type,
                               const MessageLite& prototype, desc);
   MessageLite* MutableMessage(const FieldDescriptor* decsriptor,
@@ -263,7 +262,7 @@ class LIBPROTOBUF_EXPORT ExtensionSet {
   double GetRepeatedDouble(int number, int index) const;
   bool   GetRepeatedBool  (int number, int index) const;
   int    GetRepeatedEnum  (int number, int index) const;
-  const string & GetRepeatedString (int number, int index) const;
+  const std::string & GetRepeatedString (int number, int index) const;
   const MessageLite& GetRepeatedMessage(int number, int index) const;
 
   void SetRepeatedInt32 (int number, int index, int32  value);
@@ -274,8 +273,8 @@ class LIBPROTOBUF_EXPORT ExtensionSet {
   void SetRepeatedDouble(int number, int index, double value);
   void SetRepeatedBool  (int number, int index, bool   value);
   void SetRepeatedEnum  (int number, int index, int    value);
-  void SetRepeatedString(int number, int index, const string& value);
-  string * MutableRepeatedString (int number, int index);
+  void SetRepeatedString(int number, int index, const std::string& value);
+  std::string * MutableRepeatedString (int number, int index);
   MessageLite* MutableRepeatedMessage(int number, int index);
 
 #define desc const FieldDescriptor* descriptor  // avoid line wrapping
@@ -287,8 +286,8 @@ class LIBPROTOBUF_EXPORT ExtensionSet {
   void AddDouble(int number, FieldType type, bool packed, double value, desc);
   void AddBool  (int number, FieldType type, bool packed, bool   value, desc);
   void AddEnum  (int number, FieldType type, bool packed, int    value, desc);
-  void AddString(int number, FieldType type, const string& value, desc);
-  string * AddString (int number, FieldType type, desc);
+  void AddString(int number, FieldType type, const std::string& value, desc);
+  std::string * AddString (int number, FieldType type, desc);
   MessageLite* AddMessage(int number, FieldType type,
                           const MessageLite& prototype, desc);
   MessageLite* AddMessage(const FieldDescriptor* descriptor,
@@ -392,18 +391,18 @@ class LIBPROTOBUF_EXPORT ExtensionSet {
       double       double_value;
       bool         bool_value;
       int          enum_value;
-      string*      string_value;
+      std::string* string_value;
       MessageLite* message_value;
 
-      RepeatedField   <int32      >* repeated_int32_value;
-      RepeatedField   <int64      >* repeated_int64_value;
-      RepeatedField   <uint32     >* repeated_uint32_value;
-      RepeatedField   <uint64     >* repeated_uint64_value;
-      RepeatedField   <float      >* repeated_float_value;
-      RepeatedField   <double     >* repeated_double_value;
-      RepeatedField   <bool       >* repeated_bool_value;
-      RepeatedField   <int        >* repeated_enum_value;
-      RepeatedPtrField<string     >* repeated_string_value;
+      RepeatedField <int32>* repeated_int32_value;
+      RepeatedField <int64>* repeated_int64_value;
+      RepeatedField <uint32>* repeated_uint32_value;
+      RepeatedField <uint64>* repeated_uint64_value;
+      RepeatedField <float>* repeated_float_value;
+      RepeatedField <double>* repeated_double_value;
+      RepeatedField <bool>* repeated_bool_value;
+      RepeatedField <int>* repeated_enum_value;
+      RepeatedPtrField<std::string>* repeated_string_value;
       RepeatedPtrField<MessageLite>* repeated_message_value;
     };
 
@@ -481,23 +480,24 @@ class LIBPROTOBUF_EXPORT ExtensionSet {
   // only contain a small number of extensions whereas hash_map is optimized
   // for 100 elements or more.  Also, we want AppendToList() to order fields
   // by field number.
-  map<int, Extension> extensions_;
+  std::map<int, Extension> extensions_;
 
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(ExtensionSet);
+  friend struct Extension;
 };
 
 // These are just for convenience...
 inline void ExtensionSet::SetString(int number, FieldType type,
-                                    const string& value,
+                                    const std::string& value,
                                     const FieldDescriptor* descriptor) {
   MutableString(number, type, descriptor)->assign(value);
 }
 inline void ExtensionSet::SetRepeatedString(int number, int index,
-                                            const string& value) {
+                                            const std::string& value) {
   MutableRepeatedString(number, index)->assign(value);
 }
 inline void ExtensionSet::AddString(int number, FieldType type,
-                                    const string& value,
+                                    const std::string& value,
                                     const FieldDescriptor* descriptor) {
   AddString(number, type, descriptor)->assign(value);
 }
@@ -613,18 +613,18 @@ PROTOBUF_DEFINE_PRIMITIVE_TYPE(  bool,   Bool)
 // Strings support both Set() and Mutable().
 class LIBPROTOBUF_EXPORT StringTypeTraits {
  public:
-  typedef const string& ConstType;
-  typedef string* MutableType;
+  typedef const std::string& ConstType;
+  typedef std::string* MutableType;
 
-  static inline const string& Get(int number, const ExtensionSet& set,
+  static inline const std::string& Get(int number, const ExtensionSet& set,
                                   ConstType default_value) {
     return set.GetString(number, default_value);
   }
   static inline void Set(int number, FieldType field_type,
-                         const string& value, ExtensionSet* set) {
+                         const std::string& value, ExtensionSet* set) {
     set->SetString(number, field_type, value, NULL);
   }
-  static inline string* Mutable(int number, FieldType field_type,
+  static inline std::string* Mutable(int number, FieldType field_type,
                                 ExtensionSet* set) {
     return set->MutableString(number, field_type, NULL);
   }
@@ -632,26 +632,26 @@ class LIBPROTOBUF_EXPORT StringTypeTraits {
 
 class LIBPROTOBUF_EXPORT RepeatedStringTypeTraits {
  public:
-  typedef const string& ConstType;
-  typedef string* MutableType;
+  typedef const std::string& ConstType;
+  typedef std::string* MutableType;
 
-  static inline const string& Get(int number, const ExtensionSet& set,
+  static inline const std::string& Get(int number, const ExtensionSet& set,
                                   int index) {
     return set.GetRepeatedString(number, index);
   }
   static inline void Set(int number, int index,
-                         const string& value, ExtensionSet* set) {
+                         const std::string& value, ExtensionSet* set) {
     set->SetRepeatedString(number, index, value);
   }
-  static inline string* Mutable(int number, int index, ExtensionSet* set) {
+  static inline std::string* Mutable(int number, int index, ExtensionSet* set) {
     return set->MutableRepeatedString(number, index);
   }
   static inline void Add(int number, FieldType field_type,
-                         bool /*is_packed*/, const string& value,
+                         bool /*is_packed*/, const std::string& value,
                          ExtensionSet* set) {
     set->AddString(number, field_type, value, NULL);
   }
-  static inline string* Add(int number, FieldType field_type,
+  static inline std::string* Add(int number, FieldType field_type,
                             ExtensionSet* set) {
     return set->AddString(number, field_type, NULL);
   }

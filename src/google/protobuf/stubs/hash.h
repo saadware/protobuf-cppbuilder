@@ -35,7 +35,11 @@
 #ifndef GOOGLE_PROTOBUF_STUBS_HASH_H__
 #define GOOGLE_PROTOBUF_STUBS_HASH_H__
 
+#ifdef _CPPBUILDER
+#include <string>
+#else
 #include <string.h>
+#endif
 #include <google/protobuf/stubs/common.h>
 #include "config.h"
 
@@ -126,10 +130,32 @@ class hash_map : public HASH_NAMESPACE::hash_map<
 };
 
 template <typename Key,
-          typename HashFcn = hash<Key>,
-          typename EqualKey = int >
+	typename HashFcn = hash<Key>,
+	typename EqualKey = int >
 class hash_set : public HASH_NAMESPACE::hash_set<
     Key, HashFcn> {
+};
+
+#elif defined(_CPPBUILDER)
+
+// Hash compare
+template <typename Key>
+struct hash : public HASH_NAMESPACE::hash_compare<Key> {
+};
+
+// Hash map
+template <typename Key,
+          typename Data,
+          typename HashFcn = hash<Key>,
+          typename EqualKey = int>
+class hash_map : public HASH_NAMESPACE::hash_map<Key, Data, HashFcn> {
+};
+
+// Hash set
+template <typename Key,
+          typename HashFcn = hash<Key>,
+          typename EqualKey = int>
+class hash_set : public HASH_NAMESPACE::hash_set<Key, HashFcn> {
 };
 
 #else
@@ -175,21 +201,21 @@ class hash_set : public HASH_NAMESPACE::HASH_SET_CLASS<
 #endif
 
 template <>
-struct hash<string> {
-  inline size_t operator()(const string& key) const {
+struct hash<std::string> {
+  inline size_t operator()(const std::string& key) const {
     return hash<const char*>()(key.c_str());
   }
 
   static const size_t bucket_size = 4;
   static const size_t min_buckets = 8;
-  inline size_t operator()(const string& a, const string& b) const {
+  inline size_t operator()(const std::string& a, const std::string& b) const {
     return a < b;
   }
 };
 
 template <typename First, typename Second>
-struct hash<pair<First, Second> > {
-  inline size_t operator()(const pair<First, Second>& key) const {
+struct hash<std::pair<First, Second> > {
+  inline size_t operator()(const std::pair<First, Second>& key) const {
     size_t first_hash = hash<First>()(key.first);
     size_t second_hash = hash<Second>()(key.second);
 
@@ -200,8 +226,8 @@ struct hash<pair<First, Second> > {
 
   static const size_t bucket_size = 4;
   static const size_t min_buckets = 8;
-  inline size_t operator()(const pair<First, Second>& a,
-                           const pair<First, Second>& b) const {
+  inline size_t operator()(const std::pair<First, Second>& a,
+                           const std::pair<First, Second>& b) const {
     return a < b;
   }
 };

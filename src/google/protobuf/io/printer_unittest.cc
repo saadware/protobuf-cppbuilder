@@ -32,8 +32,6 @@
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
-#include <vector>
-
 #include <google/protobuf/io/printer.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
@@ -90,7 +88,7 @@ TEST(Printer, WriteRaw) {
     ArrayOutputStream output(buffer, sizeof(buffer), block_size);
 
     {
-      string string_obj = "From an object\n";
+      std::string string_obj = "From an object\n";
       Printer printer(&output, '$');
       printer.WriteRaw("Hello World!", 12);
       printer.PrintRaw("  This is the same line.\n");
@@ -119,7 +117,7 @@ TEST(Printer, VariableSubstitution) {
 
     {
       Printer printer(&output, '$');
-      map<string, string> vars;
+      std::map<std::string, std::string> vars;
 
       vars["foo"] = "World";
       vars["bar"] = "$foo$";
@@ -176,7 +174,7 @@ TEST(Printer, Indenting) {
 
     {
       Printer printer(&output, '$');
-      map<string, string> vars;
+      std::map<std::string, std::string> vars;
 
       vars["newline"] = "\n";
 
@@ -252,7 +250,7 @@ TEST(Printer, WriteFailure) {
   EXPECT_TRUE(printer.failed());
 
   // Buffer should contain the first 16 bytes written.
-  EXPECT_EQ("0123456789abcdef", string(buffer, sizeof(buffer)));
+  EXPECT_EQ("0123456789abcdef", std::string(buffer, sizeof(buffer)));
 }
 
 }  // namespace

@@ -75,7 +75,9 @@ inline BOOL GetMessage(
 #endif
 
 
+#ifndef __CPPBUILDER
 namespace std {}
+#endif
 
 namespace google {
 namespace protobuf {
@@ -1200,10 +1202,6 @@ class FatalException : public std::exception {
   const std::string message_;
 };
 #endif
-
-// This is at the end of the file instead of the beginning to work around a bug
-// in some versions of MSVC.
-using namespace std;  // Don't do this at home, kids.
 
 }  // namespace protobuf
 }  // namespace google

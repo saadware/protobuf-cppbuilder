@@ -32,7 +32,6 @@
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
-#include <vector>
 #include <math.h>
 #include <limits.h>
 
@@ -157,10 +156,10 @@ class TestErrorCollector : public ErrorCollector {
   TestErrorCollector() {}
   ~TestErrorCollector() {}
 
-  string text_;
+  std::string text_;
 
   // implements ErrorCollector ---------------------------------------
-  void AddError(int line, int column, const string& message) {
+  void AddError(int line, int column, const std::string& message) {
     strings::SubstituteAndAppend(&text_, "$0:$1: $2\n",
                                  line, column, message);
   }
@@ -177,7 +176,7 @@ const int kBlockSizes[] = {1, 2, 3, 5, 7, 13, 32, 1024};
 class TokenizerTest : public testing::Test {
  protected:
   // For easy testing.
-  uint64 ParseInteger(const string& text) {
+  uint64 ParseInteger(const std::string& text) {
     uint64 result;
     EXPECT_TRUE(Tokenizer::ParseInteger(text, kuint64max, &result));
     return result;
@@ -193,11 +192,11 @@ class TokenizerTest : public testing::Test {
 // In each test case, the entire input text should parse as a single token
 // of the given type.
 struct SimpleTokenCase {
-  string input;
+  std::string input;
   Tokenizer::TokenType type;
 };
 
-inline ostream& operator<<(ostream& out,
+inline std::ostream& operator<<(std::ostream& out,
                            const SimpleTokenCase& test_case) {
   return out << CEscape(test_case.input);
 }
@@ -324,14 +323,14 @@ TEST_1D(TokenizerTest, FloatSuffix, kBlockSizes) {
 // In each case, the input is parsed to produce a list of tokens.  The
 // last token in "output" must have type TYPE_END.
 struct MultiTokenCase {
-  string input;
+  std::string input;
   Tokenizer::Token output[10];  // The compiler wants a constant array
                                 // size for initialization to work.  There
                                 // is no reason this can't be increased if
                                 // needed.
 };
 
-inline ostream& operator<<(ostream& out,
+inline std::ostream& operator<<(std::ostream& out,
                            const MultiTokenCase& test_case) {
   return out << CEscape(test_case.input);
 }
@@ -596,7 +595,7 @@ TEST_F(TokenizerTest, ParseFloat) {
 }
 
 TEST_F(TokenizerTest, ParseString) {
-  string output;
+  std::string output;
   Tokenizer::ParseString("'hello'", &output);
   EXPECT_EQ("hello", output);
   Tokenizer::ParseString("\"blah\\nblah2\"", &output);
@@ -623,7 +622,7 @@ TEST_F(TokenizerTest, ParseString) {
 
 TEST_F(TokenizerTest, ParseStringAppend) {
   // Check that ParseString and ParseStringAppend differ.
-  string output("stuff+");
+  std::string output("stuff+");
   Tokenizer::ParseStringAppend("'hello'", &output);
   EXPECT_EQ("stuff+hello", output);
   Tokenizer::ParseString("'hello'", &output);
@@ -635,7 +634,7 @@ TEST_F(TokenizerTest, ParseStringAppend) {
 // Each case parses some input text, ignoring the tokens produced, and
 // checks that the error output matches what is expected.
 struct ErrorCase {
-  string input;
+  std::string input;
   bool recoverable;  // True if the tokenizer should be able to recover and
                      // parse more tokens after seeing this error.  Cases
                      // for which this is true must end with "foo" as
@@ -643,7 +642,7 @@ struct ErrorCase {
   const char* errors;
 };
 
-inline ostream& operator<<(ostream& out,
+inline std::ostream& operator<<(std::ostream& out,
                            const ErrorCase& test_case) {
   return out << CEscape(test_case.input);
 }
@@ -713,9 +712,9 @@ ErrorCase kErrorCases[] = {
   // these strings because otherwise the string constructor will just call
   // strlen() which will see the first '\0' and think that is the end of the
   // string.
-  { string("\0foo", 4), true,
+  { std::string("\0foo", 4), true,
     "0:0: Invalid control characters encountered in text.\n" },
-  { string("\0\0foo", 5), true,
+  { std::string("\0\0foo", 5), true,
     "0:0: Invalid control characters encountered in text.\n" },
 };
 
@@ -745,7 +744,7 @@ TEST_2D(TokenizerTest, Errors, kErrorCases, kBlockSizes) {
 // -------------------------------------------------------------------
 
 TEST_1D(TokenizerTest, BackUpOnDestruction, kBlockSizes) {
-  string text = "foo bar";
+  std::string text = "foo bar";
   TestInputStream input(text.data(), text.size(), kBlockSizes_case);
 
   // Create a tokenizer, read one token, then destroy it.

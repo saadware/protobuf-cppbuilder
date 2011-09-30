@@ -354,8 +354,8 @@ TEST(ReflectionOpsTest, ExtensionIsInitialized) {
   EXPECT_TRUE(ReflectionOps::IsInitialized(message));
 }
 
-static string FindInitializationErrors(const Message& message) {
-  vector<string> errors;
+static std::string FindInitializationErrors(const Message& message) {
+  std::vector<std::string> errors;
   ReflectionOps::FindInitializationErrors(message, "", &errors);
   return JoinStrings(errors, ",");
 }

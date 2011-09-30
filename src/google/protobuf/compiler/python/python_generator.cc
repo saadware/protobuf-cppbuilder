@@ -68,18 +68,18 @@ namespace {
 // Returns a copy of |filename| with any trailing ".protodevel" or ".proto
 // suffix stripped.
 // TODO(robinson): Unify with copy in compiler/cpp/internal/helpers.cc.
-string StripProto(const string& filename) {
-  const char* suffix = HasSuffixString(filename, ".protodevel")
+std::string StripProto(const std::string& filename) {
+  const char* suffix = protobuf::HasSuffixString(filename, ".protodevel")
       ? ".protodevel" : ".proto";
-  return StripSuffixString(filename, suffix);
+  return protobuf::StripSuffixString(filename, suffix);
 }
 
 
 // Returns the Python module name expected for a given .proto filename.
-string ModuleName(const string& filename) {
-  string basename = StripProto(filename);
-  StripString(&basename, "-", '_');
-  StripString(&basename, "/", '.');
+std::string ModuleName(const std::string& filename) {
+  std::string basename = StripProto(filename);
+  protobuf::StripString(&basename, "-", '_');
+  protobuf::StripString(&basename, "/", '.');
   return basename + "_pb2";
 }
 
@@ -88,9 +88,9 @@ string ModuleName(const string& filename) {
 // in order from outermost to innermost, followed by descriptor's
 // own name.  Each name is separated by |separator|.
 template <typename DescriptorT>
-string NamePrefixedWithNestedTypes(const DescriptorT& descriptor,
-                                   const string& separator) {
-  string name = descriptor.name();
+std::string NamePrefixedWithNestedTypes(const DescriptorT& descriptor,
+                                   const std::string& separator) {
+  std::string name = descriptor.name();
   for (const Descriptor* current = descriptor.containing_type();
        current != NULL; current = current->containing_type()) {
     name = current->name() + separator + name;
@@ -151,7 +151,7 @@ void PrintTopBoilerplate(
 // //compiler/cpp/internal/primitive_field.cc
 // //compiler/cpp/internal/enum_field.cc
 // //compiler/cpp/internal/string_field.cc
-string StringifyDefaultValue(const FieldDescriptor& field) {
+std::string StringifyDefaultValue(const FieldDescriptor& field) {
   if (field.is_repeated()) {
     return "[]";
   }
@@ -167,11 +167,11 @@ string StringifyDefaultValue(const FieldDescriptor& field) {
       return SimpleItoa(field.default_value_uint64());
     case FieldDescriptor::CPPTYPE_DOUBLE: {
       double value = field.default_value_double();
-      if (value == numeric_limits<double>::infinity()) {
+      if (value == std::numeric_limits<double>::infinity()) {
         // Python pre-2.6 on Windows does not parse "inf" correctly.  However,
         // a numeric literal that is too big for a double will become infinity.
         return "1e10000";
-      } else if (value == -numeric_limits<double>::infinity()) {
+      } else if (value == -std::numeric_limits<double>::infinity()) {
         // See above.
         return "-1e10000";
       } else if (value != value) {
@@ -183,11 +183,11 @@ string StringifyDefaultValue(const FieldDescriptor& field) {
     }
     case FieldDescriptor::CPPTYPE_FLOAT: {
       float value = field.default_value_float();
-      if (value == numeric_limits<float>::infinity()) {
+      if (value == std::numeric_limits<float>::infinity()) {
         // Python pre-2.6 on Windows does not parse "inf" correctly.  However,
         // a numeric literal that is too big for a double will become infinity.
         return "1e10000";
-      } else if (value == -numeric_limits<float>::infinity()) {
+      } else if (value == -std::numeric_limits<float>::infinity()) {
         // See above.
         return "-1e10000";
       } else if (value != value) {
@@ -203,10 +203,10 @@ string StringifyDefaultValue(const FieldDescriptor& field) {
       return SimpleItoa(field.default_value_enum()->number());
     case FieldDescriptor::CPPTYPE_STRING:
       if (field.type() == FieldDescriptor::TYPE_STRING) {
-        return "unicode(\"" + CEscape(field.default_value_string()) +
+        return "unicode(\"" + protobuf::CEscape(field.default_value_string()) +
             "\", \"utf-8\")";
       } else {
-        return "\"" + CEscape(field.default_value_string()) + "\"";
+        return "\"" + protobuf::CEscape(field.default_value_string()) + "\"";
       }
     case FieldDescriptor::CPPTYPE_MESSAGE:
       return "None";
@@ -229,9 +229,9 @@ Generator::~Generator() {
 }
 
 bool Generator::Generate(const FileDescriptor* file,
-                         const string& parameter,
+                         const std::string& parameter,
                          GeneratorContext* context,
-                         string* error) const {
+                         std::string* error) const {
 
   // Completely serialize all Generate() calls on this instance.  The
   // thread-safety constraints of the CodeGenerator interface aren't clear so
@@ -242,9 +242,9 @@ bool Generator::Generate(const FileDescriptor* file,
   //   to have any mutable members.  Then it is implicitly thread-safe.
   MutexLock lock(&mutex_);
   file_ = file;
-  string module_name = ModuleName(file->name());
-  string filename = module_name;
-  StripString(&filename, ".", '/');
+  std::string module_name = ModuleName(file->name());
+  std::string filename = module_name;
+  protobuf::StripString(&filename, ".", '/');
   filename += ".py";
 
   FileDescriptorProto fdp;
@@ -283,7 +283,7 @@ bool Generator::Generate(const FileDescriptor* file,
 // Prints Python imports for all modules imported by |file|.
 void Generator::PrintImports() const {
   for (int i = 0; i < file_->dependency_count(); ++i) {
-    string module_name = ModuleName(file_->dependency(i)->name());
+    std::string module_name = ModuleName(file_->dependency(i)->name());
     printer_->Print("import $module$\n", "module",
                     module_name);
   }
@@ -292,7 +292,7 @@ void Generator::PrintImports() const {
 
 // Prints the single file descriptor for this file.
 void Generator::PrintFileDescriptor() const {
-  map<string, string> m;
+  std::map<std::string, std::string> m;
   m["descriptor_name"] = kDescriptorKey;
   m["name"] = file_->name();
   m["package"] = file_->package();
@@ -317,7 +317,7 @@ void Generator::PrintFileDescriptor() const {
 // Prints descriptors and module-level constants for all top-level
 // enums defined in |file|.
 void Generator::PrintTopLevelEnums() const {
-  vector<pair<string, int> > top_level_enum_values;
+  std::vector<std::pair<std::string, int> > top_level_enum_values;
   for (int i = 0; i < file_->enum_type_count(); ++i) {
     const EnumDescriptor& enum_descriptor = *file_->enum_type(i);
     PrintEnum(enum_descriptor);
@@ -349,7 +349,7 @@ void Generator::PrintAllNestedEnumsInFile() const {
 // enum name to a Python EnumDescriptor object equivalent to
 // enum_descriptor.
 void Generator::PrintEnum(const EnumDescriptor& enum_descriptor) const {
-  map<string, string> m;
+  std::map<std::string, std::string> m;
   m["descriptor_name"] = ModuleLevelDescriptorName(enum_descriptor);
   m["name"] = enum_descriptor.name();
   m["full_name"] = enum_descriptor.full_name();
@@ -361,7 +361,7 @@ void Generator::PrintEnum(const EnumDescriptor& enum_descriptor) const {
       "  filename=None,\n"
       "  file=$file$,\n"
       "  values=[\n";
-  string options_string;
+  std::string options_string;
   enum_descriptor.options().SerializeToString(&options_string);
   printer_->Print(m, enum_descriptor_template);
   printer_->Indent();
@@ -399,8 +399,8 @@ void Generator::PrintTopLevelExtensions() const {
   const bool is_extension = true;
   for (int i = 0; i < file_->extension_count(); ++i) {
     const FieldDescriptor& extension_field = *file_->extension(i);
-    string constant_name = extension_field.name() + "_FIELD_NUMBER";
-    UpperString(&constant_name);
+    std::string constant_name = extension_field.name() + "_FIELD_NUMBER";
+    protobuf::UpperString(&constant_name);
     printer_->Print("$constant_name$ = $number$\n",
       "constant_name", constant_name,
       "number", SimpleItoa(extension_field.number()));
@@ -431,15 +431,15 @@ void Generator::PrintServices() const {
 void Generator::PrintServiceDescriptor(
     const ServiceDescriptor& descriptor) const {
   printer_->Print("\n");
-  string service_name = ModuleLevelServiceDescriptorName(descriptor);
-  string options_string;
+  std::string service_name = ModuleLevelServiceDescriptorName(descriptor);
+  std::string options_string;
   descriptor.options().SerializeToString(&options_string);
 
   printer_->Print(
       "$service_name$ = descriptor.ServiceDescriptor(\n",
       "service_name", service_name);
   printer_->Indent();
-  map<string, string> m;
+  std::map<std::string, std::string> m;
   m["name"] = descriptor.name();
   m["full_name"] = descriptor.full_name();
   m["file"] = kDescriptorKey;
@@ -459,14 +459,14 @@ void Generator::PrintServiceDescriptor(
   printer_->Print("methods=[\n");
   for (int i = 0; i < descriptor.method_count(); ++i) {
     const MethodDescriptor* method = descriptor.method(i);
-    string options_string;
+    std::string options_string;
     method->options().SerializeToString(&options_string);
 
     m.clear();
     m["name"] = method->name();
     m["full_name"] = method->full_name();
     m["index"] = SimpleItoa(method->index());
-    m["serialized_options"] = CEscape(options_string);
+    m["serialized_options"] = protobuf::CEscape(options_string);
     m["input_type"] = ModuleLevelDescriptorName(*(method->input_type()));
     m["output_type"] = ModuleLevelDescriptorName(*(method->output_type()));
     m["options_value"] = OptionsValue("MethodOptions", options_string);
@@ -527,7 +527,7 @@ void Generator::PrintDescriptor(const Descriptor& message_descriptor) const {
                   "descriptor_name",
                   ModuleLevelDescriptorName(message_descriptor));
   printer_->Indent();
-  map<string, string> m;
+  std::map<std::string, std::string> m;
   m["name"] = message_descriptor.name();
   m["full_name"] = message_descriptor.full_name();
   m["file"] = kDescriptorKey;
@@ -544,7 +544,7 @@ void Generator::PrintDescriptor(const Descriptor& message_descriptor) const {
   // Nested types
   printer_->Print("nested_types=[");
   for (int i = 0; i < message_descriptor.nested_type_count(); ++i) {
-    const string nested_name = ModuleLevelDescriptorName(
+    const std::string nested_name = ModuleLevelDescriptorName(
         *message_descriptor.nested_type(i));
     printer_->Print("$name$, ", "name", nested_name);
   }
@@ -554,14 +554,14 @@ void Generator::PrintDescriptor(const Descriptor& message_descriptor) const {
   printer_->Print("enum_types=[\n");
   printer_->Indent();
   for (int i = 0; i < message_descriptor.enum_type_count(); ++i) {
-    const string descriptor_name = ModuleLevelDescriptorName(
+    const std::string descriptor_name = ModuleLevelDescriptorName(
         *message_descriptor.enum_type(i));
     printer_->Print(descriptor_name.c_str());
     printer_->Print(",\n");
   }
   printer_->Outdent();
   printer_->Print("],\n");
-  string options_string;
+  std::string options_string;
   message_descriptor.options().SerializeToString(&options_string);
   printer_->Print(
       "options=$options_value$,\n"
@@ -623,7 +623,7 @@ void Generator::PrintMessage(
   printer_->Indent();
   printer_->Print("__metaclass__ = reflection.GeneratedProtocolMessageType\n");
   PrintNestedMessages(message_descriptor);
-  map<string, string> m;
+  std::map<std::string, std::string> m;
   m["descriptor_key"] = kDescriptorKey;
   m["descriptor_name"] = ModuleLevelDescriptorName(message_descriptor);
   printer_->Print(m, "$descriptor_key$ = $descriptor_name$\n");
@@ -673,7 +673,7 @@ void Generator::FixForeignFieldsInDescriptor(
 }
 
 void Generator::AddMessageToFileDescriptor(const Descriptor& descriptor) const {
-  map<string, string> m;
+  std::map<std::string, std::string> m;
   m["descriptor_name"] = kDescriptorKey;
   m["message_name"] = descriptor.name();
   m["message_descriptor_name"] = ModuleLevelDescriptorName(descriptor);
@@ -694,10 +694,10 @@ void Generator::AddMessageToFileDescriptor(const Descriptor& descriptor) const {
 // is NULL.
 void Generator::FixForeignFieldsInField(const Descriptor* containing_type,
                                         const FieldDescriptor& field,
-                                        const string& python_dict_name) const {
-  const string field_referencing_expression = FieldReferencingExpression(
+                                        const std::string& python_dict_name) const {
+  const std::string field_referencing_expression = FieldReferencingExpression(
       containing_type, field, python_dict_name);
-  map<string, string> m;
+  std::map<std::string, std::string> m;
   m["field_ref"] = field_referencing_expression;
   const Descriptor* foreign_message_type = field.message_type();
   if (foreign_message_type) {
@@ -720,10 +720,10 @@ void Generator::FixForeignFieldsInField(const Descriptor* containing_type,
 // look the field up in the containing type.  (e.g., fields_by_name
 // or extensions_by_name).  We ignore python_dict_name if containing_type
 // is NULL.
-string Generator::FieldReferencingExpression(
+std::string Generator::FieldReferencingExpression(
     const Descriptor* containing_type,
     const FieldDescriptor& field,
-    const string& python_dict_name) const {
+    const std::string& python_dict_name) const {
   // We should only ever be looking up fields in the current file.
   // The only things we refer to from other files are message descriptors.
   GOOGLE_CHECK_EQ(field.file(), file_) << field.file()->name() << " vs. "
@@ -743,8 +743,8 @@ void Generator::FixContainingTypeInDescriptor(
     const DescriptorT& descriptor,
     const Descriptor* containing_descriptor) const {
   if (containing_descriptor != NULL) {
-    const string nested_name = ModuleLevelDescriptorName(descriptor);
-    const string parent_name = ModuleLevelDescriptorName(
+    const std::string nested_name = ModuleLevelDescriptorName(descriptor);
+    const std::string parent_name = ModuleLevelDescriptorName(
         *containing_descriptor);
     printer_->Print(
         "$nested_name$.containing_type = $parent_name$;\n",
@@ -789,7 +789,7 @@ void Generator::FixForeignFieldsInExtension(
   FixForeignFieldsInField(extension_field.extension_scope(), extension_field,
                           "extensions_by_name");
 
-  map<string, string> m;
+  std::map<std::string, std::string> m;
   // Confusingly, for FieldDescriptors that happen to be extensions,
   // containing_type() means "extended type."
   // On the other hand, extension_scope() will give us what we normally
@@ -820,9 +820,9 @@ void Generator::PrintEnumValueDescriptor(
     const EnumValueDescriptor& descriptor) const {
   // TODO(robinson): Fix up EnumValueDescriptor "type" fields.
   // More circular references.  ::sigh::
-  string options_string;
+  std::string options_string;
   descriptor.options().SerializeToString(&options_string);
-  map<string, string> m;
+  std::map<std::string, std::string> m;
   m["name"] = descriptor.name();
   m["index"] = SimpleItoa(descriptor.index());
   m["number"] = SimpleItoa(descriptor.number());
@@ -837,23 +837,23 @@ void Generator::PrintEnumValueDescriptor(
 
 // Returns a Python expression that calls descriptor._ParseOptions using
 // the given descriptor class name and serialized options protobuf string.
-string Generator::OptionsValue(
-    const string& class_name, const string& serialized_options) const {
+std::string Generator::OptionsValue(
+    const std::string& class_name, const std::string& serialized_options) const {
   if (serialized_options.length() == 0 || GeneratingDescriptorProto()) {
     return "None";
   } else {
-    string full_class_name = "descriptor_pb2." + class_name;
+    std::string full_class_name = "descriptor_pb2." + class_name;
     return "descriptor._ParseOptions(" + full_class_name + "(), '"
-        + CEscape(serialized_options)+ "')";
+        + protobuf::CEscape(serialized_options)+ "')";
   }
 }
 
 // Prints an expression for a Python FieldDescriptor for |field|.
 void Generator::PrintFieldDescriptor(
     const FieldDescriptor& field, bool is_extension) const {
-  string options_string;
+  std::string options_string;
   field.options().SerializeToString(&options_string);
-  map<string, string> m;
+  std::map<std::string, std::string> m;
   m["name"] = field.name();
   m["full_name"] = field.full_name();
   m["index"] = SimpleItoa(field.index());
@@ -883,7 +883,7 @@ void Generator::PrintFieldDescriptor(
 void Generator::PrintFieldDescriptorsInDescriptor(
     const Descriptor& message_descriptor,
     bool is_extension,
-    const string& list_variable_name,
+    const std::string& list_variable_name,
     int (Descriptor::*CountFn)() const,
     const FieldDescriptor* (Descriptor::*GetterFn)(int) const) const {
   printer_->Print("$list$=[\n", "list", list_variable_name);
@@ -925,7 +925,7 @@ bool Generator::GeneratingDescriptorProto() const {
 // This name is module-qualified iff the given descriptor describes an
 // entity that doesn't come from the current file.
 template <typename DescriptorT>
-string Generator::ModuleLevelDescriptorName(
+std::string Generator::ModuleLevelDescriptorName(
     const DescriptorT& descriptor) const {
   // FIXME(robinson):
   // We currently don't worry about collisions with underscores in the type
@@ -939,8 +939,8 @@ string Generator::ModuleLevelDescriptorName(
   //
   // The C++ implementation doesn't guard against this either.  Leaving
   // it for now...
-  string name = NamePrefixedWithNestedTypes(descriptor, "_");
-  UpperString(&name);
+  std::string name = NamePrefixedWithNestedTypes(descriptor, "_");
+  protobuf::UpperString(&name);
   // Module-private for now.  Easy to make public later; almost impossible
   // to make private later.
   name = "_" + name;
@@ -956,8 +956,8 @@ string Generator::ModuleLevelDescriptorName(
 // Like ModuleLevelDescriptorName(), module-qualifies the name iff
 // the given descriptor describes an entity that doesn't come from
 // the current file.
-string Generator::ModuleLevelMessageName(const Descriptor& descriptor) const {
-  string name = NamePrefixedWithNestedTypes(descriptor, ".");
+std::string Generator::ModuleLevelMessageName(const Descriptor& descriptor) const {
+  std::string name = NamePrefixedWithNestedTypes(descriptor, ".");
   if (descriptor.file() != file_) {
     name = ModuleName(descriptor.file()->name()) + "." + name;
   }
@@ -966,10 +966,10 @@ string Generator::ModuleLevelMessageName(const Descriptor& descriptor) const {
 
 // Returns the unique Python module-level identifier given to a service
 // descriptor.
-string Generator::ModuleLevelServiceDescriptorName(
+std::string Generator::ModuleLevelServiceDescriptorName(
     const ServiceDescriptor& descriptor) const {
-  string name = descriptor.name();
-  UpperString(&name);
+  std::string name = descriptor.name();
+  protobuf::UpperString(&name);
   name = "_" + name;
   if (descriptor.file() != file_) {
     name = ModuleName(descriptor.file()->name()) + "." + name;
@@ -989,7 +989,7 @@ template <typename DescriptorT, typename DescriptorProtoT>
 void Generator::PrintSerializedPbInterval(
     const DescriptorT& descriptor, DescriptorProtoT& proto) const {
   descriptor.CopyTo(&proto);
-  string sp;
+  std::string sp;
   proto.SerializeToString(&sp);
   int offset = file_descriptor_serialized_.find(sp);
   GOOGLE_CHECK_GE(offset, 0);

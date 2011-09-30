@@ -77,13 +77,13 @@ inline bool ascii_isdigit(char c) {
 //    prefix string if the prefix matches, otherwise the original
 //    string.
 // ----------------------------------------------------------------------
-inline bool HasPrefixString(const string& str,
-                            const string& prefix) {
+inline bool HasPrefixString(const std::string& str,
+                            const std::string& prefix) {
   return str.size() >= prefix.size() &&
          str.compare(0, prefix.size(), prefix) == 0;
 }
 
-inline string StripPrefixString(const string& str, const string& prefix) {
+inline std::string StripPrefixString(const std::string& str, const std::string& prefix) {
   if (HasPrefixString(str, prefix)) {
     return str.substr(prefix.size());
   } else {
@@ -99,13 +99,13 @@ inline string StripPrefixString(const string& str, const string& prefix) {
 //    suffix string if the suffix matches, otherwise the original
 //    string.
 // ----------------------------------------------------------------------
-inline bool HasSuffixString(const string& str,
-                            const string& suffix) {
+inline bool HasSuffixString(const std::string& str,
+                            const std::string& suffix) {
   return str.size() >= suffix.size() &&
          str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
-inline string StripSuffixString(const string& str, const string& suffix) {
+inline std::string StripSuffixString(const std::string& str, const std::string& suffix) {
   if (HasSuffixString(str, suffix)) {
     return str.substr(0, str.size() - suffix.size());
   } else {
@@ -120,7 +120,7 @@ inline string StripSuffixString(const string& str, const string& suffix) {
 //    Good for keeping html characters or protocol characters (\t) out
 //    of places where they might cause a problem.
 // ----------------------------------------------------------------------
-LIBPROTOBUF_EXPORT void StripString(string* s, const char* remove,
+LIBPROTOBUF_EXPORT void StripString(std::string* s, const char* remove,
                                     char replacewith);
 
 // ----------------------------------------------------------------------
@@ -132,17 +132,17 @@ LIBPROTOBUF_EXPORT void StripString(string* s, const char* remove,
 //    strings.
 // ----------------------------------------------------------------------
 
-inline void LowerString(string * s) {
-  string::iterator end = s->end();
-  for (string::iterator i = s->begin(); i != end; ++i) {
+inline void LowerString(std::string * s) {
+  std::string::iterator end = s->end();
+  for (std::string::iterator i = s->begin(); i != end; ++i) {
     // tolower() changes based on locale.  We don't want this!
     if ('A' <= *i && *i <= 'Z') *i += 'a' - 'A';
   }
 }
 
-inline void UpperString(string * s) {
-  string::iterator end = s->end();
-  for (string::iterator i = s->begin(); i != end; ++i) {
+inline void UpperString(std::string * s) {
+  std::string::iterator end = s->end();
+  for (std::string::iterator i = s->begin(); i != end; ++i) {
     // toupper() changes based on locale.  We don't want this!
     if ('a' <= *i && *i <= 'z') *i += 'A' - 'a';
   }
@@ -156,8 +156,8 @@ inline void UpperString(string * s) {
 //    happened or not.
 // ----------------------------------------------------------------------
 
-LIBPROTOBUF_EXPORT string StringReplace(const string& s, const string& oldsub,
-                                        const string& newsub, bool replace_all);
+LIBPROTOBUF_EXPORT std::string StringReplace(const std::string& s, const std::string& oldsub,
+                                        const std::string& newsub, bool replace_all);
 
 // ----------------------------------------------------------------------
 // SplitStringUsing()
@@ -165,8 +165,8 @@ LIBPROTOBUF_EXPORT string StringReplace(const string& s, const string& oldsub,
 //    to 'result'.  If there are consecutive delimiters, this function skips
 //    over all of them.
 // ----------------------------------------------------------------------
-LIBPROTOBUF_EXPORT void SplitStringUsing(const string& full, const char* delim,
-                                         vector<string>* res);
+LIBPROTOBUF_EXPORT void SplitStringUsing(const std::string& full, const char* delim,
+                                         std::vector<std::string>* res);
 
 // ----------------------------------------------------------------------
 // JoinStrings()
@@ -176,12 +176,12 @@ LIBPROTOBUF_EXPORT void SplitStringUsing(const string& full, const char* delim,
 //    another takes a pointer to the target string. In the latter case the
 //    target string is cleared and overwritten.
 // ----------------------------------------------------------------------
-LIBPROTOBUF_EXPORT void JoinStrings(const vector<string>& components,
-                                    const char* delim, string* result);
+LIBPROTOBUF_EXPORT void JoinStrings(const std::vector<std::string>& components,
+                                    const char* delim, std::string* result);
 
-inline string JoinStrings(const vector<string>& components,
+inline std::string JoinStrings(const std::vector<std::string>& components,
                           const char* delim) {
-  string result;
+  std::string result;
   JoinStrings(components, delim, &result);
   return result;
 }
@@ -219,7 +219,7 @@ inline string JoinStrings(const vector<string>& components,
 
 LIBPROTOBUF_EXPORT int UnescapeCEscapeSequences(const char* source, char* dest);
 LIBPROTOBUF_EXPORT int UnescapeCEscapeSequences(const char* source, char* dest,
-                                                vector<string> *errors);
+                                                std::vector<std::string> *errors);
 
 // ----------------------------------------------------------------------
 // UnescapeCEscapeString()
@@ -236,10 +236,10 @@ LIBPROTOBUF_EXPORT int UnescapeCEscapeSequences(const char* source, char* dest,
 //    the third call, the new string is returned.
 // ----------------------------------------------------------------------
 
-LIBPROTOBUF_EXPORT int UnescapeCEscapeString(const string& src, string* dest);
-LIBPROTOBUF_EXPORT int UnescapeCEscapeString(const string& src, string* dest,
-                                             vector<string> *errors);
-LIBPROTOBUF_EXPORT string UnescapeCEscapeString(const string& src);
+LIBPROTOBUF_EXPORT int UnescapeCEscapeString(const std::string& src, std::string* dest);
+LIBPROTOBUF_EXPORT int UnescapeCEscapeString(const std::string& src, std::string* dest,
+                                             std::vector<std::string> *errors);
+LIBPROTOBUF_EXPORT std::string UnescapeCEscapeString(const std::string& src);
 
 // ----------------------------------------------------------------------
 // CEscapeString()
@@ -261,14 +261,14 @@ LIBPROTOBUF_EXPORT int CEscapeString(const char* src, int src_len,
 //    allocation.  However, it is much more convenient to use in
 //    non-speed-critical code like logging messages etc.
 // ----------------------------------------------------------------------
-LIBPROTOBUF_EXPORT string CEscape(const string& src);
+LIBPROTOBUF_EXPORT std::string CEscape(const std::string& src);
 
 namespace strings {
 // Like CEscape() but does not escape bytes with the upper bit set.
-LIBPROTOBUF_EXPORT string Utf8SafeCEscape(const string& src);
+LIBPROTOBUF_EXPORT std::string Utf8SafeCEscape(const std::string& src);
 
 // Like CEscape() but uses hex (\x) escapes instead of octals.
-LIBPROTOBUF_EXPORT string CHexEscape(const string& src);
+LIBPROTOBUF_EXPORT std::string CHexEscape(const std::string& src);
 }  // namespace strings
 
 // ----------------------------------------------------------------------
@@ -403,12 +403,12 @@ inline char* FastUInt64ToBuffer(uint64 i, char* buffer) {
 //
 //    Return value: string
 // ----------------------------------------------------------------------
-LIBPROTOBUF_EXPORT string SimpleItoa(int i);
-LIBPROTOBUF_EXPORT string SimpleItoa(unsigned int i);
-LIBPROTOBUF_EXPORT string SimpleItoa(long i);
-LIBPROTOBUF_EXPORT string SimpleItoa(unsigned long i);
-LIBPROTOBUF_EXPORT string SimpleItoa(long long i);
-LIBPROTOBUF_EXPORT string SimpleItoa(unsigned long long i);
+LIBPROTOBUF_EXPORT std::string SimpleItoa(int i);
+LIBPROTOBUF_EXPORT std::string SimpleItoa(unsigned int i);
+LIBPROTOBUF_EXPORT std::string SimpleItoa(long i);
+LIBPROTOBUF_EXPORT std::string SimpleItoa(unsigned long i);
+LIBPROTOBUF_EXPORT std::string SimpleItoa(long long i);
+LIBPROTOBUF_EXPORT std::string SimpleItoa(unsigned long long i);
 
 // ----------------------------------------------------------------------
 // SimpleDtoa()
@@ -429,8 +429,8 @@ LIBPROTOBUF_EXPORT string SimpleItoa(unsigned long long i);
 //
 //    Return value: string
 // ----------------------------------------------------------------------
-LIBPROTOBUF_EXPORT string SimpleDtoa(double value);
-LIBPROTOBUF_EXPORT string SimpleFtoa(float value);
+LIBPROTOBUF_EXPORT std::string SimpleDtoa(double value);
+LIBPROTOBUF_EXPORT std::string SimpleFtoa(float value);
 
 LIBPROTOBUF_EXPORT char* DoubleToBuffer(double i, char* buffer);
 LIBPROTOBUF_EXPORT char* FloatToBuffer(float i, char* buffer);

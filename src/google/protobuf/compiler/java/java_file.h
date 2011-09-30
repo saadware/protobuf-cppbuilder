@@ -61,20 +61,20 @@ class FileGenerator {
 
   // Checks for problems that would otherwise lead to cryptic compile errors.
   // Returns true if there are no problems, or writes an error description to
-  // the given string and returns false otherwise.
-  bool Validate(string* error);
+  // the given std::string and returns false otherwise.
+  bool Validate(std::string* error);
 
   void Generate(io::Printer* printer);
 
   // If we aren't putting everything into one file, this will write all the
   // files other than the outer file (i.e. one for each message, enum, and
   // service type).
-  void GenerateSiblings(const string& package_dir,
+  void GenerateSiblings(const std::string& package_dir,
                         GeneratorContext* generator_context,
-                        vector<string>* file_list);
+                        std::vector<std::string>* file_list);
 
-  const string& java_package() { return java_package_; }
-  const string& classname()    { return classname_;    }
+  const std::string& java_package() { return java_package_; }
+  const std::string& classname()    { return classname_;    }
 
 
  private:
@@ -84,8 +84,8 @@ class FileGenerator {
   bool ShouldIncludeDependency(const FileDescriptor* descriptor);
 
   const FileDescriptor* file_;
-  string java_package_;
-  string classname_;
+  std::string java_package_;
+  std::string classname_;
 
 
   void GenerateEmbeddedDescriptor(io::Printer* printer);

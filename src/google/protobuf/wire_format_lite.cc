@@ -36,7 +36,6 @@
 
 #include <stack>
 #include <string>
-#include <vector>
 #include <google/protobuf/stubs/common.h>
 #include <google/protobuf/io/coded_stream_inl.h>
 #include <google/protobuf/io/zero_copy_stream.h>
@@ -277,14 +276,14 @@ void WireFormatLite::WriteEnum(int field_number, int value,
   WriteEnumNoTag(value, output);
 }
 
-void WireFormatLite::WriteString(int field_number, const string& value,
+void WireFormatLite::WriteString(int field_number, const std::string& value,
                                  io::CodedOutputStream* output) {
   // String is for UTF-8 text only
   WriteTag(field_number, WIRETYPE_LENGTH_DELIMITED, output);
   output->WriteVarint32(value.size());
   output->WriteString(value);
 }
-void WireFormatLite::WriteBytes(int field_number, const string& value,
+void WireFormatLite::WriteBytes(int field_number, const std::string& value,
                                 io::CodedOutputStream* output) {
   WriteTag(field_number, WIRETYPE_LENGTH_DELIMITED, output);
   output->WriteVarint32(value.size());
@@ -340,7 +339,7 @@ void WireFormatLite::WriteMessageMaybeToArray(int field_number,
 }
 
 bool WireFormatLite::ReadString(io::CodedInputStream* input,
-                                string* value) {
+                                std::string* value) {
   // String is for UTF-8 text only
   uint32 length;
   if (!input->ReadVarint32(&length)) return false;
@@ -348,7 +347,7 @@ bool WireFormatLite::ReadString(io::CodedInputStream* input,
   return true;
 }
 bool WireFormatLite::ReadBytes(io::CodedInputStream* input,
-                               string* value) {
+                               std::string* value) {
   uint32 length;
   if (!input->ReadVarint32(&length)) return false;
   return input->InternalReadStringInline(value, length);

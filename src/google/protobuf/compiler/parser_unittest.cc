@@ -34,7 +34,6 @@
 
 #include <vector>
 #include <algorithm>
-#include <map>
 
 #include <google/protobuf/compiler/parser.h>
 
@@ -62,10 +61,10 @@ class MockErrorCollector : public io::ErrorCollector {
   MockErrorCollector() {}
   ~MockErrorCollector() {}
 
-  string text_;
+  std::string text_;
 
   // implements ErrorCollector ---------------------------------------
-  void AddError(int line, int column, const string& message) {
+  void AddError(int line, int column, const std::string& message) {
     strings::SubstituteAndAppend(&text_, "$0:$1: $2\n",
                                  line, column, message);
   }
@@ -80,11 +79,11 @@ class MockValidationErrorCollector : public DescriptorPool::ErrorCollector {
   ~MockValidationErrorCollector() {}
 
   // implements ErrorCollector ---------------------------------------
-  void AddError(const string& filename,
-                const string& element_name,
+  void AddError(const std::string& filename,
+                const std::string& element_name,
                 const Message* descriptor,
                 ErrorLocation location,
-                const string& message) {
+                const std::string& message) {
     int line, column;
     source_locations_.Find(descriptor, location, &line, &column);
     wrapped_collector_->AddError(line, column, message);
@@ -1199,7 +1198,7 @@ void SortMessages(DescriptorProto *descriptor_proto) {
   }
   DescriptorProto **data =
     descriptor_proto->mutable_nested_type()->mutable_data();
-  sort(data, data + size, CompareDescriptorNames());
+  std::sort(data, data + size, CompareDescriptorNames());
 }
 
 // Sorts DescriptorProtos belonging to a FileDescriptorProto, by name.
@@ -1211,7 +1210,7 @@ void SortMessages(FileDescriptorProto *file_descriptor_proto) {
   }
   DescriptorProto **data =
     file_descriptor_proto->mutable_message_type()->mutable_data();
-  sort(data, data + size, CompareDescriptorNames());
+  std::sort(data, data + size, CompareDescriptorNames());
 }
 
 TEST_F(ParseDecriptorDebugTest, TestAllDescriptorTypes) {
@@ -1222,7 +1221,7 @@ TEST_F(ParseDecriptorDebugTest, TestAllDescriptorTypes) {
 
   // Get the DebugString of the unittest.proto FileDecriptor, which includes
   // all other descriptor types
-  string debug_string = original_file->DebugString();
+  std::string debug_string = original_file->DebugString();
 
   // Parse the debug string
   SetupParser(debug_string.c_str());
@@ -1359,13 +1358,13 @@ bool FollowPath(const Message& root,
 //
 // I couldn't find the proper string utility function for this.  Our
 // split-on-delimiter functions don't include the delimiter in the output.
-void SplitLines(const string& text, vector<string>* lines) {
-  string::size_type pos = 0;
+void SplitLines(const std::string& text, std::vector<std::string>* lines) {
+  std::string::size_type pos = 0;
 
-  while (pos != string::npos) {
-    string::size_type last_pos = pos;
+  while (pos != std::string::npos) {
+    std::string::size_type last_pos = pos;
     pos = text.find_first_of('\n', pos);
-    if (pos != string::npos) ++pos;
+    if (pos != std::string::npos) ++pos;
     lines->push_back(text.substr(last_pos, pos - last_pos));
   }
 }
@@ -1376,17 +1375,17 @@ void SplitLines(const string& text, vector<string>* lines) {
 // There are four tags:  "a", "b", "c", and "d".  The constructed span starts
 // immediately after the start tag's trailing '/' and ends immediately before
 // the end tags leading '/'.
-void MakeExpectedSpan(const vector<string>& lines,
-                      const string& start_tag, const string& end_tag,
+void MakeExpectedSpan(const std::vector<std::string>& lines,
+                      const std::string& start_tag, const std::string& end_tag,
                       RepeatedField<int>* output) {
-  string start_comment = "/*" + start_tag + "*/";
-  string end_comment = "/*" + end_tag + "*/";
+  std::string start_comment = "/*" + start_tag + "*/";
+  std::string end_comment = "/*" + end_tag + "*/";
 
   int start_line = -1;
   int start_column = -1;
   for (int i = 0; i < lines.size(); i++) {
-    string::size_type pos = lines[i].find(start_comment);
-    if (pos != string::npos) {
+    std::string::size_type pos = lines[i].find(start_comment);
+    if (pos != std::string::npos) {
       start_line = i;
       start_column = pos + start_comment.size();
       break;
@@ -1398,8 +1397,8 @@ void MakeExpectedSpan(const vector<string>& lines,
   int end_line = -1;
   int end_column = -1;
   for (int i = start_line; i < lines.size(); i++) {
-    string::size_type pos = lines[i].find(end_comment);
-    if (pos != string::npos) {
+    std::string::size_type pos = lines[i].find(end_comment);
+    if (pos != std::string::npos) {
       end_line = i;
       end_column = pos;
       break;
@@ -1451,7 +1450,7 @@ class SourceInfoTest : public ParserTest {
         return false;
       }
 
-      spans_.insert(make_pair(SpanKey(*descriptor_proto, field, index),
+      spans_.insert(std::make_pair(SpanKey(*descriptor_proto, field, index),
                               &location));
     }
 
@@ -1476,12 +1475,12 @@ class SourceInfoTest : public ParserTest {
   }
 
   bool HasSpan(const char* start_tag, const char* end_tag,
-               const Message& descriptor_proto, const string& field_name) {
+               const Message& descriptor_proto, const std::string& field_name) {
     return HasSpan(start_tag, end_tag, descriptor_proto, field_name, -1);
   }
 
   bool HasSpan(const char* start_tag, const char* end_tag,
-               const Message& descriptor_proto, const string& field_name,
+               const Message& descriptor_proto, const std::string& field_name,
                int index) {
     const FieldDescriptor* field =
         descriptor_proto.GetDescriptor()->FindFieldByName(field_name);
@@ -1498,11 +1497,11 @@ class SourceInfoTest : public ParserTest {
     return HasSpan(NULL, NULL, descriptor_proto, NULL, -1);
   }
 
-  bool HasSpan(const Message& descriptor_proto, const string& field_name) {
+  bool HasSpan(const Message& descriptor_proto, const std::string& field_name) {
     return HasSpan(NULL, NULL, descriptor_proto, field_name, -1);
   }
 
-  bool HasSpan(const Message& descriptor_proto, const string& field_name,
+  bool HasSpan(const Message& descriptor_proto, const std::string& field_name,
                int index) {
     return HasSpan(NULL, NULL, descriptor_proto, field_name, index);
   }
@@ -1510,7 +1509,7 @@ class SourceInfoTest : public ParserTest {
   bool HasSpan(const char* start_tag, const char* end_tag,
                const Message& descriptor_proto, const FieldDescriptor* field,
                int index) {
-    pair<SpanMap::iterator, SpanMap::iterator> range =
+    std::pair<SpanMap::iterator, SpanMap::iterator> range =
         spans_.equal_range(SpanKey(descriptor_proto, field, index));
 
     if (start_tag == NULL) {
@@ -1556,9 +1555,9 @@ class SourceInfoTest : public ParserTest {
     }
   };
 
-  typedef multimap<SpanKey, const SourceCodeInfo::Location*> SpanMap;
+  typedef std::multimap<SpanKey, const SourceCodeInfo::Location*> SpanMap;
   SpanMap spans_;
-  vector<string> lines_;
+  std::vector<std::string> lines_;
 };
 
 TEST_F(SourceInfoTest, BasicFileDecls) {

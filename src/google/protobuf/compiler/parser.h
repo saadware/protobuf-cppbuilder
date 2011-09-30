@@ -93,7 +93,7 @@ class LIBPROTOBUF_EXPORT Parser {
 
   // Returns the identifier used in the "syntax = " declaration, if one was
   // seen during the last call to Parse(), or the empty string otherwise.
-  const string& GetSyntaxIdentifier() { return syntax_identifier_; }
+  const std::string& GetSyntaxIdentifier() { return syntax_identifier_; }
 
   // If set true, input files will be required to begin with a syntax
   // identifier.  Otherwise, files may omit this.  If a syntax identifier
@@ -161,7 +161,7 @@ class LIBPROTOBUF_EXPORT Parser {
   // where "text" is the expected token text.
   bool Consume(const char* text);
   // Consume a token of type IDENTIFIER and store its text in "output".
-  bool ConsumeIdentifier(string* output, const char* error);
+  bool ConsumeIdentifier(std::string* output, const char* error);
   // Consume an integer and store its value in "output".
   bool ConsumeInteger(int* output, const char* error);
   // Consume a 64-bit integer and store its value in "output".  If the value
@@ -171,17 +171,17 @@ class LIBPROTOBUF_EXPORT Parser {
   // tokens of either INTEGER or FLOAT type.
   bool ConsumeNumber(double* output, const char* error);
   // Consume a string literal and store its (unescaped) value in "output".
-  bool ConsumeString(string* output, const char* error);
+  bool ConsumeString(std::string* output, const char* error);
 
   // -----------------------------------------------------------------
   // Error logging helpers
 
   // Invokes error_collector_->AddError(), if error_collector_ is not NULL.
-  void AddError(int line, int column, const string& error);
+  void AddError(int line, int column, const std::string& error);
 
   // Invokes error_collector_->AddError() with the line and column number
   // of the current token.
-  void AddError(const string& error);
+  void AddError(const std::string& error);
 
   // Records a location in the SourceCodeInfo.location table (see
   // descriptor.proto).  We use RAII to ensure that the start and end locations
@@ -265,7 +265,7 @@ class LIBPROTOBUF_EXPORT Parser {
                               const LocationRecorder& service_location);
   bool ParsePackage(FileDescriptorProto* file,
                     const LocationRecorder& root_location);
-  bool ParseImport(string* import_filename,
+  bool ParseImport(std::string* import_filename,
                    const LocationRecorder& root_location,
                    int index);
   bool ParseOption(Message* options,
@@ -336,10 +336,10 @@ class LIBPROTOBUF_EXPORT Parser {
   // Parse a type name and fill in "type" (if it is a primitive) or
   // "type_name" (if it is not) with the type parsed.
   bool ParseType(FieldDescriptorProto::Type* type,
-                 string* type_name);
+                 std::string* type_name);
   // Parse a user-defined type and fill in "type_name" with the name.
   // If a primitive type is named, it is treated as an error.
-  bool ParseUserDefinedType(string* type_name);
+  bool ParseUserDefinedType(std::string* type_name);
 
   // Parses field options, i.e. the stuff in square brackets at the end
   // of a field definition.  Also parses default value.
@@ -374,7 +374,7 @@ class LIBPROTOBUF_EXPORT Parser {
   // REQUIRES: LookingAt("{")
   // When finished successfully, we are looking at the first token past
   // the ending brace.
-  bool ParseUninterpretedBlock(string* value);
+  bool ParseUninterpretedBlock(std::string* value);
 
   // =================================================================
 
@@ -385,9 +385,10 @@ class LIBPROTOBUF_EXPORT Parser {
   bool had_errors_;
   bool require_syntax_identifier_;
   bool stop_after_syntax_identifier_;
-  string syntax_identifier_;
+  std::string syntax_identifier_;
 
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(Parser);
+  friend class LocationRecorder;
 };
 
 // A table mapping (descriptor, ErrorLocation) pairs -- as reported by
@@ -421,9 +422,9 @@ class LIBPROTOBUF_EXPORT SourceLocationTable {
   void Clear();
 
  private:
-  typedef map<
-    pair<const Message*, DescriptorPool::ErrorCollector::ErrorLocation>,
-    pair<int, int> > LocationMap;
+  typedef std::map<
+    std::pair<const Message*, DescriptorPool::ErrorCollector::ErrorLocation>,
+    std::pair<int, int> > LocationMap;
   LocationMap location_map_;
 };
 

@@ -1,0 +1,310 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{1D39A01A-B4F5-4F78-967B-45EB89CF9DED}</ProjectGuid>
+			<ProjectVersion>12.3</ProjectVersion>
+			<Base>True</Base>
+			<Config Condition="'$(Config)'==''">Debug</Config>
+			<Platform>Win32</Platform>
+			<AppType>StaticLibrary</AppType>
+			<FrameworkType>None</FrameworkType>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
+			<Cfg_1>true</Cfg_1>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
+			<Cfg_2>true</Cfg_2>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base)'!=''">
+			<TLIB_PageSize>256</TLIB_PageSize>
+			<BCC_CPPCompileAlways>true</BCC_CPPCompileAlways>
+			<IncludePath>..\src\google\protobuf\compiler\;..\src\google\protobuf\io\;..\src\google\protobuf\stubs\;..\src\google\protobuf\;..\src\;$(IncludePath)</IncludePath>
+			<OutputExt>lib</OutputExt>
+			<Defines>_CPPBUILDER;LIBPROTOBUF_EXPORTS;$(Defines)</Defines>
+			<ProjectType>CppStaticLibrary</ProjectType>
+			<PackageImports>vcl.bpi;rtl.bpi;bcbie.bpi;vclx.bpi;vclactnband.bpi;xmlrtl.bpi;bcbsmp.bpi;VclSmp.bpi;vclimg.bpi;svnui.bpi;svn.bpi;bdertl.bpi;TeeUI.bpi;TeeDB.bpi;Tee.bpi;vcldb.bpi;dbrtl.bpi;vcldbx.bpi;vcltouch.bpi;dsnap.bpi;dsnapcon.bpi;vclib.bpi;ibxpress.bpi;adortl.bpi;IndyCore.bpi;IndySystem.bpi;IndyProtocols.bpi;inet.bpi;intrawebdb_110_150.bpi;Intraweb_110_150.bpi;vclie.bpi;inetdb.bpi;webdsnap.bpi;websnap.bpi;inetdbbde.bpi;inetdbxpress.bpi;soaprtl.bpi;vclribbon.bpi;DbxCommonDriver.bpi;DBXInterBaseDriver.bpi;DBXMySQLDriver.bpi;dbexpress.bpi;dbxcds.bpi;DbxClientDriver.bpi;AzureCloud.bpi;dxCoreC15.bpi;dxGDIPlusC15.bpi;cxLibraryC15.bpi;dxThemeC15.bpi;cxPageControlC15.bpi;cxEditorsC15.bpi;cxDataC15.bpi;cxExtEditorsC15.bpi;cxGridC15.bpi;cxExportC15.bpi;dxmdsC15.bpi;dxComnC15.bpi;dxdbtrC15.bpi;dxtrmdC15.bpi;dxOrgCC15.bpi;dxDBOrC15.bpi;MssComponents.bpi</PackageImports>
+			<_TCHARMapping>wchar_t</_TCHARMapping>
+			<LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
+			<AllPackageLibs>rtl.lib;vcl.lib</AllPackageLibs>
+			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
+			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE</DCC_UnitAlias>
+			<DynamicRTL>true</DynamicRTL>
+			<UsePackages>true</UsePackages>
+			<IntermediateOutputDir>.\$(Config)\$(Platform)</IntermediateOutputDir>
+			<FinalOutputDir>.\$(Config)\$(Platform)</FinalOutputDir>
+			<BCC_wpar>false</BCC_wpar>
+			<BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
+			<BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<BCC_InlineFunctionExpansion>false</BCC_InlineFunctionExpansion>
+			<BCC_SourceDebuggingOn>true</BCC_SourceDebuggingOn>
+			<BCC_OptimizeForSpeed>false</BCC_OptimizeForSpeed>
+			<BCC_DisableOptimizations>true</BCC_DisableOptimizations>
+			<DCC_Optimize>false</DCC_Optimize>
+			<DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
+			<Defines>_DEBUG;$(Defines)</Defines>
+			<DCC_Define>DEBUG</DCC_Define>
+			<TASM_DisplaySourceLines>true</TASM_DisplaySourceLines>
+			<BCC_StackFrames>true</BCC_StackFrames>
+			<ILINK_FullDebugInfo>true</ILINK_FullDebugInfo>
+			<TASM_Debugging>Full</TASM_Debugging>
+			<ILINK_LibraryPath>$(BDSLIB)\$(PLATFORM)\debug;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_2)'!=''">
+			<Defines>NDEBUG;$(Defines)</Defines>
+			<TASM_Debugging>None</TASM_Debugging>
+		</PropertyGroup>
+		<ItemGroup>
+			<None Include="config.h">
+				<VirtualFolder>{666ADC99-3BDD-4512-854E-E8E03353D308}</VirtualFolder>
+				<BuildOrder>0</BuildOrder>
+			</None>
+			<CppCompile Include="..\src\google\protobuf\compiler\importer.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\importer.h</DependentOn>
+				<BuildOrder>1</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\compiler\parser.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\compiler\parser.h</DependentOn>
+				<BuildOrder>2</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\descriptor.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\descriptor.h</DependentOn>
+				<BuildOrder>3</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\descriptor.pb.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\descriptor.pb.h</DependentOn>
+				<BuildOrder>4</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\descriptor_database.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\descriptor_database.h</DependentOn>
+				<BuildOrder>5</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\dynamic_message.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\dynamic_message.h</DependentOn>
+				<BuildOrder>6</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\extension_set.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\extension_set.h</DependentOn>
+				<BuildOrder>7</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\extension_set_heavy.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<BuildOrder>8</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\generated_message_reflection.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\generated_message_reflection.h</DependentOn>
+				<BuildOrder>9</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\generated_message_util.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\generated_message_util.h</DependentOn>
+				<BuildOrder>10</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\io\coded_stream.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\io\coded_stream.h</DependentOn>
+				<BuildOrder>11</BuildOrder>
+			</CppCompile>
+			<None Include="..\src\google\protobuf\io\coded_stream_inl.h">
+				<VirtualFolder>{666ADC99-3BDD-4512-854E-E8E03353D308}</VirtualFolder>
+				<BuildOrder>12</BuildOrder>
+			</None>
+			<CppCompile Include="..\src\google\protobuf\io\gzip_stream.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\io\gzip_stream.h</DependentOn>
+				<BuildOrder>13</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\io\printer.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\io\printer.h</DependentOn>
+				<BuildOrder>14</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\io\tokenizer.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\io\tokenizer.h</DependentOn>
+				<BuildOrder>15</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\io\zero_copy_stream.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\io\zero_copy_stream.h</DependentOn>
+				<BuildOrder>16</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\io\zero_copy_stream_impl.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\io\zero_copy_stream_impl.h</DependentOn>
+				<BuildOrder>17</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\io\zero_copy_stream_impl_lite.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\io\zero_copy_stream_impl_lite.h</DependentOn>
+				<BuildOrder>18</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\message.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\message.h</DependentOn>
+				<BuildOrder>19</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\message_lite.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\message_lite.h</DependentOn>
+				<BuildOrder>20</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\reflection_ops.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\reflection_ops.h</DependentOn>
+				<BuildOrder>21</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\repeated_field.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\repeated_field.h</DependentOn>
+				<BuildOrder>22</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\service.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\service.h</DependentOn>
+				<BuildOrder>23</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\stubs\common.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\stubs\common.h</DependentOn>
+				<BuildOrder>24</BuildOrder>
+			</CppCompile>
+			<None Include="..\src\google\protobuf\stubs\hash.h">
+				<VirtualFolder>{666ADC99-3BDD-4512-854E-E8E03353D308}</VirtualFolder>
+				<BuildOrder>25</BuildOrder>
+			</None>
+			<None Include="..\src\google\protobuf\stubs\map-util.h">
+				<VirtualFolder>{666ADC99-3BDD-4512-854E-E8E03353D308}</VirtualFolder>
+				<BuildOrder>26</BuildOrder>
+			</None>
+			<CppCompile Include="..\src\google\protobuf\stubs\once.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\stubs\once.h</DependentOn>
+				<BuildOrder>27</BuildOrder>
+			</CppCompile>
+			<None Include="..\src\google\protobuf\stubs\stl_util-inl.h">
+				<VirtualFolder>{666ADC99-3BDD-4512-854E-E8E03353D308}</VirtualFolder>
+				<BuildOrder>28</BuildOrder>
+			</None>
+			<CppCompile Include="..\src\google\protobuf\stubs\structurally_valid.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<BuildOrder>29</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\stubs\strutil.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\stubs\strutil.h</DependentOn>
+				<BuildOrder>30</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\stubs\substitute.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\stubs\substitute.h</DependentOn>
+				<BuildOrder>31</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\text_format.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>...\src\google\protobuf\text_format.h</DependentOn>
+				<BuildOrder>32</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\unknown_field_set.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\unknown_field_set.h</DependentOn>
+				<BuildOrder>33</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\wire_format.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\wire_format.h</DependentOn>
+				<BuildOrder>34</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\wire_format_lite.cc">
+				<VirtualFolder>{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}</VirtualFolder>
+				<DependentOn>..\src\google\protobuf\wire_format_lite.h</DependentOn>
+				<BuildOrder>35</BuildOrder>
+			</CppCompile>
+			<None Include="..\src\google\protobuf\wire_format_lite_inl.h">
+				<VirtualFolder>{666ADC99-3BDD-4512-854E-E8E03353D308}</VirtualFolder>
+				<BuildOrder>36</BuildOrder>
+			</None>
+			<BuildConfiguration Include="Release">
+				<Key>Cfg_2</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Base">
+				<Key>Base</Key>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Debug">
+				<Key>Cfg_1</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+		</ItemGroup>
+		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Cpp.Targets')" Project="$(BDS)\Bin\CodeGear.Cpp.Targets"/>
+		<Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
+		<ProjectExtensions>
+			<Borland.Personality>CPlusPlusBuilder.Personality.12</Borland.Personality>
+			<Borland.ProjectType>CppStaticLibrary</Borland.ProjectType>
+			<BorlandProject>
+				<CPlusPlusBuilder.Personality>
+					<VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+						<VersionInfo Name="MajorVer">1</VersionInfo>
+						<VersionInfo Name="MinorVer">0</VersionInfo>
+						<VersionInfo Name="Release">0</VersionInfo>
+						<VersionInfo Name="Build">0</VersionInfo>
+						<VersionInfo Name="Debug">False</VersionInfo>
+						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Special">False</VersionInfo>
+						<VersionInfo Name="Private">False</VersionInfo>
+						<VersionInfo Name="DLL">False</VersionInfo>
+						<VersionInfo Name="Locale">1033</VersionInfo>
+						<VersionInfo Name="CodePage">1252</VersionInfo>
+					</VersionInfo>
+					<VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName"/>
+						<VersionInfoKeys Name="FileDescription"/>
+						<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="InternalName"/>
+						<VersionInfoKeys Name="LegalCopyright"/>
+						<VersionInfoKeys Name="LegalTrademarks"/>
+						<VersionInfoKeys Name="OriginalFilename"/>
+						<VersionInfoKeys Name="ProductName"/>
+						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments"/>
+					</VersionInfoKeys>
+					<Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\bcboffice2k150.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\bcbofficexp150.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcloffice2k150.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclofficexp150.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+					</Excluded_Packages>
+					<ProjectProperties>
+						<ProjectProperties Name="AutoShowDeps">False</ProjectProperties>
+						<ProjectProperties Name="ManagePaths">True</ProjectProperties>
+						<ProjectProperties Name="VerifyPackages">True</ProjectProperties>
+					</ProjectProperties>
+					<VFOLDERS>
+						<VFOLDER name="Headers" ID="{666ADC99-3BDD-4512-854E-E8E03353D308}"/>
+						<VFOLDER name="Source" ID="{94D2F44C-4E4C-4C47-9CF3-B8BFAF6B9963}"/>
+					</VFOLDERS>
+				</CPlusPlusBuilder.Personality>
+				<Platforms>
+					<Platform value="Win32">True</Platform>
+				</Platforms>
+			</BorlandProject>
+			<ProjectFileVersion>12</ProjectFileVersion>
+		</ProjectExtensions>
+	</Project>

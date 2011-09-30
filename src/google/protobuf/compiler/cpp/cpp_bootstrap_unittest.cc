@@ -69,11 +69,11 @@ class MockErrorCollector : public MultiFileErrorCollector {
   MockErrorCollector() {}
   ~MockErrorCollector() {}
 
-  string text_;
+  std::string text_;
 
   // implements ErrorCollector ---------------------------------------
-  void AddError(const string& filename, int line, int column,
-                const string& message) {
+  void AddError(const std::string& filename, int line, int column,
+                const std::string& message) {
     strings::SubstituteAndAppend(&text_, "$0:$1:$2: $3\n",
                                  filename, line, column, message);
   }
@@ -86,13 +86,13 @@ class MockGeneratorContext : public GeneratorContext {
     STLDeleteValues(&files_);
   }
 
-  void ExpectFileMatches(const string& virtual_filename,
-                         const string& physical_filename) {
-    string* expected_contents = FindPtrOrNull(files_, virtual_filename);
+  void ExpectFileMatches(const std::string& virtual_filename,
+                         const std::string& physical_filename) {
+    std::string* expected_contents = FindPtrOrNull(files_, virtual_filename);
     ASSERT_TRUE(expected_contents != NULL)
       << "Generator failed to generate file: " << virtual_filename;
 
-    string actual_contents;
+    std::string actual_contents;
     File::ReadFileToStringOrDie(
       TestSourceDir() + "/" + physical_filename,
       &actual_contents);
@@ -104,16 +104,16 @@ class MockGeneratorContext : public GeneratorContext {
 
   // implements GeneratorContext --------------------------------------
 
-  virtual io::ZeroCopyOutputStream* Open(const string& filename) {
-    string** map_slot = &files_[filename];
+  virtual io::ZeroCopyOutputStream* Open(const std::string& filename) {
+    std::string** map_slot = &files_[filename];
     if (*map_slot != NULL) delete *map_slot;
-    *map_slot = new string;
+    *map_slot = new std::string;
 
     return new io::StringOutputStream(*map_slot);
   }
 
  private:
-  map<string, string*> files_;
+  std::map<std::string, std::string*> files_;
 };
 
 TEST(BootstrapTest, GeneratedDescriptorMatches) {
@@ -131,8 +131,8 @@ TEST(BootstrapTest, GeneratedDescriptorMatches) {
 
   CppGenerator generator;
   MockGeneratorContext context;
-  string error;
-  string parameter;
+  std::string error;
+  std::string parameter;
   parameter = "dllexport_decl=LIBPROTOBUF_EXPORT";
   ASSERT_TRUE(generator.Generate(proto_file, parameter,
                                  &context, &error));

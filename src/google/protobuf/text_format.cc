@@ -53,16 +53,16 @@
 namespace google {
 namespace protobuf {
 
-string Message::DebugString() const {
-  string debug_string;
+std::string Message::DebugString() const {
+  std::string debug_string;
 
   TextFormat::PrintToString(*this, &debug_string);
 
   return debug_string;
 }
 
-string Message::ShortDebugString() const {
-  string debug_string;
+std::string Message::ShortDebugString() const {
+  std::string debug_string;
 
   TextFormat::Printer printer;
   printer.SetSingleLineMode(true);
@@ -77,8 +77,8 @@ string Message::ShortDebugString() const {
   return debug_string;
 }
 
-string Message::Utf8DebugString() const {
-  string debug_string;
+std::string Message::Utf8DebugString() const {
+  std::string debug_string;
 
   TextFormat::Printer printer;
   printer.SetUseUtf8StringEscaping(true);
@@ -165,7 +165,7 @@ class TextFormat::Parser::ParserImpl {
     return suc && LookingAtType(io::Tokenizer::TYPE_END);
   }
 
-  void ReportError(int line, int col, const string& message) {
+  void ReportError(int line, int col, const std::string& message) {
     had_errors_ = true;
     if (error_collector_ == NULL) {
       if (line >= 0) {
@@ -183,7 +183,7 @@ class TextFormat::Parser::ParserImpl {
     }
   }
 
-  void ReportWarning(int line, int col, const string& message) {
+  void ReportWarning(int line, int col, const std::string& message) {
     if (error_collector_ == NULL) {
       if (line >= 0) {
         GOOGLE_LOG(WARNING) << "Warning parsing text-format "
@@ -205,14 +205,14 @@ class TextFormat::Parser::ParserImpl {
 
   // Reports an error with the given message with information indicating
   // the position (as derived from the current token).
-  void ReportError(const string& message) {
+  void ReportError(const std::string& message) {
     ReportError(tokenizer_.current().line, tokenizer_.current().column,
                 message);
   }
 
   // Reports a warning with the given message with information indicating
   // the position (as derived from the current token).
-  void ReportWarning(const string& message) {
+  void ReportWarning(const std::string& message) {
     ReportWarning(tokenizer_.current().line, tokenizer_.current().column,
                   message);
   }
@@ -220,7 +220,7 @@ class TextFormat::Parser::ParserImpl {
   // Consumes the specified message with the given starting delimeter.
   // This method checks to see that the end delimeter at the conclusion of
   // the consumption matches the starting delimeter passed in here.
-  bool ConsumeMessage(Message* message, const string delimeter) {
+  bool ConsumeMessage(Message* message, const std::string delimeter) {
     while (!LookingAt(">") &&  !LookingAt("}")) {
       DO(ConsumeField(message));
     }
@@ -237,7 +237,7 @@ class TextFormat::Parser::ParserImpl {
     const Reflection* reflection = message->GetReflection();
     const Descriptor* descriptor = message->GetDescriptor();
 
-    string field_name;
+    std::string field_name;
 
     const FieldDescriptor* field = NULL;
 
@@ -245,7 +245,7 @@ class TextFormat::Parser::ParserImpl {
       // Extension.
       DO(ConsumeIdentifier(&field_name));
       while (TryConsume(".")) {
-        string part;
+        std::string part;
         DO(ConsumeIdentifier(&part));
         field_name += ".";
         field_name += part;
@@ -270,7 +270,7 @@ class TextFormat::Parser::ParserImpl {
       // .proto file, which actually matches their type names, not their field
       // names.
       if (field == NULL) {
-        string lower_field_name = field_name;
+        std::string lower_field_name = field_name;
         LowerString(&lower_field_name);
         field = descriptor->FindFieldByName(lower_field_name);
         // If the case-insensitive match worked but the field is NOT a group,
@@ -335,7 +335,7 @@ class TextFormat::Parser::ParserImpl {
   bool ConsumeFieldMessage(Message* message,
                            const Reflection* reflection,
                            const FieldDescriptor* field) {
-    string delimeter;
+    std::string delimeter;
     if (TryConsume("<")) {
       delimeter = ">";
     } else {
@@ -410,7 +410,7 @@ class TextFormat::Parser::ParserImpl {
       }
 
       case FieldDescriptor::CPPTYPE_STRING: {
-        string value;
+        std::string value;
         DO(ConsumeString(&value));
         SET_FIELD(String, value);
         break;
@@ -422,7 +422,7 @@ class TextFormat::Parser::ParserImpl {
           DO(ConsumeUnsignedInteger(&value, 1));
           SET_FIELD(Bool, value);
         } else {
-          string value;
+          std::string value;
           DO(ConsumeIdentifier(&value));
           if (value == "true" || value == "t") {
             SET_FIELD(Bool, true);
@@ -438,7 +438,7 @@ class TextFormat::Parser::ParserImpl {
       }
 
       case FieldDescriptor::CPPTYPE_ENUM: {
-        string value;
+        std::string value;
         const EnumDescriptor* enum_type = field->enum_type();
         const EnumValueDescriptor* enum_value = NULL;
 
@@ -480,7 +480,7 @@ class TextFormat::Parser::ParserImpl {
   }
 
   // Returns true if the current token's text is equal to that specified.
-  bool LookingAt(const string& text) {
+  bool LookingAt(const std::string& text) {
     return tokenizer_.current().text == text;
   }
 
@@ -491,7 +491,7 @@ class TextFormat::Parser::ParserImpl {
 
   // Consumes an identifier and saves its value in the identifier parameter.
   // Returns false if the token is not of type IDENTFIER.
-  bool ConsumeIdentifier(string* identifier) {
+  bool ConsumeIdentifier(std::string* identifier) {
     if (!LookingAtType(io::Tokenizer::TYPE_IDENTIFIER)) {
       ReportError("Expected identifier.");
       return false;
@@ -505,7 +505,7 @@ class TextFormat::Parser::ParserImpl {
 
   // Consumes a string and saves its value in the text parameter.
   // Returns false if the token is not of type STRING.
-  bool ConsumeString(string* text) {
+  bool ConsumeString(std::string* text) {
     if (!LookingAtType(io::Tokenizer::TYPE_STRING)) {
       ReportError("Expected string.");
       return false;
@@ -594,7 +594,7 @@ class TextFormat::Parser::ParserImpl {
       // Mark the current token as consumed.
       tokenizer_.Next();
     } else if (LookingAtType(io::Tokenizer::TYPE_IDENTIFIER)) {
-      string text = tokenizer_.current().text;
+      std::string text = tokenizer_.current().text;
       LowerString(&text);
       if (text == "inf" || text == "infinity") {
         *value = std::numeric_limits<double>::infinity();
@@ -621,8 +621,8 @@ class TextFormat::Parser::ParserImpl {
   // Consumes a token and confirms that it matches that specified in the
   // value parameter. Returns false if the token found does not match that
   // which was specified.
-  bool Consume(const string& value) {
-    const string& current_value = tokenizer_.current().text;
+  bool Consume(const std::string& value) {
+    const std::string& current_value = tokenizer_.current().text;
 
     if (current_value != value) {
       ReportError("Expected \"" + value + "\", found \"" + current_value
@@ -637,7 +637,7 @@ class TextFormat::Parser::ParserImpl {
 
   // Attempts to consume the supplied value. Returns false if a the
   // token found does not match the value specified.
-  bool TryConsume(const string& value) {
+  bool TryConsume(const std::string& value) {
     if (tokenizer_.current().text == value) {
       tokenizer_.Next();
       return true;
@@ -655,11 +655,11 @@ class TextFormat::Parser::ParserImpl {
 
     virtual ~ParserErrorCollector() { };
 
-    virtual void AddError(int line, int column, const string& message) {
+    virtual void AddError(int line, int column, const std::string& message) {
       parser_->ReportError(line, column, message);
     }
 
-    virtual void AddWarning(int line, int column, const string& message) {
+    virtual void AddWarning(int line, int column, const std::string& message) {
       parser_->ReportWarning(line, column, message);
     }
 
@@ -724,7 +724,7 @@ class TextFormat::Printer::TextGenerator {
   }
 
   // Print text to the output stream.
-  void Print(const string& str) {
+  void Print(const std::string& str) {
     Print(str.data(), str.size());
   }
 
@@ -797,7 +797,7 @@ class TextFormat::Printer::TextGenerator {
   bool at_start_of_line_;
   bool failed_;
 
-  string indent_;
+  std::string indent_;
   int initial_indent_level_;
 };
 
@@ -822,7 +822,7 @@ bool TextFormat::Parser::Parse(io::ZeroCopyInputStream* input,
   return MergeUsingImpl(input, output, &parser);
 }
 
-bool TextFormat::Parser::ParseFromString(const string& input,
+bool TextFormat::Parser::ParseFromString(const std::string& input,
                                          Message* output) {
   io::ArrayInputStream input_stream(input.data(), input.size());
   return Parse(&input_stream, output);
@@ -835,7 +835,7 @@ bool TextFormat::Parser::Merge(io::ZeroCopyInputStream* input,
   return MergeUsingImpl(input, output, &parser);
 }
 
-bool TextFormat::Parser::MergeFromString(const string& input,
+bool TextFormat::Parser::MergeFromString(const std::string& input,
                                          Message* output) {
   io::ArrayInputStream input_stream(input.data(), input.size());
   return Merge(&input_stream, output);
@@ -846,7 +846,7 @@ bool TextFormat::Parser::MergeUsingImpl(io::ZeroCopyInputStream* input,
                                         ParserImpl* parser_impl) {
   if (!parser_impl->Parse(output)) return false;
   if (!allow_partial_ && !output->IsInitialized()) {
-    vector<string> missing_fields;
+    std::vector<std::string> missing_fields;
     output->FindInitializationErrors(&missing_fields);
     parser_impl->ReportError(-1, 0, "Message missing required fields: " +
                                     JoinStrings(missing_fields, ", "));
@@ -856,7 +856,7 @@ bool TextFormat::Parser::MergeUsingImpl(io::ZeroCopyInputStream* input,
 }
 
 bool TextFormat::Parser::ParseFieldValueFromString(
-    const string& input,
+    const std::string& input,
     const FieldDescriptor* field,
     Message* output) {
   io::ArrayInputStream input_stream(input.data(), input.size());
@@ -875,12 +875,12 @@ bool TextFormat::Parser::ParseFieldValueFromString(
   return Parser().Merge(input, output);
 }
 
-/* static */ bool TextFormat::ParseFromString(const string& input,
+/* static */ bool TextFormat::ParseFromString(const std::string& input,
                                               Message* output) {
   return Parser().ParseFromString(input, output);
 }
 
-/* static */ bool TextFormat::MergeFromString(const string& input,
+/* static */ bool TextFormat::MergeFromString(const std::string& input,
                                               Message* output) {
   return Parser().MergeFromString(input, output);
 }
@@ -896,7 +896,7 @@ TextFormat::Printer::Printer()
 TextFormat::Printer::~Printer() {}
 
 bool TextFormat::Printer::PrintToString(const Message& message,
-                                        string* output) const {
+                                        std::string* output) const {
   GOOGLE_DCHECK(output) << "output specified is NULL";
 
   output->clear();
@@ -909,7 +909,7 @@ bool TextFormat::Printer::PrintToString(const Message& message,
 
 bool TextFormat::Printer::PrintUnknownFieldsToString(
     const UnknownFieldSet& unknown_fields,
-    string* output) const {
+    std::string* output) const {
   GOOGLE_DCHECK(output) << "output specified is NULL";
 
   output->clear();
@@ -941,7 +941,7 @@ bool TextFormat::Printer::PrintUnknownFields(
 void TextFormat::Printer::Print(const Message& message,
                                 TextGenerator& generator) const {
   const Reflection* reflection = message.GetReflection();
-  vector<const FieldDescriptor*> fields;
+  std::vector<const FieldDescriptor*> fields;
   reflection->ListFields(message, &fields);
   for (int i = 0; i < fields.size(); i++) {
     PrintField(message, reflection, fields[i], generator);
@@ -953,7 +953,7 @@ void TextFormat::Printer::PrintFieldValueToString(
     const Message& message,
     const FieldDescriptor* field,
     int index,
-    string* output) const {
+    std::string* output) const {
 
   GOOGLE_DCHECK(output) << "output specified is NULL";
 
@@ -1096,8 +1096,8 @@ void TextFormat::Printer::PrintFieldValue(
 #undef OUTPUT_FIELD
 
       case FieldDescriptor::CPPTYPE_STRING: {
-        string scratch;
-        const string& value = field->is_repeated() ?
+        std::string scratch;
+        const std::string& value = field->is_repeated() ?
             reflection->GetRepeatedStringReference(
               message, field, index, &scratch) :
             reflection->GetStringReference(message, field, &scratch);
@@ -1150,12 +1150,12 @@ void TextFormat::Printer::PrintFieldValue(
 }
 
 /* static */ bool TextFormat::PrintToString(
-    const Message& message, string* output) {
+    const Message& message, std::string* output) {
   return Printer().PrintToString(message, output);
 }
 
 /* static */ bool TextFormat::PrintUnknownFieldsToString(
-    const UnknownFieldSet& unknown_fields, string* output) {
+    const UnknownFieldSet& unknown_fields, std::string* output) {
   return Printer().PrintUnknownFieldsToString(unknown_fields, output);
 }
 
@@ -1163,12 +1163,12 @@ void TextFormat::Printer::PrintFieldValue(
     const Message& message,
     const FieldDescriptor* field,
     int index,
-    string* output) {
+    std::string* output) {
   return Printer().PrintFieldValueToString(message, field, index, output);
 }
 
 /* static */ bool TextFormat::ParseFieldValueFromString(
-    const string& input,
+    const std::string& input,
     const FieldDescriptor* field,
     Message* message) {
   return Parser().ParseFieldValueFromString(input, field, message);
@@ -1177,8 +1177,8 @@ void TextFormat::Printer::PrintFieldValue(
 // Prints an integer as hex with a fixed number of digits dependent on the
 // integer type.
 template<typename IntType>
-static string PaddedHex(IntType value) {
-  string result;
+static std::string PaddedHex(IntType value) {
+  std::string result;
   result.reserve(sizeof(value) * 2);
   for (int i = sizeof(value) * 2 - 1; i >= 0; i--) {
     result.push_back(int_to_hex_digit(value >> (i*4) & 0x0F));
@@ -1190,7 +1190,7 @@ void TextFormat::Printer::PrintUnknownFields(
     const UnknownFieldSet& unknown_fields, TextGenerator& generator) const {
   for (int i = 0; i < unknown_fields.field_count(); i++) {
     const UnknownField& field = unknown_fields.field(i);
-    string field_number = SimpleItoa(field.number());
+    std::string field_number = SimpleItoa(field.number());
 
     switch (field.type()) {
       case UnknownField::TYPE_VARINT:
@@ -1229,7 +1229,7 @@ void TextFormat::Printer::PrintUnknownFields(
       }
       case UnknownField::TYPE_LENGTH_DELIMITED: {
         generator.Print(field_number);
-        const string& value = field.length_delimited();
+        const std::string& value = field.length_delimited();
         UnknownFieldSet embedded_unknown_fields;
         if (!value.empty() && embedded_unknown_fields.ParseFromString(value)) {
           // This field is parseable as a Message.

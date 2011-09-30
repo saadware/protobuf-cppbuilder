@@ -75,9 +75,9 @@ class LIBPROTOC_EXPORT CodeGenerator {
   // Returns true if successful.  Otherwise, sets *error to a description of
   // the problem (e.g. "invalid parameter") and returns false.
   virtual bool Generate(const FileDescriptor* file,
-                        const string& parameter,
+                        const std::string& parameter,
                         GeneratorContext* generator_context,
-                        string* error) const = 0;
+                        std::string* error) const = 0;
 
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(CodeGenerator);
@@ -102,7 +102,7 @@ class LIBPROTOC_EXPORT GeneratorContext {
   // generate the files "foo/bar.pb.h" and "foo/bar.pb.cc"; note that
   // "foo/" is included in these filenames.  The filename is not allowed to
   // contain "." or ".." components.
-  virtual io::ZeroCopyOutputStream* Open(const string& filename) = 0;
+  virtual io::ZeroCopyOutputStream* Open(const std::string& filename) = 0;
 
   // Creates a ZeroCopyOutputStream which will insert code into the given file
   // at the given insertion point.  See plugin.proto (plugin.pb.h) for more
@@ -111,12 +111,12 @@ class LIBPROTOC_EXPORT GeneratorContext {
   //
   // WARNING:  This feature is currently EXPERIMENTAL and is subject to change.
   virtual io::ZeroCopyOutputStream* OpenForInsert(
-      const string& filename, const string& insertion_point);
+      const std::string& filename, const std::string& insertion_point);
 
   // Returns a vector of FileDescriptors for all the files being compiled
   // in this run.  Useful for languages, such as Go, that treat files
   // differently when compiled as a set rather than individually.
-  virtual void ListParsedFiles(vector<const FileDescriptor*>* output);
+  virtual void ListParsedFiles(std::vector<const FileDescriptor*>* output);
 
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(GeneratorContext);
@@ -132,8 +132,8 @@ typedef GeneratorContext OutputDirectory;
 //   "foo=bar,baz,qux=corge"
 // parses to the pairs:
 //   ("foo", "bar"), ("baz", ""), ("qux", "corge")
-extern void ParseGeneratorParameter(const string&,
-            vector<pair<string, string> >*);
+extern void ParseGeneratorParameter(const std::string&,
+            std::vector<std::pair<std::string, std::string> >*);
 
 }  // namespace compiler
 }  // namespace protobuf

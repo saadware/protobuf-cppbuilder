@@ -57,7 +57,7 @@ namespace cpp {
 // ['name', 'index', 'number', 'classname', 'declared_type', 'tag_size',
 // 'deprecation'].
 void SetCommonFieldVariables(const FieldDescriptor* descriptor,
-                             map<string, string>* variables);
+                             std::map<std::string, std::string>* variables);
 
 class FieldGenerator {
  public:

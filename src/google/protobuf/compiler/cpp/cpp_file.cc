@@ -51,7 +51,7 @@ namespace cpp {
 // ===================================================================
 
 FileGenerator::FileGenerator(const FileDescriptor* file,
-                             const string& dllexport_decl)
+                             const std::string& dllexport_decl)
   : file_(file),
     message_generators_(
       new scoped_ptr<MessageGenerator>[file->message_type_count()]),
@@ -83,13 +83,13 @@ FileGenerator::FileGenerator(const FileDescriptor* file,
       new ExtensionGenerator(file->extension(i), dllexport_decl));
   }
 
-  SplitStringUsing(file_->package(), ".", &package_parts_);
+  protobuf::SplitStringUsing(file_->package(), ".", &package_parts_);
 }
 
 FileGenerator::~FileGenerator() {}
 
 void FileGenerator::GenerateHeader(io::Printer* printer) {
-  string filename_identifier = FilenameIdentifier(file_->name());
+  std::string filename_identifier = FilenameIdentifier(file_->name());
 
   // Generate top of header.
   printer->Print(
@@ -512,8 +512,8 @@ void FileGenerator::GenerateBuildDescriptors(io::Printer* printer) {
   for (int i = 0; i < file_->dependency_count(); i++) {
     const FileDescriptor* dependency = file_->dependency(i);
     // Print the namespace prefix for the dependency.
-    vector<string> dependency_package_parts;
-    SplitStringUsing(dependency->package(), ".", &dependency_package_parts);
+    std::vector<std::string> dependency_package_parts;
+    protobuf::SplitStringUsing(dependency->package(), ".", &dependency_package_parts);
     printer->Print("::");
     for (int i = 0; i < dependency_package_parts.size(); i++) {
       printer->Print("$name$::",
@@ -527,11 +527,11 @@ void FileGenerator::GenerateBuildDescriptors(io::Printer* printer) {
 
   if (HasDescriptorMethods(file_)) {
     // Embed the descriptor.  We simply serialize the entire FileDescriptorProto
-    // and embed it as a string literal, which is parsed and built into real
+    // and embed it as a std::string literal, which is parsed and built into real
     // descriptors at initialization time.
     FileDescriptorProto file_proto;
     file_->CopyTo(&file_proto);
-    string file_data;
+    std::string file_data;
     file_proto.SerializeToString(&file_data);
 
     printer->Print(
@@ -541,7 +541,7 @@ void FileGenerator::GenerateBuildDescriptors(io::Printer* printer) {
     static const int kBytesPerLine = 40;
     for (int i = 0; i < file_data.size(); i += kBytesPerLine) {
       printer->Print("\n  \"$data$\"",
-        "data", EscapeTrigraphs(CEscape(file_data.substr(i, kBytesPerLine))));
+        "data", EscapeTrigraphs(protobuf::CEscape(file_data.substr(i, kBytesPerLine))));
     }
     printer->Print(
       ", $size$);\n",

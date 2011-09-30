@@ -55,7 +55,7 @@ class ServiceGenerator {
  public:
   // See generator.cc for the meaning of dllexport_decl.
   explicit ServiceGenerator(const ServiceDescriptor* descriptor,
-                            const string& dllexport_decl);
+                            const std::string& dllexport_decl);
   ~ServiceGenerator();
 
   // Header stuff.
@@ -105,7 +105,7 @@ class ServiceGenerator {
   void GenerateStubMethods(io::Printer* printer);
 
   const ServiceDescriptor* descriptor_;
-  map<string, string> vars_;
+  std::map<std::string, std::string> vars_;
 
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(ServiceGenerator);
 };

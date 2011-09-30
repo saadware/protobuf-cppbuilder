@@ -142,7 +142,7 @@ TEST(ExtensionSetTest, ClearOneField) {
 
 TEST(ExtensionSetTest, CopyFrom) {
   unittest::TestAllExtensions message1, message2;
-  string data;
+  std::string data;
 
   TestUtil::SetAllExtensions(&message1);
   message2.CopyFrom(message1);
@@ -151,7 +151,7 @@ TEST(ExtensionSetTest, CopyFrom) {
 
 TEST(ExtensionSetTest, CopyFromUpcasted) {
   unittest::TestAllExtensions message1, message2;
-  string data;
+  std::string data;
   const Message& upcasted_message = message1;
 
   TestUtil::SetAllExtensions(&message1);
@@ -190,7 +190,7 @@ TEST(ExtensionSetTest, SerializationToArray) {
   unittest::TestAllTypes destination;
   TestUtil::SetAllExtensions(&source);
   int size = source.ByteSize();
-  string data;
+  std::string data;
   data.resize(size);
   uint8* target = reinterpret_cast<uint8*>(string_as_array(&data));
   uint8* end = source.SerializeWithCachedSizesToArray(target);
@@ -211,7 +211,7 @@ TEST(ExtensionSetTest, SerializationToStream) {
   unittest::TestAllTypes destination;
   TestUtil::SetAllExtensions(&source);
   int size = source.ByteSize();
-  string data;
+  std::string data;
   data.resize(size);
   {
     io::ArrayOutputStream array_stream(string_as_array(&data), size, 1);
@@ -228,13 +228,13 @@ TEST(ExtensionSetTest, PackedSerializationToArray) {
   // wire compatibility of extensions.
   //
   // This checks serialization to a flat array by explicitly reserving space in
-  // the string and calling the generated message's
+  // the std::string and calling the generated message's
   // SerializeWithCachedSizesToArray.
   unittest::TestPackedExtensions source;
   unittest::TestPackedTypes destination;
   TestUtil::SetPackedExtensions(&source);
   int size = source.ByteSize();
-  string data;
+  std::string data;
   data.resize(size);
   uint8* target = reinterpret_cast<uint8*>(string_as_array(&data));
   uint8* end = source.SerializeWithCachedSizesToArray(target);
@@ -255,7 +255,7 @@ TEST(ExtensionSetTest, PackedSerializationToStream) {
   unittest::TestPackedTypes destination;
   TestUtil::SetPackedExtensions(&source);
   int size = source.ByteSize();
-  string data;
+  std::string data;
   data.resize(size);
   {
     io::ArrayOutputStream array_stream(string_as_array(&data), size, 1);
@@ -271,7 +271,7 @@ TEST(ExtensionSetTest, Parsing) {
   // Serialize as TestAllTypes and parse as TestAllExtensions.
   unittest::TestAllTypes source;
   unittest::TestAllExtensions destination;
-  string data;
+  std::string data;
 
   TestUtil::SetAllFields(&source);
   source.SerializeToString(&data);
@@ -283,7 +283,7 @@ TEST(ExtensionSetTest, PackedParsing) {
   // Serialize as TestPackedTypes and parse as TestPackedExtensions.
   unittest::TestPackedTypes source;
   unittest::TestPackedExtensions destination;
-  string data;
+  std::string data;
 
   TestUtil::SetPackedFields(&source);
   source.SerializeToString(&data);
@@ -374,7 +374,7 @@ TEST(ExtensionSetTest, SpaceUsedExcludingSelf) {
     // that gets included as well.
     unittest::TestAllExtensions message;
     const int base_size = message.SpaceUsed();
-    const string s("this is a fairly large string that will cause some "
+    const std::string s("this is a fairly large string that will cause some "
                    "allocation in order to store it in the extension");
     message.SetExtension(unittest::optional_string_extension, s);
     int min_expected_size = base_size + s.length();
@@ -442,8 +442,8 @@ TEST(ExtensionSetTest, SpaceUsedExcludingSelf) {
   {
     unittest::TestAllExtensions message;
     const int base_size = message.SpaceUsed();
-    int min_expected_size = sizeof(RepeatedPtrField<string>) + base_size;
-    const string value(256, 'x');
+    int min_expected_size = sizeof(RepeatedPtrField<std::string>) + base_size;
+    const std::string value(256, 'x');
     // Once items are allocated, they may stick around even when cleared so
     // without the hardcore memory management accessors there isn't a notion of
     // the empty repeated field memory usage as there is with primitive types.
@@ -513,9 +513,9 @@ TEST(ExtensionSetTest, DynamicExtensions) {
 
     // If the field refers to one of the types nested in TestDynamicExtensions,
     // make it refer to the type in our dynamic proto instead.
-    string prefix = "." + template_descriptor->full_name() + ".";
+    std::string prefix = "." + template_descriptor->full_name() + ".";
     if (extension->has_type_name()) {
-      string* type_name = extension->mutable_type_name();
+      std::string* type_name = extension->mutable_type_name();
       if (HasPrefixString(*type_name, prefix)) {
         type_name->replace(0, prefix.size(), ".dynamic_extensions.");
       }
@@ -532,7 +532,7 @@ TEST(ExtensionSetTest, DynamicExtensions) {
   // Construct a message that we can parse with the extensions we defined.
   // Since the extensions were based off of the fields of TestDynamicExtensions,
   // we can use that message to create this test message.
-  string data;
+  std::string data;
   {
     unittest::TestDynamicExtensions message;
     message.set_scalar_extension(123);

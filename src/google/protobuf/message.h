@@ -198,11 +198,11 @@ class LIBPROTOBUF_EXPORT Message : public MessageLite {
   // This is much, much slower than IsInitialized() as it is implemented
   // purely via reflection.  Generally, you should not call this unless you
   // have already determined that an error exists by calling IsInitialized().
-  void FindInitializationErrors(vector<string>* errors) const;
+  void FindInitializationErrors(std::vector<std::string>* errors) const;
 
   // Like FindInitializationErrors, but joins all the strings, delimited by
   // commas, and returns them.
-  string InitializationErrorString() const;
+  std::string InitializationErrorString() const;
 
   // Clears all unknown fields from this message and all embedded messages.
   // Normally, if unknown tag numbers are encountered when parsing a message,
@@ -225,11 +225,11 @@ class LIBPROTOBUF_EXPORT Message : public MessageLite {
 
   // Generates a human readable form of this message, useful for debugging
   // and other purposes.
-  string DebugString() const;
+  std::string DebugString() const;
   // Like DebugString(), but with less whitespace.
-  string ShortDebugString() const;
+  std::string ShortDebugString() const;
   // Like DebugString(), but do not escape UTF-8 byte sequences.
-  string Utf8DebugString() const;
+  std::string Utf8DebugString() const;
   // Convenience function useful in GDB.  Prints DebugString() to stdout.
   void PrintDebugString() const;
 
@@ -245,10 +245,10 @@ class LIBPROTOBUF_EXPORT Message : public MessageLite {
   bool ParsePartialFromFileDescriptor(int file_descriptor);
   // Parse a protocol buffer from a C++ istream.  If successful, the entire
   // input will be consumed.
-  bool ParseFromIstream(istream* input);
+  bool ParseFromIstream(std::istream* input);
   // Like ParseFromIstream(), but accepts messages that are missing
   // required fields.
-  bool ParsePartialFromIstream(istream* input);
+  bool ParsePartialFromIstream(std::istream* input);
 
   // Serialize the message and write it to the given file descriptor.  All
   // required fields must be set.
@@ -257,16 +257,16 @@ class LIBPROTOBUF_EXPORT Message : public MessageLite {
   bool SerializePartialToFileDescriptor(int file_descriptor) const;
   // Serialize the message and write it to the given C++ ostream.  All
   // required fields must be set.
-  bool SerializeToOstream(ostream* output) const;
+  bool SerializeToOstream(std::ostream* output) const;
   // Like SerializeToOstream(), but allows missing required fields.
-  bool SerializePartialToOstream(ostream* output) const;
+  bool SerializePartialToOstream(std::ostream* output) const;
 
 
   // Reflection-based methods ----------------------------------------
   // These methods are pure-virtual in MessageLite, but Message provides
   // reflection-based default implementations.
 
-  virtual string GetTypeName() const;
+  virtual std::string GetTypeName() const;
   virtual void Clear();
   virtual bool IsInitialized() const;
   virtual void CheckTypeAndMergeFrom(const MessageLite& other);
@@ -415,7 +415,7 @@ class LIBPROTOBUF_EXPORT Reflection {
   // would return non-zero.  Fields (both normal fields and extension fields)
   // will be listed ordered by field number.
   virtual void ListFields(const Message& message,
-                          vector<const FieldDescriptor*>* output) const = 0;
+                          std::vector<const FieldDescriptor*>* output) const = 0;
 
   // Singular field getters ------------------------------------------
   // These get the value of a non-repeated field.  They return the default
@@ -435,7 +435,7 @@ class LIBPROTOBUF_EXPORT Reflection {
                            const FieldDescriptor* field) const = 0;
   virtual bool   GetBool  (const Message& message,
                            const FieldDescriptor* field) const = 0;
-  virtual string GetString(const Message& message,
+  virtual std::string GetString(const Message& message,
                            const FieldDescriptor* field) const = 0;
   virtual const EnumValueDescriptor* GetEnum(
       const Message& message, const FieldDescriptor* field) const = 0;
@@ -459,9 +459,9 @@ class LIBPROTOBUF_EXPORT Reflection {
   //   a newly-constructed string, though, it's just as fast and more readable
   //   to use code like:
   //     string str = reflection->GetString(field);
-  virtual const string& GetStringReference(const Message& message,
+  virtual const std::string& GetStringReference(const Message& message,
                                            const FieldDescriptor* field,
-                                           string* scratch) const = 0;
+                                           std::string* scratch) const = 0;
 
 
   // Singular field mutators -----------------------------------------
@@ -483,7 +483,7 @@ class LIBPROTOBUF_EXPORT Reflection {
                          const FieldDescriptor* field, bool   value) const = 0;
   virtual void SetString(Message* message,
                          const FieldDescriptor* field,
-                         const string& value) const = 0;
+                         const std::string& value) const = 0;
   virtual void SetEnum  (Message* message,
                          const FieldDescriptor* field,
                          const EnumValueDescriptor* value) const = 0;
@@ -526,7 +526,7 @@ class LIBPROTOBUF_EXPORT Reflection {
   virtual bool   GetRepeatedBool  (const Message& message,
                                    const FieldDescriptor* field,
                                    int index) const = 0;
-  virtual string GetRepeatedString(const Message& message,
+  virtual std::string GetRepeatedString(const Message& message,
                                    const FieldDescriptor* field,
                                    int index) const = 0;
   virtual const EnumValueDescriptor* GetRepeatedEnum(
@@ -537,9 +537,9 @@ class LIBPROTOBUF_EXPORT Reflection {
       const FieldDescriptor* field, int index) const = 0;
 
   // See GetStringReference(), above.
-  virtual const string& GetRepeatedStringReference(
+  virtual const std::string& GetRepeatedStringReference(
       const Message& message, const FieldDescriptor* field,
-      int index, string* scratch) const = 0;
+      int index, std::string* scratch) const = 0;
 
 
   // Repeated field mutators -----------------------------------------
@@ -568,7 +568,7 @@ class LIBPROTOBUF_EXPORT Reflection {
                                  int index, bool   value) const = 0;
   virtual void SetRepeatedString(Message* message,
                                  const FieldDescriptor* field,
-                                 int index, const string& value) const = 0;
+                                 int index, const std::string& value) const = 0;
   virtual void SetRepeatedEnum(Message* message,
                                const FieldDescriptor* field, int index,
                                const EnumValueDescriptor* value) const = 0;
@@ -597,7 +597,7 @@ class LIBPROTOBUF_EXPORT Reflection {
                          const FieldDescriptor* field, bool   value) const = 0;
   virtual void AddString(Message* message,
                          const FieldDescriptor* field,
-                         const string& value) const = 0;
+                         const std::string& value) const = 0;
   virtual void AddEnum  (Message* message,
                          const FieldDescriptor* field,
                          const EnumValueDescriptor* value) const = 0;
@@ -612,7 +612,7 @@ class LIBPROTOBUF_EXPORT Reflection {
   // Try to find an extension of this message type by fully-qualified field
   // name.  Returns NULL if no extension is known for this name or number.
   virtual const FieldDescriptor* FindKnownExtensionByName(
-      const string& name) const = 0;
+      const std::string& name) const = 0;
 
   // Try to find an extension of this message type by field number.
   // Returns NULL if no extension is known for this name or number.
@@ -674,7 +674,7 @@ class LIBPROTOBUF_EXPORT MessageFactory {
   // built lazily, so we can't register types by their descriptor until we
   // know that the descriptor exists.  |filename| must be a permanent string.
   static void InternalRegisterGeneratedFile(
-      const char* filename, void (*register_messages)(const string&));
+      const char* filename, void (*register_messages)(const std::string&));
 
   // For internal use only:  Registers a message type.  Called only by the
   // functions which are registered with InternalRegisterGeneratedFile(),

@@ -46,7 +46,7 @@ void RepeatedPtrFieldBase::Reserve(int new_size) {
   if (total_size_ >= new_size) return;
 
   void** old_elements = elements_;
-  total_size_ = max(total_size_ * 2, new_size);
+  total_size_ = std::max(total_size_ * 2, new_size);
   elements_ = new void*[total_size_];
   memcpy(elements_, old_elements, allocated_size_ * sizeof(elements_[0]));
   if (old_elements != initial_space_) {
@@ -84,10 +84,10 @@ void RepeatedPtrFieldBase::Swap(RepeatedPtrFieldBase* other) {
   }
 }
 
-string* StringTypeHandlerBase::New() {
-  return new string;
+std::string* StringTypeHandlerBase::New() {
+  return new std::string;
 }
-void StringTypeHandlerBase::Delete(string* value) {
+void StringTypeHandlerBase::Delete(std::string* value) {
   delete value;
 }
 

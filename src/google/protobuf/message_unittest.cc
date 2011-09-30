@@ -73,10 +73,10 @@ TEST(MessageTest, SerializeHelpers) {
 
   protobuf_unittest::TestAllTypes message;
   TestUtil::SetAllFields(&message);
-  stringstream stream;
+  std::stringstream stream;
 
-  string str1("foo");
-  string str2("bar");
+  std::string str1("foo");
+  std::string str2("bar");
 
   EXPECT_TRUE(message.SerializeToString(&str1));
   EXPECT_TRUE(message.AppendToString(&str2));
@@ -89,7 +89,7 @@ TEST(MessageTest, SerializeHelpers) {
   EXPECT_TRUE(str2.substr(3) == str1);
 
   // GCC gives some sort of error if we try to just do stream.str() == str1.
-  string temp = stream.str();
+  std::string temp = stream.str();
   EXPECT_TRUE(temp == str1);
 
   EXPECT_TRUE(message.SerializeAsString() == str1);
@@ -97,7 +97,7 @@ TEST(MessageTest, SerializeHelpers) {
 }
 
 TEST(MessageTest, SerializeToBrokenOstream) {
-  ofstream out;
+  std::ofstream out;
   protobuf_unittest::TestAllTypes message;
   message.set_optional_int32(123);
 
@@ -105,7 +105,7 @@ TEST(MessageTest, SerializeToBrokenOstream) {
 }
 
 TEST(MessageTest, ParseFromFileDescriptor) {
-  string filename = TestSourceDir() +
+  std::string filename = TestSourceDir() +
                     "/google/protobuf/testdata/golden_message";
   int file = open(filename.c_str(), O_RDONLY | O_BINARY);
 
@@ -117,7 +117,7 @@ TEST(MessageTest, ParseFromFileDescriptor) {
 }
 
 TEST(MessageTest, ParsePackedFromFileDescriptor) {
-  string filename =
+  std::string filename =
       TestSourceDir() +
       "/google/protobuf/testdata/golden_packed_fields_message";
   int file = open(filename.c_str(), O_RDONLY | O_BINARY);
@@ -132,7 +132,7 @@ TEST(MessageTest, ParsePackedFromFileDescriptor) {
 TEST(MessageTest, ParseHelpers) {
   // TODO(kenton):  Test more helpers?  They're all two-liners so it seems
   //   like a waste of time.
-  string data;
+  std::string data;
 
   {
     // Set up.
@@ -151,7 +151,7 @@ TEST(MessageTest, ParseHelpers) {
   {
     // Test ParseFromIstream.
     protobuf_unittest::TestAllTypes message;
-    stringstream stream(data);
+    std::stringstream stream(data);
     EXPECT_TRUE(message.ParseFromIstream(&stream));
     EXPECT_TRUE(stream.eof());
     TestUtil::ExpectAllFieldsSet(message);
@@ -159,7 +159,7 @@ TEST(MessageTest, ParseHelpers) {
 
   {
     // Test ParseFromBoundedZeroCopyStream.
-    string data_with_junk(data);
+    std::string data_with_junk(data);
     data_with_junk.append("some junk on the end");
     io::ArrayInputStream stream(data_with_junk.data(), data_with_junk.size());
     protobuf_unittest::TestAllTypes message;
@@ -179,7 +179,7 @@ TEST(MessageTest, ParseHelpers) {
 
 TEST(MessageTest, ParseFailsIfNotInitialized) {
   unittest::TestRequired message;
-  vector<string> errors;
+  std::vector<std::string> errors;
 
   {
     ScopedMemoryLog log;
@@ -209,7 +209,7 @@ TEST(MessageTest, InitializationErrorString) {
 
 TEST(MessageTest, SerializeFailsIfNotInitialized) {
   unittest::TestRequired message;
-  string data;
+  std::string data;
   EXPECT_DEBUG_DEATH(EXPECT_TRUE(message.SerializeToString(&data)),
     "Can't serialize message of type \"protobuf_unittest.TestRequired\" because "
     "it is missing required fields: a, b, c");
@@ -233,7 +233,7 @@ TEST(MessageTest, BypassInitializationCheckOnSerialize) {
 
 TEST(MessageTest, FindInitializationErrors) {
   unittest::TestRequired message;
-  vector<string> errors;
+  std::vector<std::string> errors;
   message.FindInitializationErrors(&errors);
   ASSERT_EQ(3, errors.size());
   EXPECT_EQ("a", errors[0]);

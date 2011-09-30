@@ -54,18 +54,18 @@ namespace {
 void SetEnumVariables(const FieldDescriptor* descriptor,
                       int messageBitIndex,
                       int builderBitIndex,
-                      map<string, string>* variables) {
+                      std::map<std::string, std::string>* variables) {
   (*variables)["name"] =
     UnderscoresToCamelCase(descriptor);
   (*variables)["capitalized_name"] =
-    UnderscoresToCapitalizedCamelCase(descriptor);
-  (*variables)["constant_name"] = FieldConstantName(descriptor);
+    java::UnderscoresToCapitalizedCamelCase(descriptor);
+  (*variables)["constant_name"] = java::FieldConstantName(descriptor);
   (*variables)["number"] = SimpleItoa(descriptor->number());
   (*variables)["type"] = ClassName(descriptor->enum_type());
-  (*variables)["default"] = DefaultValue(descriptor);
+  (*variables)["default"] = java::DefaultValue(descriptor);
   (*variables)["tag"] = SimpleItoa(internal::WireFormat::MakeTag(descriptor));
   (*variables)["tag_size"] = SimpleItoa(
-      internal::WireFormat::TagSize(descriptor->number(), GetType(descriptor)));
+      internal::WireFormat::TagSize(descriptor->number(), java::GetType(descriptor)));
   // TODO(birdo): Add @deprecated javadoc when generating javadoc is supported
   // by the proto compiler
   (*variables)["deprecation"] = descriptor->options().deprecated()
@@ -246,7 +246,7 @@ GenerateHashCode(io::Printer* printer) const {
     "hash = (53 * hash) + hashEnum(get$capitalized_name$());\n");
 }
 
-string EnumFieldGenerator::GetBoxedType() const {
+std::string EnumFieldGenerator::GetBoxedType() const {
   return ClassName(descriptor_->enum_type());
 }
 
@@ -527,7 +527,7 @@ GenerateHashCode(io::Printer* printer) const {
     "}\n");
 }
 
-string RepeatedEnumFieldGenerator::GetBoxedType() const {
+std::string RepeatedEnumFieldGenerator::GetBoxedType() const {
   return ClassName(descriptor_->enum_type());
 }
 

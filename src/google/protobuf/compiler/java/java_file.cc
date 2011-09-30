@@ -58,13 +58,13 @@ bool UsesExtensions(const Message& message) {
   // We conservatively assume that unknown fields are extensions.
   if (reflection->GetUnknownFields(message).field_count() > 0) return true;
 
-  vector<const FieldDescriptor*> fields;
+  std::vector<const FieldDescriptor*> fields;
   reflection->ListFields(message, &fields);
 
   for (int i = 0; i < fields.size(); i++) {
     if (fields[i]->is_extension()) return true;
 
-    if (GetJavaType(fields[i]) == JAVATYPE_MESSAGE) {
+    if (java::GetJavaType(fields[i]) == JAVATYPE_MESSAGE) {
       if (fields[i]->is_repeated()) {
         int size = reflection->FieldSize(message, fields[i]);
         for (int j = 0; j < size; j++) {
@@ -93,7 +93,7 @@ FileGenerator::FileGenerator(const FileDescriptor* file)
 
 FileGenerator::~FileGenerator() {}
 
-bool FileGenerator::Validate(string* error) {
+bool FileGenerator::Validate(std::string* error) {
   // Check that no class name matches the file's class name.  This is a common
   // problem that leads to Java compile errors that can be hard to understand.
   // It's especially bad when using the java_multiple_files, since we would
@@ -233,9 +233,9 @@ void FileGenerator::Generate(io::Printer* printer) {
 
 void FileGenerator::GenerateEmbeddedDescriptor(io::Printer* printer) {
   // Embed the descriptor.  We simply serialize the entire FileDescriptorProto
-  // and embed it as a string literal, which is parsed and built into real
+  // and embed it as a std::string literal, which is parsed and built into real
   // descriptors at initialization time.  We unfortunately have to put it in
-  // a string literal, not a byte array, because apparently using a literal
+  // a std::string literal, not a byte array, because apparently using a literal
   // byte array causes the Java compiler to generate *instructions* to
   // initialize each and every byte of the array, e.g. as if you typed:
   //   b[0] = 123; b[1] = 456; b[2] = 789;
@@ -245,7 +245,7 @@ void FileGenerator::GenerateEmbeddedDescriptor(io::Printer* printer) {
   FileDescriptorProto file_proto;
   file_->CopyTo(&file_proto);
 
-  string file_data;
+  std::string file_data;
   file_proto.SerializeToString(&file_data);
 
   printer->Print(
@@ -264,7 +264,7 @@ void FileGenerator::GenerateEmbeddedDescriptor(io::Printer* printer) {
   static const int kBytesPerLine = 40;
   for (int i = 0; i < file_data.size(); i += kBytesPerLine) {
     if (i > 0) {
-      // Every 400 lines, start a new string literal, in order to avoid the
+      // Every 400 lines, start a new std::string literal, in order to avoid the
       // 64k length limit.
       if (i % 400 == 0) {
         printer->Print(",\n");
@@ -273,7 +273,7 @@ void FileGenerator::GenerateEmbeddedDescriptor(io::Printer* printer) {
       }
     }
     printer->Print("\"$data$\"",
-      "data", CEscape(file_data.substr(i, kBytesPerLine)));
+      "data", protobuf::CEscape(file_data.substr(i, kBytesPerLine)));
   }
 
   printer->Outdent();
@@ -360,14 +360,14 @@ void FileGenerator::GenerateEmbeddedDescriptor(io::Printer* printer) {
 }
 
 template<typename GeneratorClass, typename DescriptorClass>
-static void GenerateSibling(const string& package_dir,
-                            const string& java_package,
+static void GenerateSibling(const std::string& package_dir,
+                            const std::string& java_package,
                             const DescriptorClass* descriptor,
                             GeneratorContext* context,
-                            vector<string>* file_list,
-                            const string& name_suffix,
+                            std::vector<std::string>* file_list,
+                            const std::string& name_suffix,
                             void (GeneratorClass::*pfn)(io::Printer* printer)) {
-  string filename = package_dir + descriptor->name() + name_suffix + ".java";
+  std::string filename = package_dir + descriptor->name() + name_suffix + ".java";
   file_list->push_back(filename);
 
   scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
@@ -387,9 +387,9 @@ static void GenerateSibling(const string& package_dir,
   (generator.*pfn)(&printer);
 }
 
-void FileGenerator::GenerateSiblings(const string& package_dir,
+void FileGenerator::GenerateSiblings(const std::string& package_dir,
                                      GeneratorContext* context,
-                                     vector<string>* file_list) {
+                                     std::vector<std::string>* file_list) {
   if (file_->options().java_multiple_files()) {
     for (int i = 0; i < file_->enum_type_count(); i++) {
       GenerateSibling<EnumGenerator>(package_dir, java_package_,

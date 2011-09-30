@@ -53,16 +53,16 @@ namespace {
 void SetMessageVariables(const FieldDescriptor* descriptor,
                          int messageBitIndex,
                          int builderBitIndex,
-                         map<string, string>* variables) {
+                         std::map<std::string, std::string>* variables) {
   (*variables)["name"] =
     UnderscoresToCamelCase(descriptor);
   (*variables)["capitalized_name"] =
-    UnderscoresToCapitalizedCamelCase(descriptor);
-  (*variables)["constant_name"] = FieldConstantName(descriptor);
+    java::UnderscoresToCapitalizedCamelCase(descriptor);
+  (*variables)["constant_name"] = java::FieldConstantName(descriptor);
   (*variables)["number"] = SimpleItoa(descriptor->number());
   (*variables)["type"] = ClassName(descriptor->message_type());
   (*variables)["group_or_message"] =
-    (GetType(descriptor) == FieldDescriptor::TYPE_GROUP) ?
+    (java::GetType(descriptor) == FieldDescriptor::TYPE_GROUP) ?
     "Group" : "Message";
   // TODO(birdo): Add @deprecated javadoc when generating javadoc is supported
   // by the proto compiler
@@ -405,7 +405,7 @@ GenerateHashCode(io::Printer* printer) const {
     "hash = (53 * hash) + get$capitalized_name$().hashCode();\n");
 }
 
-string MessageFieldGenerator::GetBoxedType() const {
+std::string MessageFieldGenerator::GetBoxedType() const {
   return ClassName(descriptor_->message_type());
 }
 
@@ -874,7 +874,7 @@ GenerateHashCode(io::Printer* printer) const {
     "}\n");
 }
 
-string RepeatedMessageFieldGenerator::GetBoxedType() const {
+std::string RepeatedMessageFieldGenerator::GetBoxedType() const {
   return ClassName(descriptor_->message_type());
 }
 

@@ -57,7 +57,7 @@ void ReflectionOps::Merge(const Message& from, Message* to) {
   const Reflection* from_reflection = from.GetReflection();
   const Reflection* to_reflection = to->GetReflection();
 
-  vector<const FieldDescriptor*> fields;
+  std::vector<const FieldDescriptor*> fields;
   from_reflection->ListFields(from, &fields);
   for (int i = 0; i < fields.size(); i++) {
     const FieldDescriptor* field = fields[i];
@@ -123,7 +123,7 @@ void ReflectionOps::Merge(const Message& from, Message* to) {
 void ReflectionOps::Clear(Message* message) {
   const Reflection* reflection = message->GetReflection();
 
-  vector<const FieldDescriptor*> fields;
+  std::vector<const FieldDescriptor*> fields;
   reflection->ListFields(*message, &fields);
   for (int i = 0; i < fields.size(); i++) {
     reflection->ClearField(message, fields[i]);
@@ -146,7 +146,7 @@ bool ReflectionOps::IsInitialized(const Message& message) {
   }
 
   // Check that sub-messages are initialized.
-  vector<const FieldDescriptor*> fields;
+  std::vector<const FieldDescriptor*> fields;
   reflection->ListFields(message, &fields);
   for (int i = 0; i < fields.size(); i++) {
     const FieldDescriptor* field = fields[i];
@@ -176,7 +176,7 @@ void ReflectionOps::DiscardUnknownFields(Message* message) {
 
   reflection->MutableUnknownFields(message)->Clear();
 
-  vector<const FieldDescriptor*> fields;
+  std::vector<const FieldDescriptor*> fields;
   reflection->ListFields(*message, &fields);
   for (int i = 0; i < fields.size(); i++) {
     const FieldDescriptor* field = fields[i];
@@ -194,10 +194,10 @@ void ReflectionOps::DiscardUnknownFields(Message* message) {
   }
 }
 
-static string SubMessagePrefix(const string& prefix,
+static std::string SubMessagePrefix(const std::string& prefix,
                                const FieldDescriptor* field,
                                int index) {
-  string result(prefix);
+  std::string result(prefix);
   if (field->is_extension()) {
     result.append("(");
     result.append(field->full_name());
@@ -216,8 +216,8 @@ static string SubMessagePrefix(const string& prefix,
 
 void ReflectionOps::FindInitializationErrors(
     const Message& message,
-    const string& prefix,
-    vector<string>* errors) {
+    const std::string& prefix,
+    std::vector<std::string>* errors) {
   const Descriptor* descriptor = message.GetDescriptor();
   const Reflection* reflection = message.GetReflection();
 
@@ -231,7 +231,7 @@ void ReflectionOps::FindInitializationErrors(
   }
 
   // Check sub-messages.
-  vector<const FieldDescriptor*> fields;
+  std::vector<const FieldDescriptor*> fields;
   reflection->ListFields(message, &fields);
   for (int i = 0; i < fields.size(); i++) {
     const FieldDescriptor* field = fields[i];

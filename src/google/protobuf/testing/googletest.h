@@ -41,19 +41,19 @@ namespace google {
 namespace protobuf {
 
 // When running unittests, get the directory containing the source code.
-string TestSourceDir();
+std::string TestSourceDir();
 
 // When running unittests, get a directory where temporary files may be
 // placed.
-string TestTempDir();
+std::string TestTempDir();
 
 // Capture all text written to stdout or stderr.
 void CaptureTestStdout();
 void CaptureTestStderr();
 
 // Stop capturing stdout or stderr and return the text captured.
-string GetCapturedTestStdout();
-string GetCapturedTestStderr();
+std::string GetCapturedTestStdout();
+std::string GetCapturedTestStderr();
 
 // For use with ScopedMemoryLog::GetMessages().  Inside Google the LogLevel
 // constants don't have the LOGLEVEL_ prefix, so the code that used
@@ -65,7 +65,7 @@ static const LogLevel ERROR = LOGLEVEL_ERROR;
 //   {
 //     ScopedMemoryLog log;  // constructor registers object as a log sink
 //     SomeRoutineThatMayLogMessages();
-//     const vector<string>& warnings = log.GetMessages(ERROR);
+//     const vector<std::string>& warnings = log.GetMessages(ERROR);
 //   }  // destructor unregisters object as a log sink
 // This is a dummy implementation which covers only what is used by protocol
 // buffer unit tests.
@@ -78,14 +78,14 @@ class ScopedMemoryLog {
   // would only fetch messages at the given security level, but the protobuf
   // open source version ignores the argument since we always pass ERROR
   // anyway.
-  const vector<string>& GetMessages(LogLevel dummy) const;
+  const std::vector<std::string>& GetMessages(LogLevel dummy) const;
 
  private:
-  vector<string> messages_;
+  std::vector<std::string> messages_;
   LogHandler* old_handler_;
 
   static void HandleLog(LogLevel level, const char* filename, int line,
-                        const string& message);
+                        const std::string& message);
 
   static ScopedMemoryLog* active_log_;
 

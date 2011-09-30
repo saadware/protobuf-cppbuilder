@@ -79,7 +79,7 @@ void Message::CopyFrom(const Message& from) {
   ReflectionOps::Copy(from, this);
 }
 
-string Message::GetTypeName() const {
+std::string Message::GetTypeName() const {
   return GetDescriptor()->full_name();
 }
 
@@ -91,12 +91,12 @@ bool Message::IsInitialized() const {
   return ReflectionOps::IsInitialized(*this);
 }
 
-void Message::FindInitializationErrors(vector<string>* errors) const {
+void Message::FindInitializationErrors(std::vector<std::string>* errors) const {
   return ReflectionOps::FindInitializationErrors(*this, "", errors);
 }
 
-string Message::InitializationErrorString() const {
-  vector<string> errors;
+std::string Message::InitializationErrorString() const {
+  std::vector<std::string> errors;
   FindInitializationErrors(&errors);
   return JoinStrings(errors, ", ");
 }
@@ -125,12 +125,12 @@ bool Message::ParsePartialFromFileDescriptor(int file_descriptor) {
   return ParsePartialFromZeroCopyStream(&input) && input.GetErrno() == 0;
 }
 
-bool Message::ParseFromIstream(istream* input) {
+bool Message::ParseFromIstream(std::istream* input) {
   io::IstreamInputStream zero_copy_input(input);
   return ParseFromZeroCopyStream(&zero_copy_input) && input->eof();
 }
 
-bool Message::ParsePartialFromIstream(istream* input) {
+bool Message::ParsePartialFromIstream(std::istream* input) {
   io::IstreamInputStream zero_copy_input(input);
   return ParsePartialFromZeroCopyStream(&zero_copy_input) && input->eof();
 }
@@ -167,7 +167,7 @@ bool Message::SerializePartialToFileDescriptor(int file_descriptor) const {
   return SerializePartialToZeroCopyStream(&output);
 }
 
-bool Message::SerializeToOstream(ostream* output) const {
+bool Message::SerializeToOstream(std::ostream* output) const {
   {
     io::OstreamOutputStream zero_copy_output(output);
     if (!SerializeToZeroCopyStream(&zero_copy_output)) return false;
@@ -175,7 +175,7 @@ bool Message::SerializeToOstream(ostream* output) const {
   return output->good();
 }
 
-bool Message::SerializePartialToOstream(ostream* output) const {
+bool Message::SerializePartialToOstream(std::ostream* output) const {
   io::OstreamOutputStream zero_copy_output(output);
   return SerializePartialToZeroCopyStream(&zero_copy_output);
 }
@@ -197,7 +197,7 @@ class GeneratedMessageFactory : public MessageFactory {
 
   static GeneratedMessageFactory* singleton();
 
-  typedef void RegistrationFunc(const string&);
+  typedef void RegistrationFunc(const std::string&);
   void RegisterFile(const char* file, RegistrationFunc* registration_func);
   void RegisterType(const Descriptor* descriptor, const Message* prototype);
 
@@ -303,7 +303,7 @@ MessageFactory* MessageFactory::generated_factory() {
 }
 
 void MessageFactory::InternalRegisterGeneratedFile(
-    const char* filename, void (*register_messages)(const string&)) {
+    const char* filename, void (*register_messages)(const std::string&)) {
   GeneratedMessageFactory::singleton()->RegisterFile(filename,
                                                      register_messages);
 }

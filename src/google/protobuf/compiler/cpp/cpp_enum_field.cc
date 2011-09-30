@@ -46,8 +46,8 @@ namespace cpp {
 namespace {
 
 void SetEnumVariables(const FieldDescriptor* descriptor,
-                      map<string, string>* variables) {
-  SetCommonFieldVariables(descriptor, variables);
+                      std::map<std::string, std::string>* variables) {
+  cpp::SetCommonFieldVariables(descriptor, variables);
   const EnumValueDescriptor* default_value = descriptor->default_value_enum();
   (*variables)["type"] = ClassName(descriptor->enum_type(), true);
   (*variables)["default"] = SimpleItoa(default_value->number());
