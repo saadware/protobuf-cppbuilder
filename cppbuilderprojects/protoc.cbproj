@@ -140,8 +140,7 @@
 						<VFOLDER name="Source" ID="{DDA2779D-2A58-4364-A31B-AC1E607084B6}"/>
 					</VFOLDERS>
 					<Parameters>
-						<Parameters Name="RunParams">-I..\src --cpp_out=. ..\src\google\protobuf\unittest_import_lite.proto --proto_path=..\src</Parameters>
-						<Parameters Name="DebugCWD">C:\Users\ssaad\google\protobuf-read-only\cppbuilderprojects</Parameters>
+						<Parameters Name="RunParams">-I..\..\..\src --cpp_out=. ..\..\..\src\google\protobuf\unittest_lite.proto</Parameters>
 					</Parameters>
 				</CPlusPlusBuilder.Personality>
 				<Platforms>

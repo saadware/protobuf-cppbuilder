@@ -102,14 +102,14 @@ template <typename Key,
 class hash_set : public std::set<Key, HashFcn> {
 };
 
-#elif defined(_MSC_VER) && !defined(_STLPORT_VERSION)
+#elif (defined(_MSC_VER) || defined(_CPPBUILDER)) && !defined(_STLPORT_VERSION)
 
 template <typename Key>
 struct hash : public HASH_NAMESPACE::hash_compare<Key> {
 };
 
-// MSVC's hash_compare<const char*> hashes based on the string contents but
-// compares based on the string pointer.  WTF?
+// Both MSVC and C++Builder's hash_compare<const char*> hashes based on the
+// string contents but compares based on the string pointer. WTF?
 class CstringLess {
  public:
   inline bool operator()(const char* a, const char* b) const {
@@ -134,28 +134,6 @@ template <typename Key,
 	typename EqualKey = int >
 class hash_set : public HASH_NAMESPACE::hash_set<
     Key, HashFcn> {
-};
-
-#elif defined(_CPPBUILDER)
-
-// Hash compare
-template <typename Key>
-struct hash : public HASH_NAMESPACE::hash_compare<Key> {
-};
-
-// Hash map
-template <typename Key,
-          typename Data,
-          typename HashFcn = hash<Key>,
-          typename EqualKey = int>
-class hash_map : public HASH_NAMESPACE::hash_map<Key, Data, HashFcn> {
-};
-
-// Hash set
-template <typename Key,
-          typename HashFcn = hash<Key>,
-          typename EqualKey = int>
-class hash_set : public HASH_NAMESPACE::hash_set<Key, HashFcn> {
 };
 
 #else
