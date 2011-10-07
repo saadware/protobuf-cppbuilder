@@ -47,7 +47,7 @@ const typename Collection::value_type::second_type&
 FindWithDefault(const Collection& collection,
                 const typename Collection::value_type::first_type& key,
                 const typename Collection::value_type::second_type& value) {
-  Collection::const_iterator it = collection.find(key);
+  typename Collection::const_iterator it = collection.find(key);
   if (it == collection.end()) {
     return value;
   }
@@ -61,7 +61,7 @@ template <typename Collection>
 const typename Collection::value_type::second_type*
 FindOrNull(const Collection& collection,
            const typename Collection::value_type::first_type& key) {
-  Collection::const_iterator it = collection.find(key);
+  typename Collection::const_iterator it = collection.find(key);
   if (it == collection.end()) {
     return 0;
   }
@@ -77,7 +77,7 @@ template <typename Collection>
 const typename Collection::value_type::second_type
 FindPtrOrNull(const Collection& collection,
               const typename Collection::value_type::first_type& key) {
-  Collection::const_iterator it = collection.find(key);
+  typename Collection::const_iterator it = collection.find(key);
   if (it == collection.end()) {
     return 0;
   }
@@ -91,8 +91,8 @@ FindPtrOrNull(const Collection& collection,
 template <typename Collection, typename Key, typename Value>
 bool InsertOrUpdate(Collection * const collection,
                    const Key& key, const Value& value) {
-  std::pair<Collection::iterator, bool> ret =
-    collection->insert(Collection::value_type(key, value));
+  std::pair<typename Collection::iterator, bool> ret =
+    collection->insert(typename Collection::value_type(key, value));
   if (!ret.second) {
     // update
     ret.first->second = value;
@@ -108,8 +108,8 @@ bool InsertOrUpdate(Collection * const collection,
 template <typename Collection, typename Key, typename Value>
 bool InsertIfNotPresent(Collection * const collection,
                         const Key& key, const Value& value) {
-  std::pair<Collection::iterator, bool> ret =
-    collection->insert(Collection::value_type(key, value));
+  std::pair<typename Collection::iterator, bool> ret =
+    collection->insert(typename Collection::value_type(key, value));
   return ret.second;
 }
 

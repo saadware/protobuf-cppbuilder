@@ -616,13 +616,13 @@ inline void RepeatedField<Element>::Truncate(int new_size) {
 }
 
 template <typename Element>
-void RepeatedField<Element>::MoveArray(
+inline void RepeatedField<Element>::MoveArray(
     Element to[], Element from[], int array_size) {
-  memcpy(to, from, array_size * sizeof(typename Element));
+  memcpy(to, from, array_size * sizeof(Element));
 }
 
 template <typename Element>
-void RepeatedField<Element>::CopyArray(
+inline void RepeatedField<Element>::CopyArray(
     Element to[], const Element from[], int array_size) {
   memcpy(to, from, array_size * sizeof(Element));
 }
