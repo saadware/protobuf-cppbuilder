@@ -74,10 +74,7 @@ inline BOOL GetMessage(
 }
 #endif
 
-
-#ifndef __CPPBUILDER
 namespace std {}
-#endif
 
 namespace google {
 namespace protobuf {

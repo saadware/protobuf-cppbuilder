@@ -108,8 +108,9 @@ bool InsertOrUpdate(Collection * const collection,
 template <typename Collection, typename Key, typename Value>
 bool InsertIfNotPresent(Collection * const collection,
                         const Key& key, const Value& value) {
-  std::pair<typename Collection::iterator, bool> ret =
-    collection->insert(typename Collection::value_type(key, value));
+  typedef typename Collection CollectionTypeName;
+  std::pair<CollectionTypeName::iterator, bool> ret =
+    collection->insert(CollectionTypeName::value_type(key, value));
   return ret.second;
 }
 
