@@ -177,7 +177,8 @@ class LIBPROTOBUF_EXPORT SimpleDescriptorDatabase : public DescriptorDatabase {
 
    private:
     typedef std::map<std::string, Value> StringValueMap;
-    typedef typename StringValueMap StringValueMapType;
+    typedef typename StringValueMap::iterator StringValueMapIterator;
+    typedef typename StringValueMap::value_type StringValueMapValueType;
     StringValueMap by_name_;
     StringValueMap by_symbol_;
     std::map<std::pair<std::string, int>, Value> by_extension_;
@@ -235,7 +236,7 @@ class LIBPROTOBUF_EXPORT SimpleDescriptorDatabase : public DescriptorDatabase {
 
     // Find the last entry in the by_symbol_ map whose key is less than or
     // equal to the given name.
-    StringValueMapType::iterator FindLastLessOrEqual(
+    typename StringValueMap::iterator FindLastLessOrEqual(
         const std::string& name);
 
     // True if either the arguments are equal or super_symbol identifies a
