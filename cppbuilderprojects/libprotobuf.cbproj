@@ -22,14 +22,18 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<BCC_wcsu>false</BCC_wcsu>
+			<BCC_SmartPCHCache>false</BCC_SmartPCHCache>
+			<BCC_PCHWithExternalTypeFiles>false</BCC_PCHWithExternalTypeFiles>
+			<BCC_PCHUsage>None</BCC_PCHUsage>
+			<BCC_DisableOptimizations>true</BCC_DisableOptimizations>
 			<TLIB_PageSize>256</TLIB_PageSize>
-			<BCC_CPPCompileAlways>true</BCC_CPPCompileAlways>
 			<IncludePath>..\src\google\protobuf\compiler\;..\src\google\protobuf\io\;..\src\google\protobuf\stubs\;..\src\google\protobuf\;..\src\;$(IncludePath)</IncludePath>
 			<OutputExt>lib</OutputExt>
-			<Defines>_CPPBUILDER;LIBPROTOBUF_EXPORTS;$(Defines)</Defines>
+			<Defines>_CPPBUILDER;PROTOBUF_USE_EXCEPTIONS;$(Defines)</Defines>
 			<ProjectType>CppStaticLibrary</ProjectType>
 			<PackageImports>vcl.bpi;rtl.bpi;bcbie.bpi;vclx.bpi;vclactnband.bpi;xmlrtl.bpi;bcbsmp.bpi;VclSmp.bpi;vclimg.bpi;svnui.bpi;svn.bpi;bdertl.bpi;TeeUI.bpi;TeeDB.bpi;Tee.bpi;vcldb.bpi;dbrtl.bpi;vcldbx.bpi;vcltouch.bpi;dsnap.bpi;dsnapcon.bpi;vclib.bpi;ibxpress.bpi;adortl.bpi;IndyCore.bpi;IndySystem.bpi;IndyProtocols.bpi;inet.bpi;intrawebdb_110_150.bpi;Intraweb_110_150.bpi;vclie.bpi;inetdb.bpi;webdsnap.bpi;websnap.bpi;inetdbbde.bpi;inetdbxpress.bpi;soaprtl.bpi;vclribbon.bpi;DbxCommonDriver.bpi;DBXInterBaseDriver.bpi;DBXMySQLDriver.bpi;dbexpress.bpi;dbxcds.bpi;DbxClientDriver.bpi;AzureCloud.bpi;dxCoreC15.bpi;dxGDIPlusC15.bpi;cxLibraryC15.bpi;dxThemeC15.bpi;cxPageControlC15.bpi;cxEditorsC15.bpi;cxDataC15.bpi;cxExtEditorsC15.bpi;cxGridC15.bpi;cxExportC15.bpi;dxmdsC15.bpi;dxComnC15.bpi;dxdbtrC15.bpi;dxtrmdC15.bpi;dxOrgCC15.bpi;dxDBOrC15.bpi;MssComponents.bpi</PackageImports>
-			<_TCHARMapping>wchar_t</_TCHARMapping>
+			<_TCHARMapping>char</_TCHARMapping>
 			<LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
 			<AllPackageLibs>rtl.lib;vcl.lib</AllPackageLibs>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
@@ -39,8 +43,6 @@
 			<IntermediateOutputDir>.\$(Config)\$(Platform)</IntermediateOutputDir>
 			<FinalOutputDir>.\$(Config)\$(Platform)</FinalOutputDir>
 			<BCC_wpar>false</BCC_wpar>
-			<BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
-			<BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
 			<BCC_InlineFunctionExpansion>false</BCC_InlineFunctionExpansion>
@@ -252,7 +254,7 @@
 			</BuildConfiguration>
 		</ItemGroup>
 		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Cpp.Targets')" Project="$(BDS)\Bin\CodeGear.Cpp.Targets"/>
-		<Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
+		<Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\8.0\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\8.0\UserTools.proj"/>
 		<ProjectExtensions>
 			<Borland.Personality>CPlusPlusBuilder.Personality.12</Borland.Personality>
 			<Borland.ProjectType>CppStaticLibrary</Borland.ProjectType>
