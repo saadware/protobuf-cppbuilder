@@ -1,1 +1,7 @@
 An attempt to make the Google's Protocol Buffers (protobuf) build in the Windows based compiler, C++ Builder by Embarcadero.
+
+STATUS: 
+
+* libprotobuf and libprotobuf-lite should all be working now. 
+* protoc.exe has some problems when parsing options in a proto file. I've spent a bit of time on this and have not yet been able to determine what's going on.  For now, use a pre-built protoc.exe to generate the actual C++ classes.
+* I've tested my changes on both gcc and MSVC and all unit tests still pass.
