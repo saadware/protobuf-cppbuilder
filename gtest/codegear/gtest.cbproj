@@ -1,7 +1,7 @@
 ﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{bca37a72-5b07-46cf-b44e-89f8e06451a2}</ProjectGuid>
-			<Config Condition="'$(Config)'==''">Release</Config>
+			<Config Condition="'$(Config)'==''">Debug</Config>
 			<ProjectVersion>12.3</ProjectVersion>
 			<Base>True</Base>
 			<Platform>Win32</Platform>
@@ -22,6 +22,9 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<BCC_SmartPCHCache>false</BCC_SmartPCHCache>
+			<BCC_PCHWithExternalTypeFiles>false</BCC_PCHWithExternalTypeFiles>
+			<BCC_PCHUsage>None</BCC_PCHUsage>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
 			<BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
 			<OutputExt>lib</OutputExt>
@@ -39,6 +42,9 @@
 			<ILINK_LibraryPath>$(BDS)\lib;$(BDS)\lib\obj;$(BDS)\lib\psdk</ILINK_LibraryPath>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<BCC_PCHWithExternalTypeFiles>false</BCC_PCHWithExternalTypeFiles>
+			<BCC_SmartPCHCache>false</BCC_SmartPCHCache>
+			<BCC_PCHUsage>None</BCC_PCHUsage>
 			<BCC_OptimizeForSpeed>false</BCC_OptimizeForSpeed>
 			<DCC_Optimize>false</DCC_Optimize>
 			<DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>

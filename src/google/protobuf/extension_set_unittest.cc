@@ -192,7 +192,7 @@ TEST(ExtensionSetTest, SerializationToArray) {
   int size = source.ByteSize();
   std::string data;
   data.resize(size);
-  uint8* target = reinterpret_cast<uint8*>(string_as_array(&data));
+  uint8* target = reinterpret_cast<uint8*>(protobuf::string_as_array(&data));
   uint8* end = source.SerializeWithCachedSizesToArray(target);
   EXPECT_EQ(size, end - target);
   EXPECT_TRUE(destination.ParseFromString(data));
@@ -214,7 +214,7 @@ TEST(ExtensionSetTest, SerializationToStream) {
   std::string data;
   data.resize(size);
   {
-    io::ArrayOutputStream array_stream(string_as_array(&data), size, 1);
+    io::ArrayOutputStream array_stream(protobuf::string_as_array(&data), size, 1);
     io::CodedOutputStream output_stream(&array_stream);
     source.SerializeWithCachedSizes(&output_stream);
     ASSERT_FALSE(output_stream.HadError());
@@ -236,7 +236,7 @@ TEST(ExtensionSetTest, PackedSerializationToArray) {
   int size = source.ByteSize();
   std::string data;
   data.resize(size);
-  uint8* target = reinterpret_cast<uint8*>(string_as_array(&data));
+  uint8* target = reinterpret_cast<uint8*>(protobuf::string_as_array(&data));
   uint8* end = source.SerializeWithCachedSizesToArray(target);
   EXPECT_EQ(size, end - target);
   EXPECT_TRUE(destination.ParseFromString(data));
@@ -258,7 +258,7 @@ TEST(ExtensionSetTest, PackedSerializationToStream) {
   std::string data;
   data.resize(size);
   {
-    io::ArrayOutputStream array_stream(string_as_array(&data), size, 1);
+    io::ArrayOutputStream array_stream(protobuf::string_as_array(&data), size, 1);
     io::CodedOutputStream output_stream(&array_stream);
     source.SerializeWithCachedSizes(&output_stream);
     ASSERT_FALSE(output_stream.HadError());
@@ -516,7 +516,7 @@ TEST(ExtensionSetTest, DynamicExtensions) {
     std::string prefix = "." + template_descriptor->full_name() + ".";
     if (extension->has_type_name()) {
       std::string* type_name = extension->mutable_type_name();
-      if (HasPrefixString(*type_name, prefix)) {
+      if (protobuf::HasPrefixString(*type_name, prefix)) {
         type_name->replace(0, prefix.size(), ".dynamic_extensions.");
       }
     }

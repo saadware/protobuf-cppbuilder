@@ -35,11 +35,15 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #define WIN32_LEAN_AND_MEAN  // yeah, right
 #include <windows.h>         // Find*File().  :(
 #include <io.h>
 #include <direct.h>
+#elif defined(_CPPBUILDER)
+#include <dir.h>
+#include <dirent.h>
+#include <io.h>
 #else
 #include <dirent.h>
 #include <unistd.h>

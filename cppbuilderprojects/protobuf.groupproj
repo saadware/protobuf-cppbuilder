@@ -22,10 +22,13 @@
 				<Dependencies>libprotobuf.cbproj;libprotoc.cbproj</Dependencies>
 			</Projects>
 			<Projects Include="lite-test.cbproj">
-				<Dependencies>libprotobuf-lite.cbproj;protoc.cbproj</Dependencies>
+				<Dependencies>libprotobuf-lite.cbproj</Dependencies>
 			</Projects>
 			<Projects Include="tests.cbproj">
-				<Dependencies/>
+				<Dependencies>libprotobuf.cbproj;..\gtest\codegear\gtest.cbproj;..\gtest\codegear\gtest.cbproj;libprotoc.cbproj</Dependencies>
+			</Projects>
+			<Projects Include="test_plugin.cbproj">
+				<Dependencies>libprotobuf.cbproj;..\gtest\codegear\gtest.cbproj;libprotoc.cbproj</Dependencies>
 			</Projects>
 		</ItemGroup>
 		<ProjectExtensions>
@@ -89,32 +92,41 @@
 		<Target Name="protoc:Make" DependsOnTargets="libprotobuf:Make;libprotoc:Make">
 			<MSBuild Projects="protoc.cbproj" Targets="Make"/>
 		</Target>
-		<Target Name="lite-test" DependsOnTargets="libprotobuf-lite;protoc">
+		<Target Name="lite-test" DependsOnTargets="libprotobuf-lite">
 			<MSBuild Projects="lite-test.cbproj"/>
 		</Target>
-		<Target Name="lite-test:Clean" DependsOnTargets="libprotobuf-lite:Clean;protoc:Clean">
+		<Target Name="lite-test:Clean" DependsOnTargets="libprotobuf-lite:Clean">
 			<MSBuild Projects="lite-test.cbproj" Targets="Clean"/>
 		</Target>
-		<Target Name="lite-test:Make" DependsOnTargets="libprotobuf-lite:Make;protoc:Make">
+		<Target Name="lite-test:Make" DependsOnTargets="libprotobuf-lite:Make">
 			<MSBuild Projects="lite-test.cbproj" Targets="Make"/>
 		</Target>
-		<Target Name="tests">
+		<Target Name="tests" DependsOnTargets="libprotobuf;gtest;gtest;libprotoc">
 			<MSBuild Projects="tests.cbproj"/>
 		</Target>
-		<Target Name="tests:Clean">
+		<Target Name="tests:Clean" DependsOnTargets="libprotobuf:Clean;gtest:Clean;gtest:Clean;libprotoc:Clean">
 			<MSBuild Projects="tests.cbproj" Targets="Clean"/>
 		</Target>
-		<Target Name="tests:Make">
+		<Target Name="tests:Make" DependsOnTargets="libprotobuf:Make;gtest:Make;gtest:Make;libprotoc:Make">
 			<MSBuild Projects="tests.cbproj" Targets="Make"/>
 		</Target>
+		<Target Name="test_plugin" DependsOnTargets="libprotobuf;gtest;libprotoc">
+			<MSBuild Projects="test_plugin.cbproj"/>
+		</Target>
+		<Target Name="test_plugin:Clean" DependsOnTargets="libprotobuf:Clean;gtest:Clean;libprotoc:Clean">
+			<MSBuild Projects="test_plugin.cbproj" Targets="Clean"/>
+		</Target>
+		<Target Name="test_plugin:Make" DependsOnTargets="libprotobuf:Make;gtest:Make;libprotoc:Make">
+			<MSBuild Projects="test_plugin.cbproj" Targets="Make"/>
+		</Target>
 		<Target Name="Build">
-			<CallTarget Targets="libprotobuf;gtest;gtest_main;libprotobuf-lite;libprotoc;protoc;lite-test;tests"/>
+			<CallTarget Targets="libprotobuf;gtest;gtest_main;libprotobuf-lite;libprotoc;protoc;lite-test;tests;test_plugin"/>
 		</Target>
 		<Target Name="Clean">
-			<CallTarget Targets="libprotobuf:Clean;gtest:Clean;gtest_main:Clean;libprotobuf-lite:Clean;libprotoc:Clean;protoc:Clean;lite-test:Clean;tests:Clean"/>
+			<CallTarget Targets="libprotobuf:Clean;gtest:Clean;gtest_main:Clean;libprotobuf-lite:Clean;libprotoc:Clean;protoc:Clean;lite-test:Clean;tests:Clean;test_plugin:Clean"/>
 		</Target>
 		<Target Name="Make">
-			<CallTarget Targets="libprotobuf:Make;gtest:Make;gtest_main:Make;libprotobuf-lite:Make;libprotoc:Make;protoc:Make;lite-test:Make;tests:Make"/>
+			<CallTarget Targets="libprotobuf:Make;gtest:Make;gtest_main:Make;libprotobuf-lite:Make;libprotoc:Make;protoc:Make;lite-test:Make;tests:Make;test_plugin:Make"/>
 		</Target>
 		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')" Project="$(BDS)\Bin\CodeGear.Group.Targets"/>
 	</Project>

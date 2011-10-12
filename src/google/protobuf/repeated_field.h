@@ -982,6 +982,7 @@ class RepeatedPtrIterator
   typedef typename superclass::reference reference;
   typedef typename superclass::pointer pointer;
   typedef typename superclass::difference_type difference_type;
+  typedef typename Element* ElementPtrType;
 
   RepeatedPtrIterator() : it_(NULL) {}
   explicit RepeatedPtrIterator(void* const* it) : it_(it) {}
@@ -993,12 +994,12 @@ class RepeatedPtrIterator
       : it_(other.it_) {
     // Force a compiler error if the other type is not convertible to ours.
     if (false) {
-      implicit_cast<Element*, OtherElement*>(0);
+      implicit_cast<ElementPtrType, OtherElement*>(0);
     }
   }
 
   // dereferenceable
-  reference operator*() const { return *reinterpret_cast<Element*>(*it_); }
+  reference operator*() const { return *reinterpret_cast<ElementPtrType>(*it_); }
   pointer   operator->() const { return &(operator*()); }
 
   // {inc,dec}rementable
@@ -1061,6 +1062,8 @@ template<typename Element>
 class RepeatedPtrOverPtrsIterator
     : public std::iterator<std::random_access_iterator_tag, Element*> {
  public:
+  typedef typename Element* ElementPtrType;
+  typedef typename Element** ElementPtrPtrType;
   typedef RepeatedPtrOverPtrsIterator<Element> iterator;
   typedef std::iterator<
           std::random_access_iterator_tag, Element*> superclass;
@@ -1075,7 +1078,7 @@ class RepeatedPtrOverPtrsIterator
   explicit RepeatedPtrOverPtrsIterator(void** it) : it_(it) {}
 
   // dereferenceable
-  reference operator*() const { return *reinterpret_cast<Element**>(it_); }
+  reference operator*() const { return *reinterpret_cast<ElementPtrPtrType>(it_); }
   pointer   operator->() const { return &(operator*()); }
 
   // {inc,dec}rementable

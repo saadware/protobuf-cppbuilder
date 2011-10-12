@@ -509,7 +509,7 @@ TEST(GeneratedMessageTest, SerializationToArray) {
   TestUtil::SetAllFields(&message1);
   int size = message1.ByteSize();
   data.resize(size);
-  uint8* start = reinterpret_cast<uint8*>(string_as_array(&data));
+  uint8* start = reinterpret_cast<uint8*>(protobuf::string_as_array(&data));
   uint8* end = message1.SerializeWithCachedSizesToArray(start);
   EXPECT_EQ(size, end - start);
   EXPECT_TRUE(message2.ParseFromString(data));
@@ -523,7 +523,7 @@ TEST(GeneratedMessageTest, PackedFieldsSerializationToArray) {
   TestUtil::SetPackedFields(&packed_message1);
   int packed_size = packed_message1.ByteSize();
   packed_data.resize(packed_size);
-  uint8* start = reinterpret_cast<uint8*>(string_as_array(&packed_data));
+  uint8* start = reinterpret_cast<uint8*>(protobuf::string_as_array(&packed_data));
   uint8* end = packed_message1.SerializeWithCachedSizesToArray(start);
   EXPECT_EQ(packed_size, end - start);
   EXPECT_TRUE(packed_message2.ParseFromString(packed_data));
@@ -540,7 +540,7 @@ TEST(GeneratedMessageTest, SerializationToStream) {
   data.resize(size);
   {
     // Allow the output stream to buffer only one byte at a time.
-    io::ArrayOutputStream array_stream(string_as_array(&data), size, 1);
+    io::ArrayOutputStream array_stream(protobuf::string_as_array(&data), size, 1);
     io::CodedOutputStream output_stream(&array_stream);
     message1.SerializeWithCachedSizes(&output_stream);
     EXPECT_FALSE(output_stream.HadError());
@@ -559,7 +559,7 @@ TEST(GeneratedMessageTest, PackedFieldsSerializationToStream) {
   data.resize(size);
   {
     // Allow the output stream to buffer only one byte at a time.
-    io::ArrayOutputStream array_stream(string_as_array(&data), size, 1);
+    io::ArrayOutputStream array_stream(protobuf::string_as_array(&data), size, 1);
     io::CodedOutputStream output_stream(&array_stream);
     message1.SerializeWithCachedSizes(&output_stream);
     EXPECT_FALSE(output_stream.HadError());

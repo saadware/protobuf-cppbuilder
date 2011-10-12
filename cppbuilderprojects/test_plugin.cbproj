@@ -1,6 +1,6 @@
 ﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
-			<ProjectGuid>{E3060C50-1FA6-45EC-A803-C09277C3C7AD}</ProjectGuid>
+			<ProjectGuid>{0952F2F5-7088-41E4-A5E5-5356DDBFD263}</ProjectGuid>
 			<ProjectVersion>12.3</ProjectVersion>
 			<Base>True</Base>
 			<Config Condition="'$(Config)'==''">Debug</Config>
@@ -22,30 +22,32 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<BCC_wcsu>false</BCC_wcsu>
-			<Defines>_CPPBUILDER;$(Defines)</Defines>
-			<LinkPackageImports>rtl.bpi;vcl.bpi</LinkPackageImports>
-			<Multithreaded>true</Multithreaded>
-			<ILINK_LibraryPath>Debug\Win32\;google\protobuf\;..\src\google\protobuf\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
-			<ProjectType>CppConsoleApplication</ProjectType>
-			<BCC_PCHUsage>None</BCC_PCHUsage>
-			<PackageImports>vcl.bpi;rtl.bpi;bcbie.bpi;vclx.bpi;vclactnband.bpi;xmlrtl.bpi;bcbsmp.bpi;VclSmp.bpi;vclimg.bpi;svnui.bpi;svn.bpi;bdertl.bpi;TeeUI.bpi;TeeDB.bpi;Tee.bpi;vcldb.bpi;dbrtl.bpi;vcldbx.bpi;vcltouch.bpi;dsnap.bpi;dsnapcon.bpi;vclib.bpi;ibxpress.bpi;adortl.bpi;IndyCore.bpi;IndySystem.bpi;IndyProtocols.bpi;inet.bpi;intrawebdb_110_150.bpi;Intraweb_110_150.bpi;vclie.bpi;inetdb.bpi;webdsnap.bpi;websnap.bpi;inetdbbde.bpi;inetdbxpress.bpi;soaprtl.bpi;vclribbon.bpi;DbxCommonDriver.bpi;DBXInterBaseDriver.bpi;DBXMySQLDriver.bpi;dbexpress.bpi;dbxcds.bpi;DbxClientDriver.bpi;AzureCloud.bpi;dxCoreC15.bpi;dxGDIPlusC15.bpi;cxLibraryC15.bpi;dxThemeC15.bpi;cxPageControlC15.bpi;cxEditorsC15.bpi;cxDataC15.bpi;cxExtEditorsC15.bpi;cxGridC15.bpi;cxExportC15.bpi;dxmdsC15.bpi;dxComnC15.bpi;dxdbtrC15.bpi;dxtrmdC15.bpi;dxOrgCC15.bpi;dxDBOrC15.bpi;MssComponents.bpi</PackageImports>
-			<NoVCL>true</NoVCL>
-			<OutputExt>exe</OutputExt>
-			<IncludePath>google\protobuf\;..\src\google\protobuf\;.\;..\src\;$(IncludePath)</IncludePath>
-			<AllPackageLibs>rtl.lib;vcl.lib</AllPackageLibs>
 			<BCC_PCHWithExternalTypeFiles>false</BCC_PCHWithExternalTypeFiles>
 			<BCC_SmartPCHCache>false</BCC_SmartPCHCache>
+			<BCC_wccc>false</BCC_wccc>
+			<BCC_wrch>false</BCC_wrch>
+			<BCC_wcsu>false</BCC_wcsu>
+			<BCC_PCHUsage>None</BCC_PCHUsage>
+			<Defines>_CPPBUILDER;$(Defines)</Defines>
+			<LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
+			<OutputExt>exe</OutputExt>
+			<ILINK_LibraryPath>..\gtest\codegear\Debug\;Debug\Win32\;google\protobuf\compiler\cpp\;google\protobuf\;..\src\google\protobuf\;..\src\google\protobuf\compiler\python\;..\src\google\protobuf\compiler\java\;..\src\google\protobuf\testing\;..\src\google\protobuf\compiler\cpp\;..\src\google\protobuf\stubs\;..\src\google\protobuf\compiler\;..\src\google\protobuf\io\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<IncludePath>google\protobuf\;google\protobuf\compiler\cpp\;.\;..\src\google\protobuf\;..\src\google\protobuf\io\;..\src\google\protobuf\compiler\python\;..\src\google\protobuf\compiler\java\;..\src\google\protobuf\testing\;..\src\google\protobuf\compiler\cpp\;..\src\google\protobuf\stubs\;..\src\google\protobuf\compiler\;..\src;..\gtest\include;$(IncludePath)</IncludePath>
+			<PackageImports>rtl.bpi;vcl.bpi;bcbie.bpi;xmlrtl.bpi;vclactnband.bpi;vclx.bpi;bcbsmp.bpi;VclSmp.bpi;vclimg.bpi;svnui.bpi;svn.bpi;bdertl.bpi;TeeUI.bpi;TeeDB.bpi;Tee.bpi;vcldb.bpi;dbrtl.bpi;vcldbx.bpi;vcltouch.bpi;dsnap.bpi;dsnapcon.bpi;vclib.bpi;ibxpress.bpi;adortl.bpi;IndyCore.bpi;IndySystem.bpi;IndyProtocols.bpi;vclie.bpi;inet.bpi;inetdb.bpi;webdsnap.bpi;websnap.bpi;inetdbbde.bpi;inetdbxpress.bpi;vclribbon.bpi;DbxCommonDriver.bpi;DBXInterBaseDriver.bpi;DBXMySQLDriver.bpi;dbexpress.bpi;dbxcds.bpi;CodeSiteExpressVcl.bpi</PackageImports>
+			<Multithreaded>true</Multithreaded>
+			<NoVCL>true</NoVCL>
 			<_TCHARMapping>char</_TCHARMapping>
+			<AllPackageLibs>rtl.lib;vcl.lib</AllPackageLibs>
+			<ProjectType>CppConsoleApplication</ProjectType>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE</DCC_UnitAlias>
 			<DynamicRTL>true</DynamicRTL>
-			<UsePackages>true</UsePackages>
 			<IntermediateOutputDir>.\$(Config)\$(Platform)</IntermediateOutputDir>
 			<FinalOutputDir>.\$(Config)\$(Platform)</FinalOutputDir>
 			<BCC_wpar>false</BCC_wpar>
 			<BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
 			<BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
+			<ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\release\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
 			<BCC_OptimizeForSpeed>false</BCC_OptimizeForSpeed>
@@ -63,43 +65,37 @@
 			<TASM_Debugging>Full</TASM_Debugging>
 			<BCC_SourceDebuggingOn>true</BCC_SourceDebuggingOn>
 			<ILINK_LibraryPath>$(BDSLIB)\$(PLATFORM)\debug;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\debug\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
 			<Defines>NDEBUG;$(Defines)</Defines>
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
 		<ItemGroup>
-			<LibFiles Include="Debug\Win32\libprotobuf-lite.lib">
+			<LibFiles Include="Debug\Win32\libprotobuf.lib">
 				<IgnorePath>true</IgnorePath>
-				<BuildOrder>6</BuildOrder>
-			</LibFiles>
-			<CppCompile Include="google\protobuf\unittest_import_lite.pb.cc">
-				<VirtualFolder>{9F892C1E-B035-4F9B-A45D-E71FF8CCCBC4}</VirtualFolder>
-				<DependentOn>google\protobuf\unittest_import_lite.pb.h</DependentOn>
 				<BuildOrder>3</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="google\protobuf\unittest_lite.pb.cc">
-				<VirtualFolder>{9F892C1E-B035-4F9B-A45D-E71FF8CCCBC4}</VirtualFolder>
-				<DependentOn>google\protobuf\unittest_lite.pb.h</DependentOn>
-				<BuildOrder>2</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\src\google\protobuf\lite_unittest.cc">
-				<VirtualFolder>{9F892C1E-B035-4F9B-A45D-E71FF8CCCBC4}</VirtualFolder>
-				<BuildOrder>0</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\src\google\protobuf\test_util_lite.cc">
-				<VirtualFolder>{9F892C1E-B035-4F9B-A45D-E71FF8CCCBC4}</VirtualFolder>
-				<DependentOn>..\src\google\protobuf\test_util_lite.h</DependentOn>
+			</LibFiles>
+			<LibFiles Include="Debug\Win32\libprotoc.lib">
+				<IgnorePath>true</IgnorePath>
+				<BuildOrder>4</BuildOrder>
+			</LibFiles>
+			<LibFiles Include="..\gtest\codegear\Debug\gtest.lib">
+				<IgnorePath>true</IgnorePath>
+				<BuildOrder>5</BuildOrder>
+			</LibFiles>
+			<CppCompile Include="..\src\google\protobuf\compiler\mock_code_generator.cc">
+				<VirtualFolder>{F722E403-969E-4F25-AA00-A60357DC71CA}</VirtualFolder>
 				<BuildOrder>1</BuildOrder>
 			</CppCompile>
-			<UserTool Include="..\src\google\protobuf\unittest_import_lite.proto">
-				<VirtualFolder>{3E4EB06D-C7C3-4060-91FB-AC3F44FFCDE0}</VirtualFolder>
-				<ToolName>protobuf</ToolName>
-			</UserTool>
-			<UserTool Include="..\src\google\protobuf\unittest_lite.proto">
-				<VirtualFolder>{3E4EB06D-C7C3-4060-91FB-AC3F44FFCDE0}</VirtualFolder>
-				<ToolName>protobuf</ToolName>
-			</UserTool>
+			<CppCompile Include="..\src\google\protobuf\compiler\test_plugin.cc">
+				<VirtualFolder>{F722E403-969E-4F25-AA00-A60357DC71CA}</VirtualFolder>
+				<BuildOrder>0</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\testing\file.cc">
+				<VirtualFolder>{F722E403-969E-4F25-AA00-A60357DC71CA}</VirtualFolder>
+				<BuildOrder>2</BuildOrder>
+			</CppCompile>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
@@ -146,20 +142,13 @@
 						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
-					<Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\bcboffice2k150.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\bcbofficexp150.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dcloffice2k150.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclofficexp150.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-					</Excluded_Packages>
 					<ProjectProperties>
 						<ProjectProperties Name="AutoShowDeps">False</ProjectProperties>
 						<ProjectProperties Name="ManagePaths">True</ProjectProperties>
 						<ProjectProperties Name="VerifyPackages">True</ProjectProperties>
 					</ProjectProperties>
 					<VFOLDERS>
-						<VFOLDER name="Source" ID="{9F892C1E-B035-4F9B-A45D-E71FF8CCCBC4}"/>
-						<VFOLDER name="Proto" ID="{3E4EB06D-C7C3-4060-91FB-AC3F44FFCDE0}"/>
+						<VFOLDER name="Source" ID="{F722E403-969E-4F25-AA00-A60357DC71CA}"/>
 					</VFOLDERS>
 				</CPlusPlusBuilder.Personality>
 				<Platforms>

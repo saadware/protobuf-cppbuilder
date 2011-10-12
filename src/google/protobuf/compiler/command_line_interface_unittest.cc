@@ -35,7 +35,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(_CPPBUILDER)
 #include <io.h>
 #else
 #include <unistd.h>
@@ -252,7 +252,7 @@ void CommandLineInterfaceTest::TearDown() {
 
 void CommandLineInterfaceTest::Run(const std::string& command) {
   std::vector<std::string> args;
-  SplitStringUsing(command, " ", &args);
+  protobuf::SplitStringUsing(command, " ", &args);
 
   if (!disallow_plugins_) {
     cli_.AllowPlugins("prefix-");
@@ -294,7 +294,7 @@ void CommandLineInterfaceTest::Run(const std::string& command) {
   scoped_array<const char*> argv(new const char*[args.size()]);
 
   for (int i = 0; i < args.size(); i++) {
-    args[i] = StringReplace(args[i], "$tmpdir", temp_directory_, true);
+    args[i] = protobuf::StringReplace(args[i], "$tmpdir", temp_directory_, true);
     argv[i] = args[i].c_str();
   }
 
@@ -335,7 +335,7 @@ void CommandLineInterfaceTest::ExpectNoErrors() {
 
 void CommandLineInterfaceTest::ExpectErrorText(const std::string& expected_text) {
   EXPECT_NE(0, return_code_);
-  EXPECT_EQ(StringReplace(expected_text, "$tmpdir", temp_directory_, true),
+  EXPECT_EQ(protobuf::StringReplace(expected_text, "$tmpdir", temp_directory_, true),
             error_text_);
 }
 
@@ -1335,7 +1335,7 @@ class EncodeDecodeTest : public testing::Test {
   bool Run(const std::string& command) {
     std::vector<std::string> args;
     args.push_back("protoc");
-    SplitStringUsing(command, " ", &args);
+    protobuf::SplitStringUsing(command, " ", &args);
     args.push_back("--proto_path=" + TestSourceDir());
 
     scoped_array<const char*> argv(new const char*[args.size()]);

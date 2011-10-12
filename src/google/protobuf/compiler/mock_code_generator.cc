@@ -80,7 +80,7 @@ void MockCodeGenerator::ExpectGenerated(
       output_directory + "/" + GetOutputFileName(name, file), &content));
 
   std::vector<std::string> lines;
-  SplitStringUsing(content, "\n", &lines);
+  protobuf::SplitStringUsing(content, "\n", &lines);
 
   while (!lines.empty() && lines.back().empty()) {
     lines.pop_back();
@@ -91,7 +91,7 @@ void MockCodeGenerator::ExpectGenerated(
 
   std::vector<std::string> insertion_list;
   if (!insertions.empty()) {
-    SplitStringUsing(insertions, ",", &insertion_list);
+    protobuf::SplitStringUsing(insertions, ",", &insertion_list);
   }
 
   ASSERT_EQ(lines.size(), 3 + insertion_list.size() * 2);
@@ -120,8 +120,8 @@ bool MockCodeGenerator::Generate(
     GeneratorContext* context,
     std::string* error) const {
   for (int i = 0; i < file->message_type_count(); i++) {
-    if (HasPrefixString(file->message_type(i)->name(), "MockCodeGenerator_")) {
-      std::string command = StripPrefixString(file->message_type(i)->name(),
+    if (protobuf::HasPrefixString(file->message_type(i)->name(), "MockCodeGenerator_")) {
+      std::string command = protobuf::StripPrefixString(file->message_type(i)->name(),
                                          "MockCodeGenerator_");
       if (command == "Error") {
         *error = "Saw message type MockCodeGenerator_Error.";
@@ -138,9 +138,9 @@ bool MockCodeGenerator::Generate(
     }
   }
 
-  if (HasPrefixString(parameter, "insert=")) {
+  if (protobuf::HasPrefixString(parameter, "insert=")) {
     std::vector<std::string> insert_into;
-    SplitStringUsing(StripPrefixString(parameter, "insert="),
+    protobuf::SplitStringUsing(protobuf::StripPrefixString(parameter, "insert="),
                      ",", &insert_into);
 
     for (int i = 0; i < insert_into.size(); i++) {
@@ -212,7 +212,7 @@ std::string MockCodeGenerator::GetOutputFileContent(
       generator_name, parameter, file->name(),
       CommaSeparatedList(all_files),
       file->message_type_count() > 0 ?
-          file->message_type(0)->name() : "(none)");
+          file->message_type(0)->name() : std::string("(none)"));
 }
 
 std::string MockCodeGenerator::GetOutputFileContent(

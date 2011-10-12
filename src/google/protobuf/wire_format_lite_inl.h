@@ -694,8 +694,7 @@ inline uint8* WireFormatLite::WriteGroupNoVirtualToArray(
     int field_number, const MessageType_WorkAroundCppLookupDefect& value,
     uint8* target) {
   target = WriteTagToArray(field_number, WIRETYPE_START_GROUP, target);
-  target = value.MessageType_WorkAroundCppLookupDefect
-      ::SerializeWithCachedSizesToArray(target);
+  target = value.SerializeWithCachedSizesToArray(target);
   return WriteTagToArray(field_number, WIRETYPE_END_GROUP, target);
 }
 template<typename MessageType_WorkAroundCppLookupDefect>
@@ -754,7 +753,7 @@ inline int WireFormatLite::MessageSize(const MessageLite& value) {
 template<typename MessageType_WorkAroundCppLookupDefect>
 inline int WireFormatLite::GroupSizeNoVirtual(
     const MessageType_WorkAroundCppLookupDefect& value) {
-  return value.MessageType_WorkAroundCppLookupDefect::ByteSize();
+  return value.ByteSize();
 }
 template<typename MessageType_WorkAroundCppLookupDefect>
 inline int WireFormatLite::MessageSizeNoVirtual(

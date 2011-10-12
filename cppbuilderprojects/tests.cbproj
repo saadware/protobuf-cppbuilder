@@ -22,6 +22,17 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<BCC_PCHWithExternalTypeFiles>false</BCC_PCHWithExternalTypeFiles>
+			<BCC_SmartPCHCache>false</BCC_SmartPCHCache>
+			<BCC_wccc>false</BCC_wccc>
+			<BCC_wrch>false</BCC_wrch>
+			<BCC_wcsu>false</BCC_wcsu>
+			<BCC_PCHUsage>None</BCC_PCHUsage>
+			<Defines>_CPPBUILDER;$(Defines)</Defines>
+			<LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
+			<OutputExt>exe</OutputExt>
+			<ILINK_LibraryPath>..\gtest\codegear\Debug\;Debug\Win32\;google\protobuf\compiler\cpp\;google\protobuf\;..\src\google\protobuf\;..\src\google\protobuf\compiler\python\;..\src\google\protobuf\compiler\java\;..\src\google\protobuf\testing\;..\src\google\protobuf\compiler\cpp\;..\src\google\protobuf\stubs\;..\src\google\protobuf\compiler\;..\src\google\protobuf\io\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<IncludePath>google\protobuf\;google\protobuf\compiler\cpp\;.\;..\src\google\protobuf\;..\src\google\protobuf\io\;..\src\google\protobuf\compiler\python\;..\src\google\protobuf\compiler\java\;..\src\google\protobuf\testing\;..\src\google\protobuf\compiler\cpp\;..\src\google\protobuf\stubs\;..\src\google\protobuf\compiler\;..\src;..\gtest\include;$(IncludePath)</IncludePath>
 			<PackageImports>rtl.bpi;vcl.bpi;bcbie.bpi;xmlrtl.bpi;vclactnband.bpi;vclx.bpi;bcbsmp.bpi;VclSmp.bpi;vclimg.bpi;svnui.bpi;svn.bpi;bdertl.bpi;TeeUI.bpi;TeeDB.bpi;Tee.bpi;vcldb.bpi;dbrtl.bpi;vcldbx.bpi;vcltouch.bpi;dsnap.bpi;dsnapcon.bpi;vclib.bpi;ibxpress.bpi;adortl.bpi;IndyCore.bpi;IndySystem.bpi;IndyProtocols.bpi;vclie.bpi;inet.bpi;inetdb.bpi;webdsnap.bpi;websnap.bpi;inetdbbde.bpi;inetdbxpress.bpi;vclribbon.bpi;DbxCommonDriver.bpi;DBXInterBaseDriver.bpi;DBXMySQLDriver.bpi;dbexpress.bpi;dbxcds.bpi;CodeSiteExpressVcl.bpi</PackageImports>
 			<Multithreaded>true</Multithreaded>
 			<NoVCL>true</NoVCL>
@@ -61,6 +72,218 @@
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
 		<ItemGroup>
+			<LibFiles Include="Debug\Win32\libprotobuf.lib">
+				<IgnorePath>true</IgnorePath>
+				<BuildOrder>49</BuildOrder>
+			</LibFiles>
+			<LibFiles Include="Debug\Win32\libprotoc.lib">
+				<IgnorePath>true</IgnorePath>
+				<BuildOrder>52</BuildOrder>
+			</LibFiles>
+			<CppCompile Include="google\protobuf\compiler\cpp\cpp_test_bad_identifiers.pb.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>5</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="google\protobuf\unittest.pb.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>29</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="google\protobuf\unittest_custom_options.pb.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>30</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="google\protobuf\unittest_embed_optimize_for.pb.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>31</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="google\protobuf\unittest_import.pb.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>32</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="google\protobuf\unittest_lite_imports_nonlite.pb.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>33</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="google\protobuf\unittest_mset.pb.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>34</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="google\protobuf\unittest_no_generic_services.pb.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>36</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="google\protobuf\unittest_optimize_for.pb.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>35</BuildOrder>
+			</CppCompile>
+			<LibFiles Include="..\gtest\codegear\Debug\gtest.lib">
+				<IgnorePath>true</IgnorePath>
+				<BuildOrder>50</BuildOrder>
+			</LibFiles>
+			<LibFiles Include="..\gtest\codegear\Debug\gtest_main.lib">
+				<IgnorePath>true</IgnorePath>
+				<BuildOrder>51</BuildOrder>
+			</LibFiles>
+			<CppCompile Include="..\src\google\protobuf\compiler\command_line_interface_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>1</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\compiler\cpp\cpp_bootstrap_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>4</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\compiler\cpp\cpp_plugin_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>7</BuildOrder>
+			</CppCompile>
+			<UserTool Include="..\src\google\protobuf\compiler\cpp\cpp_test_bad_identifiers.proto">
+				<VirtualFolder>{16AC88FF-A1CE-4471-9C1B-457B1A33706D}</VirtualFolder>
+				<ToolName>protobuf</ToolName>
+			</UserTool>
+			<CppCompile Include="..\src\google\protobuf\compiler\cpp\cpp_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>6</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\compiler\importer_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>17</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\compiler\java\java_plugin_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>8</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\compiler\mock_code_generator.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>2</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\compiler\parser_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>20</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\compiler\python\python_plugin_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>9</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\descriptor_database_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>10</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\descriptor_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>11</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\dynamic_message_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>12</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\extension_set_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>13</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\generated_message_reflection_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>15</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\io\coded_stream_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>0</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\io\printer_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>21</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\io\tokenizer_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>28</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\io\zero_copy_stream_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>39</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\message_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>18</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\reflection_ops_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>22</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\repeated_field_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>23</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\stubs\common_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>3</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\stubs\once_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>19</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\stubs\structurally_valid_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>24</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\stubs\strutil_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>25</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\testing\file.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>14</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\testing\googletest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>16</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\test_util.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>26</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\text_format_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>27</BuildOrder>
+			</CppCompile>
+			<UserTool Include="..\src\google\protobuf\unittest.proto">
+				<VirtualFolder>{16AC88FF-A1CE-4471-9C1B-457B1A33706D}</VirtualFolder>
+				<ToolName>protobuf</ToolName>
+			</UserTool>
+			<UserTool Include="..\src\google\protobuf\unittest_custom_options.proto">
+				<VirtualFolder>{16AC88FF-A1CE-4471-9C1B-457B1A33706D}</VirtualFolder>
+				<ToolName>protobuf</ToolName>
+			</UserTool>
+			<UserTool Include="..\src\google\protobuf\unittest_embed_optimize_for.proto">
+				<VirtualFolder>{16AC88FF-A1CE-4471-9C1B-457B1A33706D}</VirtualFolder>
+				<ToolName>protobuf</ToolName>
+			</UserTool>
+			<UserTool Include="..\src\google\protobuf\unittest_import.proto">
+				<VirtualFolder>{16AC88FF-A1CE-4471-9C1B-457B1A33706D}</VirtualFolder>
+				<ToolName>protobuf</ToolName>
+			</UserTool>
+			<UserTool Include="..\src\google\protobuf\unittest_lite_imports_nonlite.proto">
+				<VirtualFolder>{16AC88FF-A1CE-4471-9C1B-457B1A33706D}</VirtualFolder>
+				<ToolName>protobuf</ToolName>
+			</UserTool>
+			<UserTool Include="..\src\google\protobuf\unittest_mset.proto">
+				<VirtualFolder>{16AC88FF-A1CE-4471-9C1B-457B1A33706D}</VirtualFolder>
+				<ToolName>protobuf</ToolName>
+			</UserTool>
+			<UserTool Include="..\src\google\protobuf\unittest_no_generic_services.proto">
+				<VirtualFolder>{16AC88FF-A1CE-4471-9C1B-457B1A33706D}</VirtualFolder>
+				<ToolName>protobuf</ToolName>
+			</UserTool>
+			<UserTool Include="..\src\google\protobuf\unittest_optimize_for.proto">
+				<VirtualFolder>{16AC88FF-A1CE-4471-9C1B-457B1A33706D}</VirtualFolder>
+				<ToolName>protobuf</ToolName>
+			</UserTool>
+			<CppCompile Include="..\src\google\protobuf\unknown_field_set_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>37</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\src\google\protobuf\wire_format_unittest.cc">
+				<VirtualFolder>{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}</VirtualFolder>
+				<BuildOrder>38</BuildOrder>
+			</CppCompile>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
@@ -112,6 +335,10 @@
 						<ProjectProperties Name="ManagePaths">True</ProjectProperties>
 						<ProjectProperties Name="VerifyPackages">True</ProjectProperties>
 					</ProjectProperties>
+					<VFOLDERS>
+						<VFOLDER name="Source" ID="{54C7FD31-AA6E-4D45-BD22-30C25CB6429F}"/>
+						<VFOLDER name="Proto" ID="{16AC88FF-A1CE-4471-9C1B-457B1A33706D}"/>
+					</VFOLDERS>
 				</CPlusPlusBuilder.Personality>
 				<Platforms>
 					<Platform value="Win32">True</Platform>

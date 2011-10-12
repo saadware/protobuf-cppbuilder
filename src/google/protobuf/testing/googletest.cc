@@ -38,9 +38,12 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <stdlib.h>
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #include <io.h>
 #include <direct.h>
+#elif defined(_CPPBUILDER)
+#include <dir.h>
+#include <io.h>
 #else
 #include <unistd.h>
 #endif
@@ -101,7 +104,7 @@ std::string GetTemporaryDirectoryName() {
 #ifdef _WIN32
   // On Win32, tmpnam() returns a file prefixed with '\', but which is supposed
   // to be used in the current working directory.  WTF?
-  if (HasPrefixString(result, "\\")) {
+  if (protobuf::HasPrefixString(result, "\\")) {
     result.erase(0, 1);
   }
 #endif  // _WIN32

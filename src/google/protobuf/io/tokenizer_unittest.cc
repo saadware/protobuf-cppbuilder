@@ -198,7 +198,7 @@ struct SimpleTokenCase {
 
 inline std::ostream& operator<<(std::ostream& out,
                            const SimpleTokenCase& test_case) {
-  return out << CEscape(test_case.input);
+  return out << protobuf::CEscape(test_case.input);
 }
 
 SimpleTokenCase kSimpleTokenCases[] = {
@@ -332,7 +332,7 @@ struct MultiTokenCase {
 
 inline std::ostream& operator<<(std::ostream& out,
                            const MultiTokenCase& test_case) {
-  return out << CEscape(test_case.input);
+  return out << protobuf::CEscape(test_case.input);
 }
 
 MultiTokenCase kMultiTokenCases[] = {
@@ -644,7 +644,7 @@ struct ErrorCase {
 
 inline std::ostream& operator<<(std::ostream& out,
                            const ErrorCase& test_case) {
-  return out << CEscape(test_case.input);
+  return out << protobuf::CEscape(test_case.input);
 }
 
 ErrorCase kErrorCases[] = {
