@@ -35,7 +35,7 @@
 #ifndef GOOGLE_PROTOBUF_STUBS_HASH_H__
 #define GOOGLE_PROTOBUF_STUBS_HASH_H__
 
-#ifdef _CPPBUILDER
+#ifdef __BORLANDC__
 #include <string>
 #else
 #include <string.h>
@@ -102,7 +102,7 @@ template <typename Key,
 class hash_set : public std::set<Key, HashFcn> {
 };
 
-#elif (defined(_MSC_VER) || defined(_CPPBUILDER)) && !defined(_STLPORT_VERSION)
+#elif (defined(_MSC_VER) || defined(__BORLANDC__)) && !defined(_STLPORT_VERSION)
 
 template <typename Key>
 struct hash : public HASH_NAMESPACE::hash_compare<Key> {

@@ -110,7 +110,7 @@
 #define GOOGLE_PROTOBUF_IO_CODED_STREAM_H__
 
 #include <string>
-#if defined(_MSC_VER) || defined(_CPPBUILDER)
+#if defined(_MSC_VER) || defined(__BORLANDC__)
   #if defined(_M_IX86) && \
       !defined(PROTOBUF_DISABLE_LITTLE_ENDIAN_OPT_FOR_TEST)
     #define PROTOBUF_LITTLE_ENDIAN 1

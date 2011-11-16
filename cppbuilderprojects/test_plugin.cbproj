@@ -28,7 +28,7 @@
 			<BCC_wrch>false</BCC_wrch>
 			<BCC_wcsu>false</BCC_wcsu>
 			<BCC_PCHUsage>None</BCC_PCHUsage>
-			<Defines>_CPPBUILDER;$(Defines)</Defines>
+			<Defines>$(Defines)</Defines>
 			<LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
 			<OutputExt>exe</OutputExt>
 			<ILINK_LibraryPath>..\gtest\codegear\Debug\;Debug\Win32\;google\protobuf\compiler\cpp\;google\protobuf\;..\src\google\protobuf\;..\src\google\protobuf\compiler\python\;..\src\google\protobuf\compiler\java\;..\src\google\protobuf\testing\;..\src\google\protobuf\compiler\cpp\;..\src\google\protobuf\stubs\;..\src\google\protobuf\compiler\;..\src\google\protobuf\io\;$(ILINK_LibraryPath)</ILINK_LibraryPath>

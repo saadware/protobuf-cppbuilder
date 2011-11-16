@@ -1,4 +1,4 @@
-/* protobuf config.h for CPPBUILDER. On other platforms, this is generated
+/* protobuf config.h for C++ Builder. On other platforms, this is generated
  * automatically by autoheader / autoconf / configure. */
 
 /* the location of <hash_map> */

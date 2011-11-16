@@ -48,7 +48,7 @@
 
 #include "config.h"
 
-#if defined(_MSC_VER) || defined(_CPPBUILDER)
+#if defined(_MSC_VER) || defined(__BORLANDC__)
 #include <io.h>
 #else
 #include <unistd.h>

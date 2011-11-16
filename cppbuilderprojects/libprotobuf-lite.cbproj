@@ -22,10 +22,11 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<BCC_wrch>false</BCC_wrch>
 			<TLIB_PageSize>32</TLIB_PageSize>
 			<BCC_PCHWithExternalTypeFiles>false</BCC_PCHWithExternalTypeFiles>
 			<BCC_SmartPCHCache>false</BCC_SmartPCHCache>
-			<Defines>_CPPBUILDER;$(Defines)</Defines>
+			<Defines>$(Defines)</Defines>
 			<BCC_PCHUsage>None</BCC_PCHUsage>
 			<OutputExt>lib</OutputExt>
 			<ProjectType>CppStaticLibrary</ProjectType>

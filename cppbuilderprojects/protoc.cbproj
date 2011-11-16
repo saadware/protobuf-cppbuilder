@@ -24,7 +24,7 @@
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<BCC_wcsu>false</BCC_wcsu>
 			<BCC_DisableOptimizations>true</BCC_DisableOptimizations>
-			<Defines>_CPPBUILDER;PROTOBUF_USE_EXCEPTIONS;$(Defines)</Defines>
+			<Defines>PROTOBUF_USE_EXCEPTIONS;$(Defines)</Defines>
 			<LinkPackageImports>rtl.bpi;vcl.bpi</LinkPackageImports>
 			<Multithreaded>true</Multithreaded>
 			<ILINK_LibraryPath>Debug\Win32\;..\src\google\protobuf\compiler\;$(ILINK_LibraryPath)</ILINK_LibraryPath>

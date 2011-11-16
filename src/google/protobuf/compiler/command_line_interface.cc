@@ -95,7 +95,7 @@ namespace compiler {
 #endif
 #endif
 
-#ifdef _CPPBUILDER
+#ifdef __BORLANDC__
 #define _setmode setmode   // use the WIN32 definition of setmode
 #endif
 

@@ -23,7 +23,7 @@
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<BCC_wcsu>false</BCC_wcsu>
-			<Defines>_CPPBUILDER;$(Defines)</Defines>
+			<Defines>$(Defines)</Defines>
 			<LinkPackageImports>rtl.bpi;vcl.bpi</LinkPackageImports>
 			<Multithreaded>true</Multithreaded>
 			<ILINK_LibraryPath>Debug\Win32\;google\protobuf\;..\src\google\protobuf\;$(ILINK_LibraryPath)</ILINK_LibraryPath>

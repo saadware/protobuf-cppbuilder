@@ -41,7 +41,7 @@
 #if defined(_MSC_VER)
 #include <io.h>
 #include <direct.h>
-#elif defined(_CPPBUILDER)
+#elif defined(__BORLANDC__)
 #include <dir.h>
 #include <io.h>
 #else

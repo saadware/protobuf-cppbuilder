@@ -40,7 +40,7 @@
 #include <windows.h>         // Find*File().  :(
 #include <io.h>
 #include <direct.h>
-#elif defined(_CPPBUILDER)
+#elif defined(__BORLANDC__)
 #include <dir.h>
 #include <dirent.h>
 #include <io.h>
