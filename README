@@ -7,3 +7,4 @@ STATUS:
 * I've tested my changes on both gcc and MSVC and all unit tests still pass.
 * Unit tests are building now. Next step is to get them all running. 
 * For some reason the TEST(WireFormatTest, ZigZag) is not compiling. Still need to sort this out.
+* Currently, only C++Builder XE is supported. Looking into options on how to support multiple versions of the IDE.
