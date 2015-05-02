@@ -1,3 +1,12 @@
+#STAUTS
+
+## Project Stopped
+I don't own C++Builder/RAD Studio and therefore cannot maintain this. 
+
+If I were to pick this up again, I would start with a clean fork as protobuf has since moved to GitHub at
+https://github.com/google/protobuf. The project was in svn on GoogleCode when I originally started this project.
+
+-------
 An attempt to make the Google's Protocol Buffers (protobuf) build in the Windows based compiler, C++ Builder by Embarcadero.
 
 STATUS: 
